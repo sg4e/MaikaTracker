@@ -49,6 +49,8 @@ public class MaikaTracker extends javax.swing.JFrame {
         Collections.sort(positions);
         AutoCompleteSupport.install(bossComboBox, GlazedLists.eventList(bossNames));
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
+        
+        setTitle("MaikaTracker");
     }
 
     /**
@@ -71,6 +73,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         enemyScriptTextArea = new javax.swing.JTextArea();
+        keyItemPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -163,15 +166,24 @@ public class MaikaTracker extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Bosses", bossPane);
 
+        for(KeyItemMetadata meta : KeyItemMetadata.values()) {
+            keyItemPanel.add(new sg4e.maikatracker.KeyItemPanel(meta));
+        }
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jTabbedPane1)
+            .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(keyItemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -281,6 +293,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JPanel keyItemPanel;
     private javax.swing.JComboBox<String> positionComboBox;
     // End of variables declaration//GEN-END:variables
 }

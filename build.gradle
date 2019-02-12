@@ -23,6 +23,9 @@ repositories {
 dependencies {
 
     compile 'com.glazedlists:glazedlists:1.11.0'
+    compile(group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1')
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
+    annotationProcessor(group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1')
     compile project(":FF4StatsLib")
 
     // Use JUnit test framework
