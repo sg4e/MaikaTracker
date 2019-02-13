@@ -22,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -60,8 +61,9 @@ public class KeyItemPanel extends JPanel {
                     }
                 }
                 else if(SwingUtilities.isRightMouseButton(e)) {
-                    JPopupMenu locationMenu = new JPopupMenu("Locations");
+                    JPopupMenu locationMenu;
                     if(location != null || locationLabel.getToolTipText() != null) {
+                        locationMenu = new JPopupMenu("Locations");
                         locationMenu.add("Reset").addActionListener((ae) -> {
                             locationLabel.setText(UNKNOWN_LOCATION);
                             locationLabel.setToolTipText(null);
@@ -69,19 +71,20 @@ public class KeyItemPanel extends JPanel {
                         });
                     }
                     else {
-                        locationMenu.add("Custom location...").addActionListener((ae) -> {
-                            String custom = JOptionPane.showInputDialog("Enter custom location");
+                        locationMenu = ((MaikaTracker)SwingUtilities.getWindowAncestor(KeyItemPanel.this))
+                                .getAvailableLocationsMenu(loc -> {
+                                    location = loc;
+                                    locationLabel.setText(loc.getAbbreviatedLocation());
+                                    locationLabel.setToolTipText(loc.getLocation());
+                                });
+                        locationMenu.add(new JSeparator(), 0);
+                        JMenuItem custom = new JMenuItem("Custom location...");
+                        custom.addActionListener((ae) -> {
+                            String customOption = JOptionPane.showInputDialog("Enter custom location");
                             locationLabel.setText("CUST");
-                            locationLabel.setToolTipText(custom);
+                            locationLabel.setToolTipText(customOption);
                         });
-                        locationMenu.add(new JSeparator());
-                        Arrays.stream(KeyItemLocation.values()).forEach(loc -> {
-                            locationMenu.add(loc.getLocation()).addActionListener((ae) -> {
-                                location = loc;
-                                locationLabel.setText(loc.getAbbreviatedLocation());
-                                locationLabel.setToolTipText(loc.getLocation());
-                            });
-                        });
+                        locationMenu.add(custom, 0);
                     }
                     locationMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -94,4 +97,9 @@ public class KeyItemPanel extends JPanel {
         locationLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         add(locationLabel, BorderLayout.CENTER);
     }
+    
+    public KeyItemLocation getItemLocation() {
+        return location;
+    }
+    
 }

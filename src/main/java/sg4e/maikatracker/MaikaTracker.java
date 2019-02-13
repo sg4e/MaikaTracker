@@ -21,21 +21,34 @@ import sg4e.ff4stats.Battle;
 import sg4e.ff4stats.Formation;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableModel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import sg4e.ff4stats.fe.KeyItemLocation;
 
 /**
  *
  * @author sg4e
  */
 public class MaikaTracker extends javax.swing.JFrame {
+    
+    private static final Logger LOG = LogManager.getLogger();
 
     /**
      * Creates new form MaikaTracker
@@ -50,7 +63,34 @@ public class MaikaTracker extends javax.swing.JFrame {
         AutoCompleteSupport.install(bossComboBox, GlazedLists.eventList(bossNames));
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
         
+        //add maps
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        try {
+            BufferedImage b2Image = ImageIO.read(classLoader.getResourceAsStream("maps/lunar/b2.png"));
+            mapPane.add(new TreasureMap(b2Image, 
+                    new TreasureChest("l2", 12, 26),
+                    new TreasureChest("l3", 23, 25), 
+                    new TreasureChest("l4", 4, 10)));
+        }
+        catch(IOException ex) {
+            LOG.error("Error loading maps", ex);
+        }
+        
         setTitle("MaikaTracker");
+        pack();
+    }
+    
+    public JPopupMenu getAvailableLocationsMenu(Consumer<KeyItemLocation> actionOnEachItem) {
+        JPopupMenu locationMenu = new JPopupMenu("Locations");
+        Set<KeyItemLocation> knownLocations = Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .map(KeyItemPanel::getItemLocation)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Arrays.stream(KeyItemLocation.values())
+                .filter(ki -> !knownLocations.contains(ki))
+                .forEach(ki -> locationMenu.add(ki.getLocation()).addActionListener((ae) -> actionOnEachItem.accept(ki)));
+        return locationMenu;
     }
 
     /**
@@ -62,7 +102,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        mainTabbedPane = new javax.swing.JTabbedPane();
         bossPane = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         bossComboBox = new javax.swing.JComboBox<>();
@@ -73,6 +113,11 @@ public class MaikaTracker extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         enemyScriptTextArea = new javax.swing.JTextArea();
+        mapPane = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox<>();
         keyItemPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -164,7 +209,22 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Bosses", bossPane);
+        mainTabbedPane.addTab("Bosses", bossPane);
+
+        mapPane.setLayout(new javax.swing.BoxLayout(mapPane, javax.swing.BoxLayout.Y_AXIS));
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel2.add(jComboBox1);
+
+        jLabel3.setText("Floor:");
+        jPanel2.add(jLabel3);
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel2.add(jComboBox2);
+
+        mapPane.add(jPanel2);
+
+        mainTabbedPane.addTab("Maps", mapPane);
 
         for(KeyItemMetadata meta : KeyItemMetadata.values()) {
             keyItemPanel.add(new sg4e.maikatracker.KeyItemPanel(meta));
@@ -174,7 +234,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(mainTabbedPane)
             .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -183,7 +243,8 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(keyItemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(mainTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -287,13 +348,18 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel bossPane;
     private javax.swing.JTable bossTable;
     private javax.swing.JTextArea enemyScriptTextArea;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel keyItemPanel;
+    private javax.swing.JTabbedPane mainTabbedPane;
+    private javax.swing.JPanel mapPane;
     private javax.swing.JComboBox<String> positionComboBox;
     // End of variables declaration//GEN-END:variables
 }

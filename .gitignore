@@ -7,3 +7,4 @@ build
 .nb-gradle
 nbproject
 .nb-gradle-properties
+src/main/resources/maps
