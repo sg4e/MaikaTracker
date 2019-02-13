@@ -40,6 +40,7 @@ import javax.swing.UIManager;
 import javax.swing.table.TableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import sg4e.ff4stats.fe.KeyItem;
 import sg4e.ff4stats.fe.KeyItemLocation;
 
 /**
@@ -91,6 +92,20 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .filter(ki -> !knownLocations.contains(ki))
                 .forEach(ki -> locationMenu.add(ki.getLocation()).addActionListener((ae) -> actionOnEachItem.accept(ki)));
         return locationMenu;
+    }
+    
+    public List<KeyItemMetadata> getUnknownKeyItems() {
+        return Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .filter(kip -> !kip.isKnown())
+                .map(KeyItemPanel::getKeyItem)
+                .collect(Collectors.toList());
+    }
+    
+    public JPopupMenu getUnknownKeyItemMenu(Consumer<KeyItemMetadata> actionOnEachItem) {
+        JPopupMenu kiMenu = new JPopupMenu("Key Items");
+        getUnknownKeyItems().forEach(ki -> kiMenu.add(ki.getEnum().toString()).addActionListener((ae) -> actionOnEachItem.accept(ki)));
+        return kiMenu;
     }
 
     /**

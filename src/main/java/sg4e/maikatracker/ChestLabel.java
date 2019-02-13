@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -41,6 +42,7 @@ public class ChestLabel extends JLabel {
         setOpaque(false);
         setPreferredSize(new Dimension(TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE));
         setHorizontalAlignment(SwingConstants.CENTER);
+        setAlignmentX(JLabel.CENTER_ALIGNMENT);
     }
     
     public void activate() {
@@ -53,6 +55,18 @@ public class ChestLabel extends JLabel {
                     if(state == State.UNCHECKED) {
                         setChecked();
                     }
+                    else {
+                        setUnchecked();
+                    }
+                }
+                else if(SwingUtilities.isRightMouseButton(e)) {
+                    ((MaikaTracker)SwingUtilities.getWindowAncestor(ChestLabel.this))
+                            .getUnknownKeyItemMenu(ki -> {
+                                setText(null);
+                                setToolTipText(ki.getEnum().toString());
+                                setIcon(new ImageIcon(ki.getColorIcon().getImage().getScaledInstance(
+                                        TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE, java.awt.Image.SCALE_SMOOTH)));
+                            }).show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
@@ -60,14 +74,16 @@ public class ChestLabel extends JLabel {
     
     private void setUnchecked() {
         setBackground(COLOR_UNKNOWN);
-        setText(TEXT_UNKNOWN);
+        if(getIcon() == null)
+            setText(TEXT_UNKNOWN);
         setForeground(Color.WHITE);
         state = State.UNCHECKED;
     }
     
     private void setChecked() {
         setBackground(COLOR_KNOWN);
-        setText(TEXT_KNOWN);
+        if(getIcon() == null)
+            setText(TEXT_KNOWN);
         setForeground(Color.BLACK);
         state = State.CHECKED;
     }

@@ -19,7 +19,6 @@ package sg4e.maikatracker;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -100,6 +99,18 @@ public class KeyItemPanel extends JPanel {
     
     public KeyItemLocation getItemLocation() {
         return location;
+    }
+    
+    public boolean isAcquired() {
+        return itemImage.getIcon() != metadata.getGrayIcon();
+    }
+    
+    public boolean isKnown() {
+        return location != null || locationLabel.getToolTipText() != null;
+    }
+    
+    public KeyItemMetadata getKeyItem() {
+        return metadata;
     }
     
 }
