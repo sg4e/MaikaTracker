@@ -21,6 +21,7 @@ import sg4e.ff4stats.Battle;
 import sg4e.ff4stats.Formation;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
+import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -36,11 +37,11 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.TableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sg4e.ff4stats.fe.KeyItem;
 import sg4e.ff4stats.fe.KeyItemLocation;
 
 /**
@@ -50,6 +51,9 @@ import sg4e.ff4stats.fe.KeyItemLocation;
 public class MaikaTracker extends javax.swing.JFrame {
     
     private static final Logger LOG = LogManager.getLogger();
+    
+    private final TreasureAtlas atlas = new TreasureAtlas();
+    private static final String LUNAR_SUBTERRANE = "Lunar Subterrane";
 
     /**
      * Creates new form MaikaTracker
@@ -68,17 +72,42 @@ public class MaikaTracker extends javax.swing.JFrame {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         try {
             BufferedImage b2Image = ImageIO.read(classLoader.getResourceAsStream("maps/lunar/b2.png"));
-            mapPane.add(new TreasureMap(b2Image, 
-                    new TreasureChest("l2", 12, 26),
-                    new TreasureChest("l3", 23, 25), 
-                    new TreasureChest("l4", 4, 10)));
+            atlas.add(LUNAR_SUBTERRANE, "B2", new TreasureMap(b2Image, 
+                    new TreasureChest("L2", 12, 26),
+                    new TreasureChest("L3", 23, 25), 
+                    new TreasureChest("L4", 4, 10)));
         }
         catch(IOException ex) {
             LOG.error("Error loading maps", ex);
         }
+        mapPane.add(atlas);
         
         setTitle("MaikaTracker");
         pack();
+    }
+    
+    public void updateKeyItemLocation(KeyItemMetadata keyItem, String chestId) {
+        //first, find the KeyItemPanel
+        getPanelForKeyItem(keyItem).setLocationInChest(chestId);
+        //then, update the chest in the atlas
+        atlas.setChestContents(chestId, keyItem);
+    }
+    
+    public void resetKeyItemLocation(KeyItemMetadata keyItem, String chestId) {
+        getPanelForKeyItem(keyItem).reset();
+        atlas.clearChestContents(chestId);
+    }
+    
+    public static MaikaTracker getTrackerFromChild(Component child) {
+        return (MaikaTracker) SwingUtilities.getWindowAncestor(child);
+    }
+    
+    private KeyItemPanel getPanelForKeyItem(KeyItemMetadata keyItem) {
+        return Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .filter(kip -> keyItem.equals(kip.getKeyItem()))
+                .findAny()
+                .get();
     }
     
     public JPopupMenu getAvailableLocationsMenu(Consumer<KeyItemLocation> actionOnEachItem) {
@@ -106,6 +135,10 @@ public class MaikaTracker extends javax.swing.JFrame {
         JPopupMenu kiMenu = new JPopupMenu("Key Items");
         getUnknownKeyItems().forEach(ki -> kiMenu.add(ki.getEnum().toString()).addActionListener((ae) -> actionOnEachItem.accept(ki)));
         return kiMenu;
+    }
+    
+    public TreasureAtlas getAtlas() {
+        return atlas;
     }
 
     /**

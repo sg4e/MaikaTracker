@@ -22,6 +22,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -37,6 +38,8 @@ public class ChestLabel extends JLabel {
     private static final String TEXT_KNOWN = "✓";
     
     private State state;
+    private TreasureChest chest;
+    private KeyItemMetadata keyItemContents;
     
     public ChestLabel() {
         setOpaque(false);
@@ -45,7 +48,8 @@ public class ChestLabel extends JLabel {
         setAlignmentX(JLabel.CENTER_ALIGNMENT);
     }
     
-    public void activate() {
+    public void activate(TreasureChest chest) {
+        this.chest = chest;
         setOpaque(true);
         setUnchecked();
         addMouseListener(new MouseAdapter() {
@@ -60,13 +64,18 @@ public class ChestLabel extends JLabel {
                     }
                 }
                 else if(SwingUtilities.isRightMouseButton(e)) {
-                    ((MaikaTracker)SwingUtilities.getWindowAncestor(ChestLabel.this))
-                            .getUnknownKeyItemMenu(ki -> {
-                                setText(null);
-                                setToolTipText(ki.getEnum().toString());
-                                setIcon(new ImageIcon(ki.getColorIcon().getImage().getScaledInstance(
-                                        TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE, java.awt.Image.SCALE_SMOOTH)));
-                            }).show(e.getComponent(), e.getX(), e.getY());
+                    MaikaTracker tracker = MaikaTracker.getTrackerFromChild(ChestLabel.this);
+                    if(keyItemContents == null) {
+                        tracker.getUnknownKeyItemMenu(ki -> {
+                            tracker.updateKeyItemLocation(ki, chest.getId());
+                            keyItemContents = ki;
+                        }).show(e.getComponent(), e.getX(), e.getY());
+                    }
+                    else {
+                        JPopupMenu resetMenu = new JPopupMenu();
+                        resetMenu.add("Reset").addActionListener((ae) -> tracker.resetKeyItemLocation(keyItemContents, chest.getId()));
+                        resetMenu.show(e.getComponent(), e.getX(), e.getY());
+                    }
                 }
             }
         });
@@ -86,6 +95,24 @@ public class ChestLabel extends JLabel {
             setText(TEXT_KNOWN);
         setForeground(Color.BLACK);
         state = State.CHECKED;
+    }
+    
+    public void setKeyItem(KeyItemMetadata ki) {
+        keyItemContents = ki;
+        setText(null);
+        setToolTipText(ki.getEnum().toString());
+        setIcon(new ImageIcon(ki.getColorIcon().getImage().getScaledInstance(
+                TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE, java.awt.Image.SCALE_SMOOTH)));
+    }
+    
+    public void clearKeyItem() {
+        setToolTipText(null);
+        setIcon(null);
+        keyItemContents = null;
+        if(state == State.UNCHECKED)
+            setUnchecked();
+        else
+            setChecked();
     }
     
     private static enum State {

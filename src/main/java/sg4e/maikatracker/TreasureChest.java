@@ -24,8 +24,10 @@ public class TreasureChest {
     public static final int PIXELS_PER_SQUARE = 16;
     
     private final int offsetX, offsetY;
+    private final String id;
     
     public TreasureChest(String id, int x, int y) {
+        this.id = id;
         offsetX = x;
         offsetY = y;
     }
@@ -36,6 +38,10 @@ public class TreasureChest {
     
     public int getY() {
         return offsetY;
+    }
+    
+    public String getId() {
+        return id;
     }
     
 }

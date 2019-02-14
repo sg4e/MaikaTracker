@@ -52,21 +52,20 @@ public class KeyItemPanel extends JPanel {
                 if(SwingUtilities.isLeftMouseButton(e)) {
                     if(itemImage.getIcon() == metadata.getGrayIcon()) {
                         itemImage.setIcon(metadata.getColorIcon());
-                        //locationLabel.setText("GOT ITEM!");
                     }
                     else {
                         itemImage.setIcon(metadata.getGrayIcon());
-                        //locationLabel.setText("?");
                     }
                 }
                 else if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu;
-                    if(location != null || locationLabel.getToolTipText() != null) {
+                    if(isKnown()) {
                         locationMenu = new JPopupMenu("Locations");
                         locationMenu.add("Reset").addActionListener((ae) -> {
-                            locationLabel.setText(UNKNOWN_LOCATION);
-                            locationLabel.setToolTipText(null);
-                            location = null;
+                            if(location == null)
+                                MaikaTracker.getTrackerFromChild(KeyItemPanel.this).resetKeyItemLocation(metadata, locationLabel.getText());
+                            else
+                                reset();
                         });
                     }
                     else {
@@ -77,11 +76,18 @@ public class KeyItemPanel extends JPanel {
                                     locationLabel.setToolTipText(loc.getLocation());
                                 });
                         locationMenu.add(new JSeparator(), 0);
-                        JMenuItem custom = new JMenuItem("Custom location...");
+                        JMenuItem custom = new JMenuItem("Chest location");
                         custom.addActionListener((ae) -> {
-                            String customOption = JOptionPane.showInputDialog("Enter custom location");
-                            locationLabel.setText("CUST");
-                            locationLabel.setToolTipText(customOption);
+                            String customOption = JOptionPane.showInputDialog("Enter chest location");
+                            String chestId = customOption.toUpperCase();
+                            MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
+                            if(tracker.getAtlas().hasChestId(chestId)) {
+                                locationLabel.setText(chestId);
+                                tracker.updateKeyItemLocation(metadata, chestId);
+                            }
+                            else {
+                                JOptionPane.showMessageDialog(tracker, "Not a valid chest id", "Invalid id", JOptionPane.ERROR_MESSAGE);
+                            }
                         });
                         locationMenu.add(custom, 0);
                     }
@@ -106,11 +112,21 @@ public class KeyItemPanel extends JPanel {
     }
     
     public boolean isKnown() {
-        return location != null || locationLabel.getToolTipText() != null;
+        return location != null || !UNKNOWN_LOCATION.equals(locationLabel.getText());
     }
     
     public KeyItemMetadata getKeyItem() {
         return metadata;
+    }
+    
+    public void setLocationInChest(String chestId) {
+        locationLabel.setText(chestId);
+    }
+    
+    public void reset() {
+        locationLabel.setText(UNKNOWN_LOCATION);
+        locationLabel.setToolTipText(null);
+        location = null;
     }
     
 }

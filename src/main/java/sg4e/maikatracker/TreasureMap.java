@@ -21,7 +21,9 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.JPanel;
 
 /**
@@ -32,10 +34,12 @@ public class TreasureMap extends JPanel {
     private static final int MAP_WIDTH = 512;
     private static final int MAP_HEIGHT = MAP_WIDTH;
     private static final Rectangle BOUNDS = new Rectangle(0, 0, MAP_WIDTH, MAP_HEIGHT);
-    private static final Dimension MAP_DIMENSIONS = new Dimension(MAP_WIDTH, MAP_HEIGHT);
+    public static final Dimension MAP_DIMENSIONS = new Dimension(MAP_WIDTH, MAP_HEIGHT);
     private static final int ROWS = MAP_HEIGHT/TreasureChest.PIXELS_PER_SQUARE;
     private static final int COLUMNS = MAP_WIDTH/TreasureChest.PIXELS_PER_SQUARE;
     private final Image map;
+    private final List<TreasureChest> chests;
+    private final ChestLabel[][] cells;
     
     public TreasureMap(Image map, TreasureChest... chests) {
         this.map = map;
@@ -44,17 +48,38 @@ public class TreasureMap extends JPanel {
         setPreferredSize(MAP_DIMENSIONS);
         setLayout(new GridLayout(ROWS, COLUMNS));
         //initialize cells
-        ChestLabel[][] cells = new ChestLabel[ROWS][COLUMNS];
+        cells = new ChestLabel[ROWS][COLUMNS];
         for(int m = 0; m < ROWS; m++) {
             for(int n = 0; n < COLUMNS; n++) {
                cells[m][n] = new ChestLabel();
                add(cells[m][n]);
             }
         }
-        Arrays.stream(chests).forEach(ch -> {
-            cells[ch.getX()][ch.getY()].activate();
+        this.chests = Arrays.asList(chests);
+        this.chests.forEach(ch -> {
+            cells[ch.getX()][ch.getY()].activate(ch);
         });
         //add(overlay, 0);
+    }
+    
+    public List<TreasureChest> getChests() {
+        return new ArrayList<>(chests);
+    }
+    
+    public void setChestContents(String chestId, KeyItemMetadata keyItem) {
+        TreasureChest chest = getChest(chestId);
+        cells[chest.getX()][chest.getY()].setKeyItem(keyItem);
+    }
+    
+    public void clearChestContents(String chestId) {
+        TreasureChest chest = getChest(chestId);
+        cells[chest.getX()][chest.getY()].clearKeyItem();
+    }
+    
+    private TreasureChest getChest(String chestId) {
+        return chests.stream().filter(ch -> chestId.equals(ch.getId()))
+                .findAny()
+                .get();
     }
     
     @Override
@@ -62,4 +87,5 @@ public class TreasureMap extends JPanel {
         super.paintComponent(g);
         g.drawImage(map, 0, 0, null);
     }
+    
 }
