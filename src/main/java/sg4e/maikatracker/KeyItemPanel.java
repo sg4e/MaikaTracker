@@ -59,14 +59,21 @@ public class KeyItemPanel extends JPanel {
                 }
                 else if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu;
+                    MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
                     if(isKnown()) {
                         locationMenu = new JPopupMenu("Locations");
                         locationMenu.add("Reset").addActionListener((ae) -> {
                             if(location == null)
-                                MaikaTracker.getTrackerFromChild(KeyItemPanel.this).resetKeyItemLocation(metadata, locationLabel.getText());
+                                tracker.resetKeyItemLocation(metadata, locationLabel.getText());
                             else
                                 reset();
                         });
+                        if(isInChest()) {
+                            locationMenu.add(new JSeparator(), 0);
+                            JMenuItem goToChest = new JMenuItem("Show chest"/*slmLewd*/);
+                            goToChest.addActionListener((ae) -> tracker.getAtlas().showChest(locationLabel.getText()));
+                            locationMenu.add(goToChest, 0);
+                        }
                     }
                     else {
                         locationMenu = ((MaikaTracker)SwingUtilities.getWindowAncestor(KeyItemPanel.this))
@@ -80,7 +87,6 @@ public class KeyItemPanel extends JPanel {
                         custom.addActionListener((ae) -> {
                             String customOption = JOptionPane.showInputDialog("Enter chest location");
                             String chestId = customOption.toUpperCase();
-                            MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
                             if(tracker.getAtlas().hasChestId(chestId)) {
                                 locationLabel.setText(chestId);
                                 tracker.updateKeyItemLocation(metadata, chestId);
@@ -113,6 +119,10 @@ public class KeyItemPanel extends JPanel {
     
     public boolean isKnown() {
         return location != null || !UNKNOWN_LOCATION.equals(locationLabel.getText());
+    }
+    
+    public boolean isInChest() {
+        return location == null && !UNKNOWN_LOCATION.equals(locationLabel.getText());
     }
     
     public KeyItemMetadata getKeyItem() {

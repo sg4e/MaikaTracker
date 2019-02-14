@@ -17,9 +17,14 @@
 package sg4e.maikatracker;
 
 import java.awt.CardLayout;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -28,8 +33,10 @@ import javax.swing.JPanel;
 public class TreasureAtlas extends JPanel {
     
     private final CardLayout cards;
-    private final Map<String,Map<String,TreasureMap>> dungeonToFloors = new HashMap<>();
-    private final Map<String,Page> chestIdToPage = new HashMap<>();
+    private final Map<String,Map<String,TreasureMap>> dungeonToFloors = new LinkedHashMap<>();
+    private final Map<String,Page> chestIdToPage = new LinkedHashMap<>();
+    
+    private static final Logger LOG = LogManager.getLogger();
     
     public TreasureAtlas() {
         cards = new CardLayout();
@@ -39,7 +46,9 @@ public class TreasureAtlas extends JPanel {
         setPreferredSize(TreasureMap.MAP_DIMENSIONS);
     }
     
-    public void add(String dungeon, String floor, TreasureMap map) {
+    public void add(TreasureMap map) {
+        String dungeon = map.getDungeon();
+        String floor = map.getFloor();
         Map<String,TreasureMap> floors = dungeonToFloors.get(dungeon);
         if(floors == null) {
             floors = new HashMap<>();
@@ -61,11 +70,30 @@ public class TreasureAtlas extends JPanel {
     }
     
     public void showFloor(String dungeon, String floor) {
+        MaikaTracker.getTrackerFromChild(this).setMapComboBoxes(dungeon, floor);
         cards.show(this, new Page(dungeon, floor).toString());
+    }
+    
+    public void showChest(String chestId) {
+        if(!hasChestId(chestId)) {
+            LOG.error("Unknown chestId: {}", chestId);
+        }
+        else {
+            Page p = chestIdToPage.get(chestId);
+            showFloor(p.getDungeon(), p.getFloor());
+        }
     }
     
     public boolean hasChestId(String chestId) {
         return chestIdToPage.containsKey(chestId);
+    }
+    
+    public List<String> getAllDungeons() {
+        return new ArrayList<>(dungeonToFloors.keySet());
+    }
+    
+    public List<String> getFloorsInDungeon(String dungeon) {
+        return new ArrayList<>(dungeonToFloors.get(dungeon).keySet());
     }
     
     private TreasureMap getTreasureMap(Page page) {

@@ -40,8 +40,11 @@ public class TreasureMap extends JPanel {
     private final Image map;
     private final List<TreasureChest> chests;
     private final ChestLabel[][] cells;
+    private final String dungeon, floor;
     
-    public TreasureMap(Image map, TreasureChest... chests) {
+    public TreasureMap(String dungeon, String floor, Image map, TreasureChest... chests) {
+        this.dungeon = dungeon;
+        this.floor = floor;
         this.map = map;
         setMinimumSize(MAP_DIMENSIONS);
         setMaximumSize(MAP_DIMENSIONS);
@@ -80,6 +83,14 @@ public class TreasureMap extends JPanel {
         return chests.stream().filter(ch -> chestId.equals(ch.getId()))
                 .findAny()
                 .get();
+    }
+
+    public String getDungeon() {
+        return dungeon;
+    }
+
+    public String getFloor() {
+        return floor;
     }
     
     @Override

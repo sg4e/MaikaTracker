@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -69,21 +71,41 @@ public class MaikaTracker extends javax.swing.JFrame {
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
         
         //add maps
+        final String lunar = "lunar";
+        initMap(lunar, "b1", LUNAR_SUBTERRANE, "B1", new TreasureChest("L1", 24, 6));
+        initMap(lunar, "b2", LUNAR_SUBTERRANE, "B2",
+                new TreasureChest("L2", 12, 26),
+                new TreasureChest("L3", 23, 25), 
+                new TreasureChest("L4", 4, 10));
+        dungeonComboBox.setModel(new DefaultComboBoxModel<>(atlas.getAllDungeons().toArray(new String[0])));
+        dungeonComboBox.addActionListener((ae) -> {
+            String dungeon = (String) dungeonComboBox.getSelectedItem();
+            floorComboBox.setModel(new DefaultComboBoxModel<>(atlas.getFloorsInDungeon(dungeon).toArray(new String[0])));
+        });
+        floorComboBox.addActionListener((ae) -> {
+            String dungeon = (String) dungeonComboBox.getSelectedItem();
+            String floor = (String) floorComboBox.getSelectedItem();
+            atlas.showFloor(dungeon, floor);
+        });
+        dungeonComboBox.setSelectedIndex(0);
+        floorComboBox.setSelectedItem(0);
+        atlas.showFloor((String) dungeonComboBox.getSelectedItem(), (String) floorComboBox.getSelectedItem());
+        
+        setTitle("MaikaTracker");
+        pack();
+    }
+    
+    private void initMap(String directory, String filename, String dungeonName, String floorName, TreasureChest... chests) {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        String fileUrl = new StringBuilder("maps/").append(directory).append("/").append(filename).append(".png").toString();
         try {
-            BufferedImage b2Image = ImageIO.read(classLoader.getResourceAsStream("maps/lunar/b2.png"));
-            atlas.add(LUNAR_SUBTERRANE, "B2", new TreasureMap(b2Image, 
-                    new TreasureChest("L2", 12, 26),
-                    new TreasureChest("L3", 23, 25), 
-                    new TreasureChest("L4", 4, 10)));
+            BufferedImage image = ImageIO.read(classLoader.getResourceAsStream(fileUrl));
+            atlas.add(new TreasureMap(dungeonName, floorName, image, chests));
         }
         catch(IOException ex) {
             LOG.error("Error loading maps", ex);
         }
         mapPane.add(atlas);
-        
-        setTitle("MaikaTracker");
-        pack();
     }
     
     public void updateKeyItemLocation(KeyItemMetadata keyItem, String chestId) {
@@ -137,6 +159,12 @@ public class MaikaTracker extends javax.swing.JFrame {
         return kiMenu;
     }
     
+    public void setMapComboBoxes(String dungeon, String floor) {
+        dungeonComboBox.setSelectedItem(dungeon);
+        floorComboBox.setSelectedItem(floor);
+        mainTabbedPane.setSelectedComponent(mapPane);
+    }
+    
     public TreasureAtlas getAtlas() {
         return atlas;
     }
@@ -163,9 +191,9 @@ public class MaikaTracker extends javax.swing.JFrame {
         enemyScriptTextArea = new javax.swing.JTextArea();
         mapPane = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        dungeonComboBox = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        floorComboBox = new javax.swing.JComboBox<>();
         keyItemPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -261,14 +289,14 @@ public class MaikaTracker extends javax.swing.JFrame {
 
         mapPane.setLayout(new javax.swing.BoxLayout(mapPane, javax.swing.BoxLayout.Y_AXIS));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel2.add(jComboBox1);
+        dungeonComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel2.add(dungeonComboBox);
 
         jLabel3.setText("Floor:");
         jPanel2.add(jLabel3);
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel2.add(jComboBox2);
+        floorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel2.add(floorComboBox);
 
         mapPane.add(jPanel2);
 
@@ -395,9 +423,9 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> bossComboBox;
     private javax.swing.JPanel bossPane;
     private javax.swing.JTable bossTable;
+    private javax.swing.JComboBox<String> dungeonComboBox;
     private javax.swing.JTextArea enemyScriptTextArea;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> floorComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
