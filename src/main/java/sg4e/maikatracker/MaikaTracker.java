@@ -22,6 +22,7 @@ import sg4e.ff4stats.Formation;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
 import java.awt.Component;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -36,7 +37,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -119,11 +119,10 @@ public class MaikaTracker extends javax.swing.JFrame {
         dungeonComboBox.addActionListener((ae) -> {
             String dungeon = (String) dungeonComboBox.getSelectedItem();
             floorComboBox.setModel(new DefaultComboBoxModel<>(atlas.getFloorsInDungeon(dungeon).toArray(new String[0])));
+            showFloor();
         });
         floorComboBox.addActionListener((ae) -> {
-            String dungeon = (String) dungeonComboBox.getSelectedItem();
-            String floor = (String) floorComboBox.getSelectedItem();
-            atlas.showFloor(dungeon, floor);
+            showFloor();
         });
         dungeonComboBox.setSelectedIndex(0);
         floorComboBox.setSelectedItem(0);
@@ -131,6 +130,12 @@ public class MaikaTracker extends javax.swing.JFrame {
         
         setTitle("MaikaTracker");
         pack();
+    }
+    
+    private void showFloor() {
+        String dungeon = (String) dungeonComboBox.getSelectedItem();
+        String floor = (String) floorComboBox.getSelectedItem();
+        atlas.showFloor(dungeon, floor);
     }
     
     private void initMap(String directory, String filename, String dungeonName, String floorName, TreasureChest... chests) {
