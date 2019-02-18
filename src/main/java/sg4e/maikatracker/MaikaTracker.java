@@ -56,6 +56,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     private final TreasureAtlas atlas = new TreasureAtlas();
     private static final String LUNAR_SUBTERRANE = "Lunar Subterrane";
+    private static final String LUNAR_CORE = "Lunar Core";
 
     /**
      * Creates new form MaikaTracker
@@ -77,6 +78,43 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("L2", 12, 26),
                 new TreasureChest("L3", 23, 25), 
                 new TreasureChest("L4", 4, 10));
+        initMap(lunar, "b3", LUNAR_SUBTERRANE, "B3",
+                new TreasureChest("L5", 16, 25),
+                new TreasureChest("L6", 24, 23),
+                new TreasureChest("L7", 28, 14));
+        initMap(lunar, "b4", LUNAR_SUBTERRANE, "B4",
+                new TreasureChest("L8", 7, 28),
+                new TreasureChest("L9", 13, 8),
+                new TreasureChest("L12", 24, 6));
+        initMap(lunar, "b4passage", LUNAR_SUBTERRANE, "B4 Passage",
+                new TreasureChest("L10", 5, 23),
+                new TreasureChest("L11", 14, 2));
+        initMap(lunar, "b5", LUNAR_SUBTERRANE, "B5",
+                new TreasureChest("L13", 9, 7),
+                new TreasureChest("L14", 13, 11),
+                new TreasureChest("L15", 11, 26),
+                new TreasureChest("L16", 16, 27),
+                new TreasureChest("L17", 20, 14),
+                new TreasureChest("L18", 20, 5),
+                new TreasureChest("L19", 27, 23),
+                new TreasureChest("L24", 15, 1));
+        initMap(lunar, "b6", LUNAR_SUBTERRANE, "B6",
+                new TreasureChest("L20", 5, 15),
+                new TreasureChest("L21", 5, 25),
+                new TreasureChest("L22", 17, 18),
+                new TreasureChest("L23", 27, 6),
+                new TreasureChest("L24", 21, 22));
+        initMap(lunar, "paledim", LUNAR_SUBTERRANE, "Pale Dim",
+                new TreasureChest("L25", 5, 2),
+                new TreasureChest("L26", 5, 4));
+        initMap(lunar, "c1", LUNAR_CORE, "B1",
+                new TreasureChest("C1", 11, 7));
+        initMap(lunar, "c2", LUNAR_CORE, "B2",
+                new TreasureChest("C2", 10, 21),
+                new TreasureChest("C3", 24, 13));
+        initMap(lunar, "c3", LUNAR_CORE, "B3",
+                new TreasureChest("C4", 14, 24),
+                new TreasureChest("C5", 15, 7));
         dungeonComboBox.setModel(new DefaultComboBoxModel<>(atlas.getAllDungeons().toArray(new String[0])));
         dungeonComboBox.addActionListener((ae) -> {
             String dungeon = (String) dungeonComboBox.getSelectedItem();
