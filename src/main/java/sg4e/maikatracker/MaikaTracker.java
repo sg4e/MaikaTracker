@@ -55,6 +55,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     private static final Logger LOG = LogManager.getLogger();
     
     private final TreasureAtlas atlas = new TreasureAtlas();
+    private static final String EBLAN_CASTLE = "Eblan Castle";
     private static final String LUNAR_SUBTERRANE = "Lunar Subterrane";
     private static final String LUNAR_CORE = "Lunar Core";
     private static final String SYLPH_CAVE = "Sylph Cave";
@@ -73,6 +74,36 @@ public class MaikaTracker extends javax.swing.JFrame {
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
         
         //add maps
+        final String ebcast = "eblan-castle";
+        initMap(ebcast, "1", EBLAN_CASTLE, "Left 1F",
+                new TreasureChest("E1", 5, 11),
+                new TreasureChest("E6", 5, 1));
+        initMap(ebcast, "2", EBLAN_CASTLE, "Left 2F",
+                new TreasureChest("E2", 8, 8),
+                new TreasureChest("E3", 5, 10),
+                new TreasureChest("E4", 5, 11),
+                new TreasureChest("E5", 4, 4));
+        initMap(ebcast, "3", EBLAN_CASTLE, "Center Foyer",
+                new TreasureChest("E7", 4, 13));
+        initMap(ebcast, "4", EBLAN_CASTLE, "Center Hall",
+                new TreasureChest("E8", 3, 4),
+                new TreasureChest("E9", 4, 4),
+                new TreasureChest("E10", 3, 14),
+                new TreasureChest("E11", 4, 15),
+                new TreasureChest("E12", 4, 14));
+        initMap(ebcast, "6", EBLAN_CASTLE, "Right 1F",
+                new TreasureChest("E13", 5, 2),
+                new TreasureChest("E19", 5, 12));
+        initMap(ebcast, "7", EBLAN_CASTLE, "Right 2F",
+                new TreasureChest("E14", 5, 1),
+                new TreasureChest("E15", 6, 1),
+                new TreasureChest("E16", 3, 6),
+                new TreasureChest("E17", 5, 11),
+                new TreasureChest("E18", 6, 11));
+        initMap(ebcast, "8", EBLAN_CASTLE, "Basement",
+                new TreasureChest("E19", 11, 2),
+                new TreasureChest("E20", 11, 3),
+                new TreasureChest("E21", 12, 8));
         final String sylph = "sylph";
         initMap(sylph, "s1", SYLPH_CAVE, "B1",
                 new TreasureChest("S1", 5, 28),

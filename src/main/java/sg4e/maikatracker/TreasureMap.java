@@ -21,6 +21,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +39,7 @@ public class TreasureMap extends JPanel {
     public static final Dimension MAP_DIMENSIONS = new Dimension(MAP_WIDTH, MAP_HEIGHT);
     private static final int ROWS = MAP_HEIGHT/TreasureChest.PIXELS_PER_SQUARE;
     private static final int COLUMNS = MAP_WIDTH/TreasureChest.PIXELS_PER_SQUARE;
+    private static final boolean MAP_DEV_MODE = false;
     private final Image map;
     private final List<TreasureChest> chests;
     private final ChestLabel[][] cells;
@@ -62,7 +65,16 @@ public class TreasureMap extends JPanel {
         this.chests.forEach(ch -> {
             cells[ch.getX()][ch.getY()].activate(ch);
         });
-        //add(overlay, 0);
+        if(MAP_DEV_MODE) {
+            addMouseListener(new MouseAdapter() {
+                int count = 1;
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    System.out.println(String.format("new TreasureChest(\"A%d\", %d, %d),", count++, 
+                            e.getY()/TreasureChest.PIXELS_PER_SQUARE, e.getX()/TreasureChest.PIXELS_PER_SQUARE));
+                }
+            });
+        }
     }
     
     public List<TreasureChest> getChests() {
