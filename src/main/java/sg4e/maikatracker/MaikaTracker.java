@@ -57,6 +57,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     private final TreasureAtlas atlas = new TreasureAtlas();
     private static final String LUNAR_SUBTERRANE = "Lunar Subterrane";
     private static final String LUNAR_CORE = "Lunar Core";
+    private static final String SYLPH_CAVE = "Sylph Cave";
 
     /**
      * Creates new form MaikaTracker
@@ -115,6 +116,44 @@ public class MaikaTracker extends javax.swing.JFrame {
         initMap(lunar, "c3", LUNAR_CORE, "B3",
                 new TreasureChest("C4", 14, 24),
                 new TreasureChest("C5", 15, 7));
+        final String sylph = "sylph";
+        initMap(sylph, "s1", SYLPH_CAVE, "B1",
+                new TreasureChest("S1", 5, 28),
+                new TreasureChest("S2", 6, 28),
+                new TreasureChest("S3", 5, 29),
+                new TreasureChest("S4", 18, 3),
+                new TreasureChest("S5", 18, 4),
+                new TreasureChest("S6", 4, 5),
+                new TreasureChest("S7", 4, 6),
+                new TreasureChest("S8", 4, 7),
+                new TreasureChest("S9", 5, 10),
+                new TreasureChest("S10", 6, 10));
+        initMap(sylph, "s2", SYLPH_CAVE, "B2",
+                new TreasureChest("S11", 6, 11),
+                new TreasureChest("S18", 13, 23+2),
+                new TreasureChest("S19", 15, 23+2),
+                new TreasureChest("S20", 13, 21+2),
+                new TreasureChest("S21", 15, 21+2),
+                new TreasureChest("S22", 28, 29),
+                new TreasureChest("S23", 29, 29),
+                new TreasureChest("S24", 28, 25),
+                new TreasureChest("S25", 27, 23),
+                new TreasureChest("S26", 29, 23));
+        initMap(sylph, "s3", SYLPH_CAVE, "B3",
+                new TreasureChest("S12", 9, 1),
+                new TreasureChest("S15", 4, 10),
+                new TreasureChest("S16", 5, 11),
+                new TreasureChest("S17", 4, 11));
+        initMap(sylph, "house", SYLPH_CAVE, "House",
+                new TreasureChest("S13", 3, 13),
+                new TreasureChest("S14", 5, 13));
+        initMap(sylph, "treasure", SYLPH_CAVE, "Treasure Room",
+                new TreasureChest("S27", 5, 7),
+                new TreasureChest("S28", 5+2, 7),
+                new TreasureChest("S29", 5, 7+2),
+                new TreasureChest("S30", 5+2, 7+2),
+                new TreasureChest("S31", 5, 7+4),
+                new TreasureChest("S32", 5+2, 7+4));
         dungeonComboBox.setModel(new DefaultComboBoxModel<>(atlas.getAllDungeons().toArray(new String[0])));
         dungeonComboBox.addActionListener((ae) -> {
             String dungeon = (String) dungeonComboBox.getSelectedItem();
