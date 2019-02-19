@@ -51,7 +51,7 @@ public class TreasureAtlas extends JPanel {
         String floor = map.getFloor();
         Map<String,TreasureMap> floors = dungeonToFloors.get(dungeon);
         if(floors == null) {
-            floors = new HashMap<>();
+            floors = new LinkedHashMap<>();
             dungeonToFloors.put(dungeon, floors);
         }
         floors.put(floor, map);
