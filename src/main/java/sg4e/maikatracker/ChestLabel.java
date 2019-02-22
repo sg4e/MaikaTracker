@@ -52,6 +52,7 @@ public class ChestLabel extends JLabel {
         this.chest = chest;
         setOpaque(true);
         setUnchecked();
+        setToolTipText(chest.getId());
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
