@@ -44,20 +44,12 @@ public class KeyItemPanel extends JPanel {
     public KeyItemPanel(KeyItemMetadata meta) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         metadata = meta;
-        itemImage = new JLabel(metadata.getGrayIcon());
+        itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon());
         itemImage.setToolTipText(metadata.getEnum().toString());
         itemImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(SwingUtilities.isLeftMouseButton(e)) {
-                    if(itemImage.getIcon() == metadata.getGrayIcon()) {
-                        itemImage.setIcon(metadata.getColorIcon());
-                    }
-                    else {
-                        itemImage.setIcon(metadata.getGrayIcon());
-                    }
-                }
-                else if(SwingUtilities.isRightMouseButton(e)) {
+                if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu;
                     MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
                     if(isKnown()) {

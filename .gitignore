@@ -8,3 +8,4 @@ build
 nbproject
 .nb-gradle-properties
 src/main/resources/maps
+src/main/resources/characters

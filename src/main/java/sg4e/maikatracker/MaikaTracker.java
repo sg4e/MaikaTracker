@@ -22,9 +22,9 @@ import sg4e.ff4stats.Formation;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
 import java.awt.Component;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +41,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -72,6 +73,14 @@ public class MaikaTracker extends javax.swing.JFrame {
         Collections.sort(positions);
         AutoCompleteSupport.install(bossComboBox, GlazedLists.eventList(bossNames));
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
+        
+        //add party characters
+        for(int i = 0; i < 5; i++) {
+            PartyLabel label = new PartyLabel();
+            if(i != 0)
+                label.setBorder(new EmptyBorder(0, 30, 0, 0));
+            partyPanel.add(label);
+        }
         
         //add maps
         final String ebcast = "eblan-castle";
@@ -209,16 +218,25 @@ public class MaikaTracker extends javax.swing.JFrame {
     }
     
     private void initMap(String directory, String filename, String dungeonName, String floorName, TreasureChest... chests) {
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         String fileUrl = new StringBuilder("maps/").append(directory).append("/").append(filename).append(".png").toString();
+        BufferedImage image = loadImageResource(fileUrl);
+        atlas.add(new TreasureMap(dungeonName, floorName, image, chests));
+        mapPane.add(atlas);
+    }
+    
+    public static InputStream loadResource(String path) {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        return classLoader.getResourceAsStream(path);
+    }
+    
+    public static BufferedImage loadImageResource(String path) {
         try {
-            BufferedImage image = ImageIO.read(classLoader.getResourceAsStream(fileUrl));
-            atlas.add(new TreasureMap(dungeonName, floorName, image, chests));
+            return ImageIO.read(loadResource(path));
         }
         catch(IOException ex) {
-            LOG.error("Error loading maps", ex);
+            LOG.error("Error loading resource", ex);
         }
-        mapPane.add(atlas);
+        return null;
     }
     
     public void updateKeyItemLocation(KeyItemMetadata keyItem, String chestId) {
@@ -308,6 +326,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         floorComboBox = new javax.swing.JComboBox<>();
         keyItemPanel = new javax.swing.JPanel();
+        partyPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -425,11 +444,14 @@ public class MaikaTracker extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(mainTabbedPane)
             .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(partyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(partyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(keyItemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(mainTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -549,6 +571,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel keyItemPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JPanel mapPane;
+    private javax.swing.JPanel partyPanel;
     private javax.swing.JComboBox<String> positionComboBox;
     // End of variables declaration//GEN-END:variables
 }
