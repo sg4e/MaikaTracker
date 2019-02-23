@@ -16,12 +16,11 @@
  */
 package sg4e.maikatracker;
 
-import com.google.common.collect.Maps;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
@@ -30,6 +29,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import sg4e.ff4stats.party.LevelData;
+import sg4e.ff4stats.party.PartyMember;
 
 /**
  *
@@ -41,9 +41,13 @@ public class PartyLabel extends StativeLabel {
             Arrays.stream(LevelData.values()).collect(Collectors.toMap((data) -> data, 
                     (data) -> new ImageIcon(MaikaTracker.loadImageResource("characters/" + data.toString().toLowerCase().replaceAll(" ", "") + ".png")))));
     
-    private LevelData character = null;
+    private LevelData data = null;
+    private PartyMember character;
+    private final PropertyChangeListener pcl;
+    private Runnable onChangeAction = null;
     
-    public PartyLabel() {
+    public PartyLabel(PropertyChangeListener onLevelUp) {
+        this.pcl = onLevelUp;
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -62,24 +66,46 @@ public class PartyLabel extends StativeLabel {
         });
     }
     
-    public LevelData getPartyMember() {
+    public LevelData getData() {
+        return data;
+    }
+    
+    public PartyMember getPartyMember() {
         return character;
     }
     
     public boolean hasPartyMember() {
-        return character != null;
+        return data != null;
     }
     
     public void setPartyMember(LevelData member) {
-        character = member;
-        ImageIcon icon = CHARACTER_ICONS.get(member);
-        setNewIconState(icon, icon);
+        if(data != member) {
+            data = member;
+            if(character != null && pcl != null)
+                character.removePropertyChangeListener(pcl);
+            character = new PartyMember(data);
+            if(pcl != null)
+                character.addPropertyChangeListener(pcl);
+            ImageIcon icon = CHARACTER_ICONS.get(member);
+            setNewIconState(icon, icon);
+            if(onChangeAction != null)
+                onChangeAction.run();
+        }
+    }
+    
+    public void setOnPartyChangeAction(Runnable action) {
+        onChangeAction = action;
     }
 
     @Override
     protected void clearLabel() {
         super.clearLabel();
+        data = null;
+        if(character != null && pcl != null)
+            character.removePropertyChangeListener(pcl);
         character = null;
+        if(onChangeAction != null)
+            onChangeAction.run();
     }
     
 }

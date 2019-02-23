@@ -45,7 +45,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import sg4e.ff4stats.fe.KeyItem;
 import sg4e.ff4stats.fe.KeyItemLocation;
+import sg4e.ff4stats.party.PartyMember;
 
 /**
  *
@@ -60,6 +62,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     private static final String LUNAR_SUBTERRANE = "Lunar Subterrane";
     private static final String LUNAR_CORE = "Lunar Core";
     private static final String SYLPH_CAVE = "Sylph Cave";
+    private static final int D_MACHIN_XP = 41500;
 
     /**
      * Creates new form MaikaTracker
@@ -75,8 +78,11 @@ public class MaikaTracker extends javax.swing.JFrame {
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
         
         //add party characters
+        PartyTableModel partyTableModel = (PartyTableModel) xpTable.getModel();
+        Runnable newPartyMemberCallback = () -> partyTableModel.setPartyMembers(getPartyMembers());
         for(int i = 0; i < 5; i++) {
-            PartyLabel label = new PartyLabel();
+            PartyLabel label = new PartyLabel(null);
+            label.setOnPartyChangeAction(newPartyMemberCallback);
             if(i != 0)
                 label.setBorder(new EmptyBorder(0, 30, 0, 0));
             partyPanel.add(label);
@@ -207,8 +213,16 @@ public class MaikaTracker extends javax.swing.JFrame {
         floorComboBox.setSelectedItem(0);
         atlas.showFloor((String) dungeonComboBox.getSelectedItem(), (String) floorComboBox.getSelectedItem());
         
+        updateKeyItemCountLabel();
+        
         setTitle("MaikaTracker");
         pack();
+    }
+    
+    public List<PartyMember> getPartyMembers() {
+        return Arrays.stream(partyPanel.getComponents()).map(c -> (PartyLabel) c)
+                        .filter(PartyLabel::hasPartyMember)
+                        .map(PartyLabel::getPartyMember).collect(Collectors.toList());
     }
     
     private void showFloor() {
@@ -290,6 +304,19 @@ public class MaikaTracker extends javax.swing.JFrame {
         return kiMenu;
     }
     
+    public void updateKeyItemCountLabel() {
+        keyItemCountLabel.setText("Key Items: " + getKeyItemCount());
+    }
+        
+    public int getKeyItemCount() {
+        Set<KeyItemPanel> acquired = Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .filter(KeyItemPanel::isAcquired).collect(Collectors.toSet());
+        int count = acquired.size();
+        //pass doesn't count as a key item since 0.3
+        return count - (acquired.stream().map(KeyItemPanel::getKeyItem).map(KeyItemMetadata::getEnum).anyMatch(ki -> ki == KeyItem.PASS) ? 1 : 0);
+    }
+    
     public void setMapComboBoxes(String dungeon, String floor) {
         dungeonComboBox.setSelectedItem(dungeon);
         floorComboBox.setSelectedItem(floor);
@@ -325,8 +352,13 @@ public class MaikaTracker extends javax.swing.JFrame {
         dungeonComboBox = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         floorComboBox = new javax.swing.JComboBox<>();
+        xpPane = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        xpTable = new javax.swing.JTable();
+        addDMachinButton = new javax.swing.JButton();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
+        keyItemCountLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -434,9 +466,42 @@ public class MaikaTracker extends javax.swing.JFrame {
 
         mainTabbedPane.addTab("Maps", mapPane);
 
+        xpTable.setModel(new PartyTableModel());
+        jScrollPane2.setViewportView(xpTable);
+
+        addDMachinButton.setText("Add D. Machin");
+        addDMachinButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addDMachinButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout xpPaneLayout = new javax.swing.GroupLayout(xpPane);
+        xpPane.setLayout(xpPaneLayout);
+        xpPaneLayout.setHorizontalGroup(
+            xpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+            .addGroup(xpPaneLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(addDMachinButton))
+        );
+        xpPaneLayout.setVerticalGroup(
+            xpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(xpPaneLayout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addDMachinButton)
+                .addGap(0, 396, Short.MAX_VALUE))
+        );
+
+        mainTabbedPane.addTab("XP", xpPane);
+
         for(KeyItemMetadata meta : KeyItemMetadata.values()) {
             keyItemPanel.add(new sg4e.maikatracker.KeyItemPanel(meta));
         }
+
+        keyItemCountLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        keyItemCountLabel.setText("jLabel4");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -445,6 +510,10 @@ public class MaikaTracker extends javax.swing.JFrame {
             .addComponent(mainTabbedPane)
             .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(partyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(keyItemCountLabel)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -453,6 +522,8 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(partyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(keyItemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(keyItemCountLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(mainTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -469,6 +540,34 @@ public class MaikaTracker extends javax.swing.JFrame {
         onBossComboBoxChanged();
     }//GEN-LAST:event_bossComboBoxActionPerformed
 
+    private void addDMachinButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDMachinButtonActionPerformed
+        calculateXp(D_MACHIN_XP);
+    }//GEN-LAST:event_addDMachinButtonActionPerformed
+
+    private void calculateXp(int xpGained) {
+        int kiMultipler = getKeyItemCount() >= 10 ? 2 : 1;
+        List<PartyMember> members = getPartyMembers();
+        PartyTableModel model = (PartyTableModel) xpTable.getModel();
+        List<Integer> partyLevels = members.stream().map(p -> model.getStartingLevel(p)).collect(Collectors.toList());
+        Collections.sort(partyLevels);
+        int medianPartyLevel = partyLevels.get(partyLevels.size()/2);
+        members.forEach(p -> {
+            int startingLevel = model.getStartingLevel(p);
+            if(p.getXp() == 0) {
+                p.gainXp(model.getStartingXp(p));
+            }
+            //xp slingshot logic
+            int slingshotMuliplier = 1;
+            if(members.size() == 5) {
+                if(startingLevel <= medianPartyLevel - 5)
+                    slingshotMuliplier += 1;
+                if(startingLevel <= medianPartyLevel - 10)
+                    slingshotMuliplier += 1;
+            }
+            p.gainXp(xpGained * kiMultipler * slingshotMuliplier);
+        });
+    }
+    
     private void onBossComboBoxChanged() {
         updateBossTable();
     }
@@ -555,6 +654,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault());
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addDMachinButton;
     private javax.swing.JComboBox<String> bossComboBox;
     private javax.swing.JPanel bossPane;
     private javax.swing.JTable bossTable;
@@ -567,11 +667,15 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel keyItemCountLabel;
     private javax.swing.JPanel keyItemPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JPanel mapPane;
     private javax.swing.JPanel partyPanel;
     private javax.swing.JComboBox<String> positionComboBox;
+    private javax.swing.JPanel xpPane;
+    private javax.swing.JTable xpTable;
     // End of variables declaration//GEN-END:variables
 }
