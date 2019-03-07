@@ -103,43 +103,43 @@ public class MaikaTracker extends javax.swing.JFrame {
         }
         
         //add boss icons
-        LayoutManager bossIconLayout = new GridLayout(4, 9);
+        LayoutManager bossIconLayout = new GridLayout(3, 12);
         bossIconPanel.setLayout(bossIconLayout);
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-10DKCecil-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-10DKCecil-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-11Guards-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-11Guards-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-12Yang-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-12Yang-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-13Baigan-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-13Baigan-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-14Kainazzo-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-14Kainazzo-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-15DElf-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-15DElf-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-16MagusSis-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-16MagusSis-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-17Valvalis-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-17Valvalis-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-18Calcabrina-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-18Calcabrina-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-19Golbez-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-19Golbez-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-1MistD-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-1MistD-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-20Lugae-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-20Lugae-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-21DarkImps-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-21DarkImps-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-21Eblan-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-21Eblan-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-22Rubicante-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-22Rubicante-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-23EvilWall-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-23EvilWall-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-24Fiends-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-24Fiends-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-25CPU-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-25CPU-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-26Odin-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-26Odin-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-27Asura-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-27Asura-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-28Leviath-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-28Leviath-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-29Bahamut-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-29Bahamut-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-2Soldier-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-2Soldier-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-30PaleDim-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-30PaleDim-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-31LunarD-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-31LunarD-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-32Plague-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-32Plague-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-33Ogopogo-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-33Ogopogo-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-34Wyvern-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-34Wyvern-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-3Octo-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-3Octo-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-4Antlion-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-4Antlion-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-5WHag-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-5WHag-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-6Mombomb-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-6Mombomb-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-7Gauntlet-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-7Gauntlet-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-8Milon-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-8Milon-Color.png"))));
-        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-9MilonZ-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-9MilonZ-Color.png"))));
+        loadBossIcon("FFIVFE-Bosses-1MistD-Gray.png", "FFIVFE-Bosses-1MistD-Color.png");
+        loadBossIcon("FFIVFE-Bosses-2Soldier-Gray.png", "FFIVFE-Bosses-2Soldier-Color.png");
+        loadBossIcon("FFIVFE-Bosses-3Octo-Gray.png", "FFIVFE-Bosses-3Octo-Color.png");
+        loadBossIcon("FFIVFE-Bosses-4Antlion-Gray.png", "FFIVFE-Bosses-4Antlion-Color.png");
+        loadBossIcon("FFIVFE-Bosses-5WHag-Gray.png", "FFIVFE-Bosses-5WHag-Color.png");
+        loadBossIcon("FFIVFE-Bosses-6Mombomb-Gray.png", "FFIVFE-Bosses-6Mombomb-Color.png");
+        loadBossIcon("FFIVFE-Bosses-7Gauntlet-Gray.png", "FFIVFE-Bosses-7Gauntlet-Color.png");
+        loadBossIcon("FFIVFE-Bosses-8Milon-Gray.png", "FFIVFE-Bosses-8Milon-Color.png");
+        loadBossIcon("FFIVFE-Bosses-9MilonZ-Gray.png", "FFIVFE-Bosses-9MilonZ-Color.png");
+        loadBossIcon("FFIVFE-Bosses-10DKCecil-Gray.png", "FFIVFE-Bosses-10DKCecil-Color.png");
+        loadBossIcon("FFIVFE-Bosses-11Guards-Gray.png", "FFIVFE-Bosses-11Guards-Color.png");
+        loadBossIcon("FFIVFE-Bosses-12Yang-Gray.png", "FFIVFE-Bosses-12Yang-Color.png");
+        loadBossIcon("FFIVFE-Bosses-13Baigan-Gray.png", "FFIVFE-Bosses-13Baigan-Color.png");
+        loadBossIcon("FFIVFE-Bosses-14Kainazzo-Gray.png", "FFIVFE-Bosses-14Kainazzo-Color.png");
+        loadBossIcon("FFIVFE-Bosses-15DElf-Gray.png", "FFIVFE-Bosses-15DElf-Color.png");
+        loadBossIcon("FFIVFE-Bosses-16MagusSis-Gray.png", "FFIVFE-Bosses-16MagusSis-Color.png");
+        loadBossIcon("FFIVFE-Bosses-17Valvalis-Gray.png", "FFIVFE-Bosses-17Valvalis-Color.png");
+        loadBossIcon("FFIVFE-Bosses-18Calcabrina-Gray.png", "FFIVFE-Bosses-18Calcabrina-Color.png");
+        loadBossIcon("FFIVFE-Bosses-19Golbez-Gray.png", "FFIVFE-Bosses-19Golbez-Color.png");
+        loadBossIcon("FFIVFE-Bosses-20Lugae-Gray.png", "FFIVFE-Bosses-20Lugae-Color.png");
+        loadBossIcon("FFIVFE-Bosses-21DarkImps-Gray.png", "FFIVFE-Bosses-21DarkImps-Color.png");
+        loadBossIcon("FFIVFE-Bosses-21Eblan-Gray.png", "FFIVFE-Bosses-21Eblan-Color.png");
+        loadBossIcon("FFIVFE-Bosses-22Rubicante-Gray.png", "FFIVFE-Bosses-22Rubicante-Color.png");
+        loadBossIcon("FFIVFE-Bosses-23EvilWall-Gray.png", "FFIVFE-Bosses-23EvilWall-Color.png");
+        loadBossIcon("FFIVFE-Bosses-24Fiends-Gray.png", "FFIVFE-Bosses-24Fiends-Color.png");
+        loadBossIcon("FFIVFE-Bosses-25CPU-Gray.png", "FFIVFE-Bosses-25CPU-Color.png");
+        loadBossIcon("FFIVFE-Bosses-26Odin-Gray.png", "FFIVFE-Bosses-26Odin-Color.png");
+        loadBossIcon("FFIVFE-Bosses-28Leviath-Gray.png", "FFIVFE-Bosses-28Leviath-Color.png");
+        loadBossIcon("FFIVFE-Bosses-27Asura-Gray.png", "FFIVFE-Bosses-27Asura-Color.png");
+        loadBossIcon("FFIVFE-Bosses-29Bahamut-Gray.png", "FFIVFE-Bosses-29Bahamut-Color.png");
+        loadBossIcon("FFIVFE-Bosses-30PaleDim-Gray.png", "FFIVFE-Bosses-30PaleDim-Color.png");
+        loadBossIcon("FFIVFE-Bosses-31LunarD-Gray.png", "FFIVFE-Bosses-31LunarD-Color.png");
+        loadBossIcon("FFIVFE-Bosses-32Plague-Gray.png", "FFIVFE-Bosses-32Plague-Color.png");
+        loadBossIcon("FFIVFE-Bosses-33Ogopogo-Gray.png", "FFIVFE-Bosses-33Ogopogo-Color.png");
+        loadBossIcon("FFIVFE-Bosses-34Wyvern-Gray.png", "FFIVFE-Bosses-34Wyvern-Color.png");
         
         //add maps
         final String ebcast = "eblan-castle";
@@ -290,6 +290,12 @@ public class MaikaTracker extends javax.swing.JFrame {
         BufferedImage image = loadImageResource(fileUrl);
         atlas.add(new TreasureMap(dungeonName, floorName, image, chests));
         mapPane.add(atlas);
+    }
+    
+    public void loadBossIcon(String off, String on) {
+        JPanel holder = new JPanel(new FlowLayout());
+        holder.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/" + off)), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/" + on))));
+        bossIconPanel.add(holder);
     }
     
     public static InputStream loadResource(String path) {
