@@ -43,6 +43,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
@@ -112,41 +113,41 @@ public class MaikaTracker extends javax.swing.JFrame {
         //add boss icons
         LayoutManager bossIconLayout = new GridLayout(3, 12);
         bossIconPanel.setLayout(bossIconLayout);
-        loadBossIcon("FFIVFE-Bosses-1MistD-Gray.png", "FFIVFE-Bosses-1MistD-Color.png");
-        loadBossIcon("FFIVFE-Bosses-2Soldier-Gray.png", "FFIVFE-Bosses-2Soldier-Color.png");
-        loadBossIcon("FFIVFE-Bosses-3Octo-Gray.png", "FFIVFE-Bosses-3Octo-Color.png");
-        loadBossIcon("FFIVFE-Bosses-4Antlion-Gray.png", "FFIVFE-Bosses-4Antlion-Color.png");
-        loadBossIcon("FFIVFE-Bosses-5WHag-Gray.png", "FFIVFE-Bosses-5WHag-Color.png");
-        loadBossIcon("FFIVFE-Bosses-6Mombomb-Gray.png", "FFIVFE-Bosses-6Mombomb-Color.png");
-        loadBossIcon("FFIVFE-Bosses-7Gauntlet-Gray.png", "FFIVFE-Bosses-7Gauntlet-Color.png");
-        loadBossIcon("FFIVFE-Bosses-8Milon-Gray.png", "FFIVFE-Bosses-8Milon-Color.png");
-        loadBossIcon("FFIVFE-Bosses-9MilonZ-Gray.png", "FFIVFE-Bosses-9MilonZ-Color.png");
-        loadBossIcon("FFIVFE-Bosses-10DKCecil-Gray.png", "FFIVFE-Bosses-10DKCecil-Color.png");
-        loadBossIcon("FFIVFE-Bosses-11Guards-Gray.png", "FFIVFE-Bosses-11Guards-Color.png");
-        loadBossIcon("FFIVFE-Bosses-12Yang-Gray.png", "FFIVFE-Bosses-12Yang-Color.png");
-        loadBossIcon("FFIVFE-Bosses-13Baigan-Gray.png", "FFIVFE-Bosses-13Baigan-Color.png");
-        loadBossIcon("FFIVFE-Bosses-14Kainazzo-Gray.png", "FFIVFE-Bosses-14Kainazzo-Color.png");
-        loadBossIcon("FFIVFE-Bosses-15DElf-Gray.png", "FFIVFE-Bosses-15DElf-Color.png");
-        loadBossIcon("FFIVFE-Bosses-16MagusSis-Gray.png", "FFIVFE-Bosses-16MagusSis-Color.png");
-        loadBossIcon("FFIVFE-Bosses-17Valvalis-Gray.png", "FFIVFE-Bosses-17Valvalis-Color.png");
-        loadBossIcon("FFIVFE-Bosses-18Calcabrina-Gray.png", "FFIVFE-Bosses-18Calcabrina-Color.png");
-        loadBossIcon("FFIVFE-Bosses-19Golbez-Gray.png", "FFIVFE-Bosses-19Golbez-Color.png");
-        loadBossIcon("FFIVFE-Bosses-20Lugae-Gray.png", "FFIVFE-Bosses-20Lugae-Color.png");
-        loadBossIcon("FFIVFE-Bosses-21DarkImps-Gray.png", "FFIVFE-Bosses-21DarkImps-Color.png");
-        loadBossIcon("FFIVFE-Bosses-21Eblan-Gray.png", "FFIVFE-Bosses-21Eblan-Color.png");
-        loadBossIcon("FFIVFE-Bosses-22Rubicante-Gray.png", "FFIVFE-Bosses-22Rubicante-Color.png");
-        loadBossIcon("FFIVFE-Bosses-23EvilWall-Gray.png", "FFIVFE-Bosses-23EvilWall-Color.png");
-        loadBossIcon("FFIVFE-Bosses-24Fiends-Gray.png", "FFIVFE-Bosses-24Fiends-Color.png");
-        loadBossIcon("FFIVFE-Bosses-25CPU-Gray.png", "FFIVFE-Bosses-25CPU-Color.png");
-        loadBossIcon("FFIVFE-Bosses-26Odin-Gray.png", "FFIVFE-Bosses-26Odin-Color.png");
-        loadBossIcon("FFIVFE-Bosses-28Leviath-Gray.png", "FFIVFE-Bosses-28Leviath-Color.png");
-        loadBossIcon("FFIVFE-Bosses-27Asura-Gray.png", "FFIVFE-Bosses-27Asura-Color.png");
-        loadBossIcon("FFIVFE-Bosses-29Bahamut-Gray.png", "FFIVFE-Bosses-29Bahamut-Color.png");
-        loadBossIcon("FFIVFE-Bosses-30PaleDim-Gray.png", "FFIVFE-Bosses-30PaleDim-Color.png");
-        loadBossIcon("FFIVFE-Bosses-31LunarD-Gray.png", "FFIVFE-Bosses-31LunarD-Color.png");
-        loadBossIcon("FFIVFE-Bosses-32Plague-Gray.png", "FFIVFE-Bosses-32Plague-Color.png");
-        loadBossIcon("FFIVFE-Bosses-33Ogopogo-Gray.png", "FFIVFE-Bosses-33Ogopogo-Color.png");
-        loadBossIcon("FFIVFE-Bosses-34Wyvern-Gray.png", "FFIVFE-Bosses-34Wyvern-Color.png");
+        loadBossIcon("FFIVFE-Bosses-1MistD-Gray.png", "FFIVFE-Bosses-1MistD-Color.png", "D. Mist");
+        loadBossIcon("FFIVFE-Bosses-2Soldier-Gray.png", "FFIVFE-Bosses-2Soldier-Color.png", "Baron Soldiers");
+        loadBossIcon("FFIVFE-Bosses-3Octo-Gray.png", "FFIVFE-Bosses-3Octo-Color.png", "Octomam");
+        loadBossIcon("FFIVFE-Bosses-4Antlion-Gray.png", "FFIVFE-Bosses-4Antlion-Color.png", "Antlion");
+        loadBossIcon("FFIVFE-Bosses-5WHag-Gray.png", "FFIVFE-Bosses-5WHag-Color.png", "Waterhag");
+        loadBossIcon("FFIVFE-Bosses-6Mombomb-Gray.png", "FFIVFE-Bosses-6Mombomb-Color.png", "Mombomb");
+        loadBossIcon("FFIVFE-Bosses-7Gauntlet-Gray.png", "FFIVFE-Bosses-7Gauntlet-Color.png", "Fabul Guantlet");
+        loadBossIcon("FFIVFE-Bosses-8Milon-Gray.png", "FFIVFE-Bosses-8Milon-Color.png", "Milon");
+        loadBossIcon("FFIVFE-Bosses-9MilonZ-Gray.png", "FFIVFE-Bosses-9MilonZ-Color.png", "MilonZ");
+        loadBossIcon("FFIVFE-Bosses-10DKCecil-Gray.png", "FFIVFE-Bosses-10DKCecil-Color.png", "Dark Knight Cecil");
+        loadBossIcon("FFIVFE-Bosses-11Guards-Gray.png", "FFIVFE-Bosses-11Guards-Color.png", "Baron Guards");
+        loadBossIcon("FFIVFE-Bosses-12Yang-Gray.png", "FFIVFE-Bosses-12Yang-Color.png", "Karate");
+        loadBossIcon("FFIVFE-Bosses-13Baigan-Gray.png", "FFIVFE-Bosses-13Baigan-Color.png", "Baigan");
+        loadBossIcon("FFIVFE-Bosses-14Kainazzo-Gray.png", "FFIVFE-Bosses-14Kainazzo-Color.png", "Kainazzo");
+        loadBossIcon("FFIVFE-Bosses-15DElf-Gray.png", "FFIVFE-Bosses-15DElf-Color.png", "Dark Elf");
+        loadBossIcon("FFIVFE-Bosses-16MagusSis-Gray.png", "FFIVFE-Bosses-16MagusSis-Color.png", "Magus Sisters");
+        loadBossIcon("FFIVFE-Bosses-17Valvalis-Gray.png", "FFIVFE-Bosses-17Valvalis-Color.png", "Valvalis");
+        loadBossIcon("FFIVFE-Bosses-18Calcabrina-Gray.png", "FFIVFE-Bosses-18Calcabrina-Color.png", "Calcabrina");
+        loadBossIcon("FFIVFE-Bosses-19Golbez-Gray.png", "FFIVFE-Bosses-19Golbez-Color.png", "Golbez");
+        loadBossIcon("FFIVFE-Bosses-20Lugae-Gray.png", "FFIVFE-Bosses-20Lugae-Color.png", "Dr. Lugae");
+        loadBossIcon("FFIVFE-Bosses-21DarkImps-Gray.png", "FFIVFE-Bosses-21DarkImps-Color.png", "Dark Imps");
+        loadBossIcon("FFIVFE-Bosses-21Eblan-Gray.png", "FFIVFE-Bosses-21Eblan-Color.png", "Eblan King & Queen");
+        loadBossIcon("FFIVFE-Bosses-22Rubicante-Gray.png", "FFIVFE-Bosses-22Rubicante-Color.png", "Rubicante");
+        loadBossIcon("FFIVFE-Bosses-23EvilWall-Gray.png", "FFIVFE-Bosses-23EvilWall-Color.png", "Evil Wall");
+        loadBossIcon("FFIVFE-Bosses-24Fiends-Gray.png", "FFIVFE-Bosses-24Fiends-Color.png", "Elements");
+        loadBossIcon("FFIVFE-Bosses-25CPU-Gray.png", "FFIVFE-Bosses-25CPU-Color.png", "CPU");
+        loadBossIcon("FFIVFE-Bosses-26Odin-Gray.png", "FFIVFE-Bosses-26Odin-Color.png", "Odin");
+        loadBossIcon("FFIVFE-Bosses-28Leviath-Gray.png", "FFIVFE-Bosses-28Leviath-Color.png", "Leviatan");
+        loadBossIcon("FFIVFE-Bosses-27Asura-Gray.png", "FFIVFE-Bosses-27Asura-Color.png", "Asura");
+        loadBossIcon("FFIVFE-Bosses-29Bahamut-Gray.png", "FFIVFE-Bosses-29Bahamut-Color.png", "Bahamut");
+        loadBossIcon("FFIVFE-Bosses-30PaleDim-Gray.png", "FFIVFE-Bosses-30PaleDim-Color.png", "Pale Dim");
+        loadBossIcon("FFIVFE-Bosses-31LunarD-Gray.png", "FFIVFE-Bosses-31LunarD-Color.png", "Lunar D.");
+        loadBossIcon("FFIVFE-Bosses-32Plague-Gray.png", "FFIVFE-Bosses-32Plague-Color.png", "Plague");
+        loadBossIcon("FFIVFE-Bosses-33Ogopogo-Gray.png", "FFIVFE-Bosses-33Ogopogo-Color.png", "Ogopogo");
+        loadBossIcon("FFIVFE-Bosses-34Wyvern-Gray.png", "FFIVFE-Bosses-34Wyvern-Color.png", "Wyvern");
         
         //add maps
         final String zot = "zot";
@@ -410,9 +411,11 @@ public class MaikaTracker extends javax.swing.JFrame {
         mapPane.add(atlas);
     }
     
-    public void loadBossIcon(String off, String on) {
+    public void loadBossIcon(String off, String on, String bossName) {
         JPanel holder = new JPanel(new FlowLayout());
-        holder.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/" + off)), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/" + on))));
+        JLabel label = new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/" + off)), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/" + on)));
+        label.setToolTipText(bossName);
+        holder.add(label);
         bossIconPanel.add(holder);
     }
     
