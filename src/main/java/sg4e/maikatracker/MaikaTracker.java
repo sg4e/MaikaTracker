@@ -22,6 +22,9 @@ import sg4e.ff4stats.Formation;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,9 +42,9 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -98,6 +101,45 @@ public class MaikaTracker extends javax.swing.JFrame {
                 label.setBorder(new EmptyBorder(0, 30, 0, 0));
             partyPanel.add(label);
         }
+        
+        //add boss icons
+        LayoutManager bossIconLayout = new GridLayout(4, 9);
+        bossIconPanel.setLayout(bossIconLayout);
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-10DKCecil-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-10DKCecil-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-11Guards-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-11Guards-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-12Yang-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-12Yang-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-13Baigan-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-13Baigan-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-14Kainazzo-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-14Kainazzo-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-15DElf-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-15DElf-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-16MagusSis-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-16MagusSis-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-17Valvalis-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-17Valvalis-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-18Calcabrina-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-18Calcabrina-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-19Golbez-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-19Golbez-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-1MistD-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-1MistD-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-20Lugae-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-20Lugae-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-21DarkImps-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-21DarkImps-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-21Eblan-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-21Eblan-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-22Rubicante-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-22Rubicante-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-23EvilWall-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-23EvilWall-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-24Fiends-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-24Fiends-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-25CPU-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-25CPU-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-26Odin-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-26Odin-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-27Asura-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-27Asura-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-28Leviath-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-28Leviath-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-29Bahamut-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-29Bahamut-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-2Soldier-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-2Soldier-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-30PaleDim-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-30PaleDim-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-31LunarD-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-31LunarD-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-32Plague-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-32Plague-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-33Ogopogo-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-33Ogopogo-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-34Wyvern-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-34Wyvern-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-3Octo-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-3Octo-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-4Antlion-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-4Antlion-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-5WHag-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-5WHag-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-6Mombomb-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-6Mombomb-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-7Gauntlet-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-7Gauntlet-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-8Milon-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-8Milon-Color.png"))));
+        bossIconPanel.add(new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-9MilonZ-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-9MilonZ-Color.png"))));
         
         //add maps
         final String ebcast = "eblan-castle";
@@ -386,6 +428,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         enemyScriptTextArea = new javax.swing.JTextArea();
+        bossIconPanel = new javax.swing.JPanel();
         mapPane = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         dungeonComboBox = new javax.swing.JComboBox<>();
@@ -464,6 +507,17 @@ public class MaikaTracker extends javax.swing.JFrame {
         enemyScriptTextArea.setRequestFocusEnabled(false);
         jScrollPane3.setViewportView(enemyScriptTextArea);
 
+        javax.swing.GroupLayout bossIconPanelLayout = new javax.swing.GroupLayout(bossIconPanel);
+        bossIconPanel.setLayout(bossIconPanelLayout);
+        bossIconPanelLayout.setHorizontalGroup(
+            bossIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        bossIconPanelLayout.setVerticalGroup(
+            bossIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout bossPaneLayout = new javax.swing.GroupLayout(bossPane);
         bossPane.setLayout(bossPaneLayout);
         bossPaneLayout.setHorizontalGroup(
@@ -474,6 +528,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3))
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(bossIconPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         bossPaneLayout.setVerticalGroup(
             bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -486,7 +541,9 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addGroup(bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(205, Short.MAX_VALUE))
         );
 
         mainTabbedPane.addTab("Bosses", bossPane);
@@ -697,6 +754,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addDMachinButton;
     private javax.swing.JComboBox<String> bossComboBox;
+    private javax.swing.JPanel bossIconPanel;
     private javax.swing.JPanel bossPane;
     private javax.swing.JTable bossTable;
     private javax.swing.JComboBox<String> dungeonComboBox;
