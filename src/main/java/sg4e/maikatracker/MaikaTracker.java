@@ -66,7 +66,14 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     private final TreasureAtlas atlas = new TreasureAtlas();
     private final Set<KeyItemLocation> locationsVisited = new HashSet<>();
+    private static final String TOWER_OF_ZOT = "Zot";
     private static final String EBLAN_CASTLE = "Eblan Castle";
+    private static final String EBLAN_CAVE = "Eblan Cave";
+    private static final String UPPER_BABIL = "Upper Bab-il";
+    private static final String LOWER_BABIL = "Lower Bab-il";
+    private static final String LAND_OF_SUMMONED_MONSTERS = "Land of Monsters";
+    private static final String GIANT_OF_BABIL = "Giant of Bab-il";
+    private static final String LUNAR_PATH = "Lunar Path";
     private static final String LUNAR_SUBTERRANE = "Lunar Subterrane";
     private static final String LUNAR_CORE = "Lunar Core";
     private static final String SYLPH_CAVE = "Sylph Cave";
@@ -142,6 +149,18 @@ public class MaikaTracker extends javax.swing.JFrame {
         loadBossIcon("FFIVFE-Bosses-34Wyvern-Gray.png", "FFIVFE-Bosses-34Wyvern-Color.png");
         
         //add maps
+        final String zot = "zot";
+        initMap(zot, "1", TOWER_OF_ZOT, "1F",
+                new TreasureChest("Z1", 4, 3));
+        initMap(zot, "2", TOWER_OF_ZOT, "2F",
+                new TreasureChest("Z2", 15, 7));
+        initMap(zot, "3", TOWER_OF_ZOT, "3F");
+        initMap(zot, "4", TOWER_OF_ZOT, "4F");
+        initMap(zot, "5", TOWER_OF_ZOT, "5F",
+                new TreasureChest("Z3", 9, 11),
+                new TreasureChest("Z4", 23, 10),
+                new TreasureChest("Z5", 10, 11),
+                new TreasureChest("Z6", 14, 19));
         final String ebcast = "eblan-castle";
         initMap(ebcast, "1", EBLAN_CASTLE, "Left 1F",
                 new TreasureChest("E1", 5, 11),
@@ -172,6 +191,89 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("E19", 11, 2),
                 new TreasureChest("E20", 11, 3),
                 new TreasureChest("E21", 12, 8));
+        final String ebcave = "eblan-cave";
+        initMap(ebcave, "1", EBLAN_CAVE, "Entrance",
+                new TreasureChest("V1", 4, 18),
+                new TreasureChest("V2", 3, 22),
+                new TreasureChest("V3", 25, 26));
+        initMap(ebcave, "infirmary", EBLAN_CAVE, "Infirmary",
+                new TreasureChest("V4", 7, 14),
+                new TreasureChest("V5", 5, 2));
+        initMap(ebcave, "p1", EBLAN_CAVE, "Pass 1",
+                new TreasureChest("V6", 28, 8),
+                new TreasureChest("V7", 10, 4),
+                new TreasureChest("V8", 26, 10),
+                new TreasureChest("V11", 12, 20),
+                new TreasureChest("V12", 14, 20),
+                new TreasureChest("V13", 11, 12),
+                new TreasureChest("V14", 11, 16),
+                new TreasureChest("V15", 12, 16),
+                new TreasureChest("V16", 28, 15),
+                new TreasureChest("V17", 27, 27),
+                new TreasureChest("V18", 27, 28),
+                new TreasureChest("V19", 27, 29));
+        initMap(ebcave, "p2", EBLAN_CAVE, "Pass 2",
+                new TreasureChest("V9", 8, 14),
+                new TreasureChest("V10", 22, 18),
+                new TreasureChest("V20", 16, 18),
+                new TreasureChest("V21", 23, 29),
+                new TreasureChest("V22", 9, 17));
+        final String upperBabil = "upper-babil";
+        initMap(upperBabil, "1f", UPPER_BABIL, "1F",
+                new TreasureChest("U1", 4, 18),
+                new TreasureChest("U2", 12, 26));
+        initMap(upperBabil, "b1f", UPPER_BABIL, "B1F",
+                new TreasureChest("U3", 20, 14));
+        initMap(upperBabil, "b2f", UPPER_BABIL, "B2F",
+                new TreasureChest("U4", 21, 20));
+        initMap(upperBabil, "b3f", UPPER_BABIL, "B3F",
+                new TreasureChest("U5", 18, 12));
+        initMap(upperBabil, "b4f", UPPER_BABIL, "B4F",
+                new TreasureChest("U6", 15, 5));
+        initMap(upperBabil, "b5f", UPPER_BABIL, "B5F",
+                new TreasureChest("U7", 3, 6));
+        initMap(upperBabil, "b6f", UPPER_BABIL, "B6F");
+        initMap(upperBabil, "b7f", UPPER_BABIL, "B7F",
+                new TreasureChest("U8", 11, 28));
+        final String lowerBabil = "lower-babil";
+        initMap(lowerBabil, "1f", LOWER_BABIL, "1F",
+                new TreasureChest("B1", 10, 5),
+                new TreasureChest("B2", 20, 6),
+                new TreasureChest("B3", 12, 26));
+        initMap(lowerBabil, "2f", LOWER_BABIL, "2F",
+                new TreasureChest("B4", 7, 8),
+                new TreasureChest("B5", 22, 15),
+                new TreasureChest("B6", 16, 23));
+        initMap(lowerBabil, "3f", LOWER_BABIL, "3F",
+                new TreasureChest("B9", 19, 26),
+                new TreasureChest("B10", 11, 13),
+                new TreasureChest("B11", 25, 15));
+        initMap(lowerBabil, "4f", LOWER_BABIL, "4F",
+                new TreasureChest("B7", 19, 16),
+                new TreasureChest("B8", 23, 29),
+                new TreasureChest("B12", 17, 26),
+                new TreasureChest("B13", 8, 27));
+        initMap(lowerBabil, "5f", LOWER_BABIL, "5F",
+                new TreasureChest("B14", 12, 6),
+                new TreasureChest("B15", 22, 29));
+        initMap(lowerBabil, "6f", LOWER_BABIL, "6F");
+        initMap(lowerBabil, "7f", LOWER_BABIL, "7F",
+                new TreasureChest("B16", 24, 16));
+        final String sm = "sm";
+        initMap(sm, "1", LAND_OF_SUMMONED_MONSTERS, "B1F",
+                new TreasureChest("M1", 6, 26),
+                new TreasureChest("M2", 6, 8),
+                new TreasureChest("M3", 21, 25));
+        initMap(sm, "2", LAND_OF_SUMMONED_MONSTERS, "B2F",
+                new TreasureChest("M4", 25, 24),
+                new TreasureChest("M5", 5, 9));
+        initMap(sm, "3", LAND_OF_SUMMONED_MONSTERS, "B3F",
+                new TreasureChest("M6", 21, 3),
+                new TreasureChest("M7", 21, 4),
+                new TreasureChest("M8", 21, 5),
+                new TreasureChest("M9", 23, 11),
+                new TreasureChest("M10", 21, 25),
+                new TreasureChest("M11", 6, 18));
         final String sylph = "sylph";
         initMap(sylph, "s1", SYLPH_CAVE, "B1",
                 new TreasureChest("S1", 5, 28),
@@ -210,7 +312,23 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("S30", 5+2, 7+2),
                 new TreasureChest("S31", 5, 7+4),
                 new TreasureChest("S32", 5+2, 7+4));
+        final String giant = "Giant";
+        initMap(giant, "2", GIANT_OF_BABIL, "Chest",
+                new TreasureChest("G1", 8, 9),
+                new TreasureChest("G2", 19, 11),
+                new TreasureChest("G3", 20, 21),
+                new TreasureChest("G4", 6, 27),
+                new TreasureChest("G5", 18, 14));
+        initMap(giant, "3", GIANT_OF_BABIL, "Stomach",
+                new TreasureChest("G6", 9, 19),
+                new TreasureChest("G7", 6, 26));
+        initMap(giant, "4", GIANT_OF_BABIL, "Passage",
+                new TreasureChest("G8", 21, 14));
         final String lunar = "lunar";
+        initMap(lunar, "path", LUNAR_PATH, "1F",
+                new TreasureChest("P1", 22, 26),
+                new TreasureChest("P2", 6, 28),
+                new TreasureChest("P3", 7, 29));
         initMap(lunar, "b1", LUNAR_SUBTERRANE, "B1", new TreasureChest("L1", 24, 6));
         initMap(lunar, "b2", LUNAR_SUBTERRANE, "B2",
                 new TreasureChest("L2", 12, 26),
