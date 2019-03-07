@@ -51,6 +51,7 @@ public class KeyItemPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if(SwingUtilities.isLeftMouseButton(e)) {
                     MaikaTracker.getTrackerFromChild(KeyItemPanel.this).updateKeyItemCountLabel();
+                    MaikaTracker.getTrackerFromChild(KeyItemPanel.this).updateLogic();
                 }
                 if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu;

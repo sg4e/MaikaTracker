@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,8 +37,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -58,11 +62,14 @@ public class MaikaTracker extends javax.swing.JFrame {
     private static final Logger LOG = LogManager.getLogger();
     
     private final TreasureAtlas atlas = new TreasureAtlas();
+    private final Set<KeyItemLocation> locationsVisited = new HashSet<>();
     private static final String EBLAN_CASTLE = "Eblan Castle";
     private static final String LUNAR_SUBTERRANE = "Lunar Subterrane";
     private static final String LUNAR_CORE = "Lunar Core";
     private static final String SYLPH_CAVE = "Sylph Cave";
     private static final int D_MACHIN_XP = 41500;
+    
+    private final JPanel logicPanel;
 
     /**
      * Creates new form MaikaTracker
@@ -76,6 +83,10 @@ public class MaikaTracker extends javax.swing.JFrame {
         Collections.sort(positions);
         AutoCompleteSupport.install(bossComboBox, GlazedLists.eventList(bossNames));
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
+        
+        logicPanel = new JPanel();
+        logicPanel.setLayout(new BoxLayout(logicPanel, BoxLayout.Y_AXIS));
+        logicTabPanel.add(logicPanel);
         
         //add party characters
         PartyTableModel partyTableModel = (PartyTableModel) xpTable.getModel();
@@ -214,6 +225,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         atlas.showFloor((String) dungeonComboBox.getSelectedItem(), (String) floorComboBox.getSelectedItem());
         
         updateKeyItemCountLabel();
+        updateLogic();
         
         setTitle("MaikaTracker");
         pack();
@@ -258,6 +270,33 @@ public class MaikaTracker extends javax.swing.JFrame {
         getPanelForKeyItem(keyItem).setLocationInChest(chestId);
         //then, update the chest in the atlas
         atlas.setChestContents(chestId, keyItem);
+    }
+    
+    public void updateLogic() {
+        List<KeyItemLocation> locs = KeyItemLocation.getAccessibleLocations(getAcquiredKeyItems().stream()
+                .map(KeyItemMetadata::getEnum).collect(Collectors.toSet()));
+        locs.removeIf(locationsVisited::contains);
+        logicPanel.removeAll();
+        locs.forEach(l -> {
+            LocationPanel panel = new LocationPanel(l);
+            panel.setButtonListener((ae) -> {
+                locationsVisited.add(panel.getKeyItemLocation());
+                logicPanel.remove(panel);
+                logicPanel.revalidate();
+                logicPanel.repaint();
+            });
+            logicPanel.add(panel);
+        });
+        logicPanel.revalidate();
+        logicPanel.repaint();
+    }
+    
+    public Set<KeyItemMetadata> getAcquiredKeyItems() {
+        return Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .filter(KeyItemPanel::isAcquired)
+                .map(KeyItemPanel::getKeyItem)
+                .collect(Collectors.toSet());
     }
     
     public void resetKeyItemLocation(KeyItemMetadata keyItem, String chestId) {
@@ -356,6 +395,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         xpTable = new javax.swing.JTable();
         addDMachinButton = new javax.swing.JButton();
+        logicTabPanel = new javax.swing.JPanel();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -495,6 +535,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         );
 
         mainTabbedPane.addTab("XP", xpPane);
+        mainTabbedPane.addTab("Logic", logicTabPanel);
 
         for(KeyItemMetadata meta : KeyItemMetadata.values()) {
             keyItemPanel.add(new sg4e.maikatracker.KeyItemPanel(meta));
@@ -671,6 +712,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel keyItemCountLabel;
     private javax.swing.JPanel keyItemPanel;
+    private javax.swing.JPanel logicTabPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JPanel mapPane;
     private javax.swing.JPanel partyPanel;
