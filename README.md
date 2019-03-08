@@ -4,6 +4,8 @@ MaikaTracker is a tracking and information resource for [Final Fantasy IV Free E
 
 By sg4e.
 
+![Screenshot of MaikaTracker](MaikaTracker-screenshot.png)
+
 ## 3rd-party assets
 
 This repository contains some 3rd-party assets, which are provided under different licenses from the codebase. These are specified below:
