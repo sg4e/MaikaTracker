@@ -41,6 +41,8 @@ public class KeyItemPanel extends JPanel {
     
     private static final String UNKNOWN_LOCATION = "?";
     
+    private boolean resetting;
+    
     public KeyItemPanel(KeyItemMetadata meta) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         metadata = meta;
@@ -58,12 +60,7 @@ public class KeyItemPanel extends JPanel {
                     MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
                     if(isKnown()) {
                         locationMenu = new JPopupMenu("Locations");
-                        locationMenu.add("Reset").addActionListener((ae) -> {
-                            if(location == null)
-                                tracker.resetKeyItemLocation(metadata, locationLabel.getText());
-                            else
-                                reset();
-                        });
+                        locationMenu.add("Reset").addActionListener((ae) -> reset());
                         if(isInChest()) {
                             locationMenu.add(new JSeparator(), 0);
                             JMenuItem goToChest = new JMenuItem("Show chest"/*slmLewd*/);
@@ -130,9 +127,25 @@ public class KeyItemPanel extends JPanel {
     }
     
     public void reset() {
+        reset(false);
+    }
+    
+    public void reset(boolean resetIcon) {
+        if(resetting) return;
+        resetting = true;
+        
+        MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
+        if (location == null && tracker.getAtlas().hasChestId(locationLabel.getText())) {
+            tracker.resetKeyItemLocation(metadata, locationLabel.getText());
+        }
+
         locationLabel.setText(UNKNOWN_LOCATION);
         locationLabel.setToolTipText(null);
         location = null;
+        if(resetIcon)
+            ((StativeLabel)itemImage).reset();
+        
+        resetting = false;
     }
     
 }

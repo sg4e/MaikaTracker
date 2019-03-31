@@ -57,6 +57,10 @@ public class StativeLabel extends JLabel {
         setIcon(active = deactive = UNKNOWN_ICON);
     }
     
+    public void reset() {
+        setIcon(deactive);
+    }
+    
     public boolean isActive() {
         return getIcon() == active;
     }

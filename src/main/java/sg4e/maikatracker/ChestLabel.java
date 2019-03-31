@@ -116,6 +116,11 @@ public class ChestLabel extends JLabel {
             setChecked();
     }
     
+    public void reset() {
+        setUnchecked();
+        clearKeyItem();
+    }
+    
     private static enum State {
         UNCHECKED, CHECKED;
     }

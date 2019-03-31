@@ -60,6 +60,10 @@ public class TreasureAtlas extends JPanel {
         map.getChests().stream().map(TreasureChest::getId).forEach(id -> chestIdToPage.put(id, page));
     }
     
+    public void reset() {
+        dungeonToFloors.forEach((mid, map) -> { map.forEach((tid, tmap) -> {tmap.reset();}); });
+    }
+    
     public void setChestContents(String chestId, KeyItemMetadata ki) {
         Page page = chestIdToPage.get(chestId);
         getTreasureMap(page).setChestContents(chestId, ki);
