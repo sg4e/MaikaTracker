@@ -96,7 +96,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
         
         logicPanel = new JPanel();
-        logicPanel.setLayout(new BoxLayout(logicPanel, BoxLayout.Y_AXIS));
+        logicPanel.setLayout(new GridLayout(0, 2));
         logicTabPanel.add(logicPanel);
         
         //add party characters
