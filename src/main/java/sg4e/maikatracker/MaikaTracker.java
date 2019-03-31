@@ -356,10 +356,10 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("L21", 5, 25),
                 new TreasureChest("L22", 17, 18),
                 new TreasureChest("L23", 27, 6),
-                new TreasureChest("L24", 21, 22));
+                new TreasureChest("L25", 21, 22));
         initMap(lunar, "dlunar", LUNAR_SUBTERRANE, "D Lunar",
-                new TreasureChest("L25", 5, 2),
-                new TreasureChest("L26", 5, 4));
+                new TreasureChest("L26", 5, 2),
+                new TreasureChest("L27", 5, 4));
         initMap(lunar, "c1", LUNAR_CORE, "B1",
                 new TreasureChest("C1", 11, 7));
         initMap(lunar, "c2", LUNAR_CORE, "B2",

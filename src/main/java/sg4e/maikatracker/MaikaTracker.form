@@ -368,11 +368,7 @@
             <Component class="javax.swing.JButton" name="resetButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Reset"/>
-                <Property name="actionCommand" type="java.lang.String" value="Reset"/>
               </Properties>
-              <AccessibilityProperties>
-                <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Reset"/>
-              </AccessibilityProperties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetButtonActionPerformed"/>
               </Events>
