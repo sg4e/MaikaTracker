@@ -29,6 +29,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.NumberFormat;
+import java.util.AbstractSequentialList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -81,6 +83,8 @@ public class MaikaTracker extends javax.swing.JFrame {
     private static final int D_MACHIN_XP = 41500;
     
     private final JPanel logicPanel;
+    
+    private static final List<StativeLabel> bossLabels = new ArrayList<>();
 
     /**
      * Creates new form MaikaTracker
@@ -155,8 +159,6 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("Z1", 4, 3));
         initMap(zot, "2", TOWER_OF_ZOT, "2F",
                 new TreasureChest("Z2", 15, 7));
-        initMap(zot, "3", TOWER_OF_ZOT, "3F");
-        initMap(zot, "4", TOWER_OF_ZOT, "4F");
         initMap(zot, "5", TOWER_OF_ZOT, "5F",
                 new TreasureChest("Z3", 9, 11),
                 new TreasureChest("Z4", 23, 10),
@@ -231,11 +233,6 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("U5", 18, 12));
         initMap(upperBabil, "b4f", UPPER_BABIL, "B4F",
                 new TreasureChest("U6", 15, 5));
-        initMap(upperBabil, "b5f", UPPER_BABIL, "B5F",
-                new TreasureChest("U7", 3, 6));
-        initMap(upperBabil, "b6f", UPPER_BABIL, "B6F");
-        initMap(upperBabil, "b7f", UPPER_BABIL, "B7F",
-                new TreasureChest("U8", 11, 28));
         final String lowerBabil = "lower-babil";
         initMap(lowerBabil, "1f", LOWER_BABIL, "1F",
                 new TreasureChest("B1", 10, 5),
@@ -257,7 +254,6 @@ public class MaikaTracker extends javax.swing.JFrame {
         initMap(lowerBabil, "5f", LOWER_BABIL, "5F",
                 new TreasureChest("B14", 12, 6),
                 new TreasureChest("B15", 22, 29));
-        initMap(lowerBabil, "6f", LOWER_BABIL, "6F");
         initMap(lowerBabil, "7f", LOWER_BABIL, "7F",
                 new TreasureChest("B16", 24, 16));
         final String sm = "sm";
@@ -361,7 +357,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("L22", 17, 18),
                 new TreasureChest("L23", 27, 6),
                 new TreasureChest("L24", 21, 22));
-        initMap(lunar, "paledim", LUNAR_SUBTERRANE, "Pale Dim",
+        initMap(lunar, "dlunar", LUNAR_SUBTERRANE, "D Lunar",
                 new TreasureChest("L25", 5, 2),
                 new TreasureChest("L26", 5, 4));
         initMap(lunar, "c1", LUNAR_CORE, "B1",
@@ -417,6 +413,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         label.setToolTipText(bossName);
         holder.add(label);
         bossIconPanel.add(holder);
+        bossLabels.add((StativeLabel)label);
     }
     
     public static InputStream loadResource(String path) {
@@ -565,6 +562,9 @@ public class MaikaTracker extends javax.swing.JFrame {
         xpTable = new javax.swing.JTable();
         addDMachinButton = new javax.swing.JButton();
         logicTabPanel = new javax.swing.JPanel();
+        resetPane = new javax.swing.JPanel();
+        resetButton = new javax.swing.JButton();
+        resetLabel = new javax.swing.JLabel();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -707,6 +707,41 @@ public class MaikaTracker extends javax.swing.JFrame {
         mainTabbedPane.addTab("XP", xpPane);
         mainTabbedPane.addTab("Logic", logicTabPanel);
 
+        resetButton.setText("Reset");
+        resetButton.setActionCommand("Reset");
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
+
+        resetLabel.setText("<html>Are you sure you would like to reset everything?<br>\n<br>\nThis Action cannot be undone");
+
+        javax.swing.GroupLayout resetPaneLayout = new javax.swing.GroupLayout(resetPane);
+        resetPane.setLayout(resetPaneLayout);
+        resetPaneLayout.setHorizontalGroup(
+            resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resetPaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(resetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(resetButton))
+                .addContainerGap(357, Short.MAX_VALUE))
+        );
+        resetPaneLayout.setVerticalGroup(
+            resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resetPaneLayout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(resetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resetButton)
+                .addContainerGap(468, Short.MAX_VALUE))
+        );
+
+        resetButton.getAccessibleContext().setAccessibleName("Reset");
+
+        mainTabbedPane.addTab("Reset", resetPane);
+
         for(KeyItemMetadata meta : KeyItemMetadata.values()) {
             keyItemPanel.add(new sg4e.maikatracker.KeyItemPanel(meta));
         }
@@ -771,6 +806,20 @@ public class MaikaTracker extends javax.swing.JFrame {
     private void addDMachinButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDMachinButtonActionPerformed
         calculateXp(D_MACHIN_XP);
     }//GEN-LAST:event_addDMachinButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+
+                
+        bossLabels.forEach(boss -> boss.reset());
+        atlas.reset();
+        Arrays.stream(partyPanel.getComponents()).map(c -> (PartyLabel) c)
+                        .forEach((member -> member.clearLabel()));
+        Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c).forEach(panel -> panel.reset(true));
+        locationsVisited.clear();
+        updateLogic();
+        updateKeyItemCountLabel();
+    }//GEN-LAST:event_resetButtonActionPerformed
 
     private void calculateXp(int xpGained) {
         int kiMultipler = getKeyItemCount() >= 10 ? 2 : 1;
@@ -905,6 +954,9 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel mapPane;
     private javax.swing.JPanel partyPanel;
     private javax.swing.JComboBox<String> positionComboBox;
+    private javax.swing.JButton resetButton;
+    private javax.swing.JLabel resetLabel;
+    private javax.swing.JPanel resetPane;
     private javax.swing.JPanel xpPane;
     private javax.swing.JTable xpTable;
     // End of variables declaration//GEN-END:variables

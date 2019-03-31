@@ -96,6 +96,12 @@ public class TreasureMap extends JPanel {
                 .findAny()
                 .get();
     }
+    
+    public void reset() {
+        for (TreasureChest ch : chests) {
+            cells[ch.getX()][ch.getY()].reset();
+        }
+    }
 
     public String getDungeon() {
         return dungeon;
