@@ -96,7 +96,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
         
         logicPanel = new JPanel();
-        logicPanel.setLayout(new BoxLayout(logicPanel, BoxLayout.Y_AXIS));
+        logicPanel.setLayout(new GridLayout(0, 2));
         logicTabPanel.add(logicPanel);
         
         //add party characters
@@ -555,7 +555,6 @@ public class MaikaTracker extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         enemyScriptTextArea = new javax.swing.JTextArea();
-        bossIconPanel = new javax.swing.JPanel();
         mapPane = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         dungeonComboBox = new javax.swing.JComboBox<>();
@@ -569,6 +568,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
+        bossIconPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -634,17 +634,6 @@ public class MaikaTracker extends javax.swing.JFrame {
         enemyScriptTextArea.setRequestFocusEnabled(false);
         jScrollPane3.setViewportView(enemyScriptTextArea);
 
-        javax.swing.GroupLayout bossIconPanelLayout = new javax.swing.GroupLayout(bossIconPanel);
-        bossIconPanel.setLayout(bossIconPanelLayout);
-        bossIconPanelLayout.setHorizontalGroup(
-            bossIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        bossIconPanelLayout.setVerticalGroup(
-            bossIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout bossPaneLayout = new javax.swing.GroupLayout(bossPane);
         bossPane.setLayout(bossPaneLayout);
         bossPaneLayout.setHorizontalGroup(
@@ -655,7 +644,6 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3))
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(bossIconPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         bossPaneLayout.setVerticalGroup(
             bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -668,9 +656,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addGroup(bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(205, Short.MAX_VALUE))
+                .addContainerGap(285, Short.MAX_VALUE))
         );
 
         mainTabbedPane.addTab("Bosses", bossPane);
@@ -715,7 +701,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addDMachinButton)
-                .addGap(0, 396, Short.MAX_VALUE))
+                .addGap(0, 370, Short.MAX_VALUE))
         );
 
         mainTabbedPane.addTab("XP", xpPane);
@@ -728,6 +714,17 @@ public class MaikaTracker extends javax.swing.JFrame {
         keyItemCountLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         keyItemCountLabel.setText("jLabel4");
 
+        javax.swing.GroupLayout bossIconPanelLayout = new javax.swing.GroupLayout(bossIconPanel);
+        bossIconPanel.setLayout(bossIconPanelLayout);
+        bossIconPanelLayout.setHorizontalGroup(
+            bossIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        bossIconPanelLayout.setVerticalGroup(
+            bossIconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -736,8 +733,12 @@ public class MaikaTracker extends javax.swing.JFrame {
             .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(partyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(keyItemCountLabel)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(keyItemCountLabel))
+                    .addComponent(bossIconPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -750,8 +751,10 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(keyItemCountLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(mainTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
