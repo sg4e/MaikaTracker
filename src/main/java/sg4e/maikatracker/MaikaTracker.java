@@ -155,8 +155,6 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("Z1", 4, 3));
         initMap(zot, "2", TOWER_OF_ZOT, "2F",
                 new TreasureChest("Z2", 15, 7));
-        initMap(zot, "3", TOWER_OF_ZOT, "3F");
-        initMap(zot, "4", TOWER_OF_ZOT, "4F");
         initMap(zot, "5", TOWER_OF_ZOT, "5F",
                 new TreasureChest("Z3", 9, 11),
                 new TreasureChest("Z4", 23, 10),
@@ -231,11 +229,6 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("U5", 18, 12));
         initMap(upperBabil, "b4f", UPPER_BABIL, "B4F",
                 new TreasureChest("U6", 15, 5));
-        initMap(upperBabil, "b5f", UPPER_BABIL, "B5F",
-                new TreasureChest("U7", 3, 6));
-        initMap(upperBabil, "b6f", UPPER_BABIL, "B6F");
-        initMap(upperBabil, "b7f", UPPER_BABIL, "B7F",
-                new TreasureChest("U8", 11, 28));
         final String lowerBabil = "lower-babil";
         initMap(lowerBabil, "1f", LOWER_BABIL, "1F",
                 new TreasureChest("B1", 10, 5),
@@ -257,7 +250,6 @@ public class MaikaTracker extends javax.swing.JFrame {
         initMap(lowerBabil, "5f", LOWER_BABIL, "5F",
                 new TreasureChest("B14", 12, 6),
                 new TreasureChest("B15", 22, 29));
-        initMap(lowerBabil, "6f", LOWER_BABIL, "6F");
         initMap(lowerBabil, "7f", LOWER_BABIL, "7F",
                 new TreasureChest("B16", 24, 16));
         final String sm = "sm";
