@@ -20,11 +20,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -36,10 +40,33 @@ public class ChestLabel extends JLabel {
     private static final String TEXT_UNKNOWN = "?";
     private static final Color COLOR_KNOWN = Color.GREEN;
     private static final String TEXT_KNOWN = "✓";
+    private static final ImageIcon checked, unchecked;
     
     private State state;
     private TreasureChest chest;
-    private KeyItemMetadata keyItemContents;
+    private KeyItemMetadata keyItemContents;    
+    
+    static {
+        String uncheckedUrl = "maps/unchecked.png";
+        String checkedUrl = "maps/checked.png";
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        InputStream uncheckedStream = classLoader.getResourceAsStream(uncheckedUrl);
+        InputStream checkedStream = classLoader.getResourceAsStream(checkedUrl);
+        
+        ImageIcon c, uc;
+        
+        try {
+            uc = new ImageIcon(ImageIO.read(uncheckedStream));
+            c = new ImageIcon(ImageIO.read(checkedStream));
+        }
+        catch(IOException ex) {
+            LogManager.getLogger().error("Error loading Key Item icons", ex);
+            uc = null;
+            c = null;
+        }
+        unchecked = uc;
+        checked = c;
+    }
     
     public ChestLabel() {
         setOpaque(false);
@@ -84,16 +111,26 @@ public class ChestLabel extends JLabel {
     
     private void setUnchecked() {
         setBackground(COLOR_UNKNOWN);
-        if(getIcon() == null)
-            setText(TEXT_UNKNOWN);
+        if(keyItemContents == null) {
+            if(checked == null)
+                setText(TEXT_UNKNOWN);
+            else
+                setIcon(new ImageIcon(unchecked.getImage().getScaledInstance(
+                    TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE, java.awt.Image.SCALE_SMOOTH)));
+        }
         setForeground(Color.WHITE);
         state = State.UNCHECKED;
     }
     
     private void setChecked() {
-        setBackground(COLOR_KNOWN);
-        if(getIcon() == null)
-            setText(TEXT_KNOWN);
+        setBackground(COLOR_KNOWN);        
+        if(keyItemContents == null) {
+            if(checked == null)
+                setText(TEXT_KNOWN);
+            else
+                setIcon(new ImageIcon(checked.getImage().getScaledInstance(
+                    TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE, java.awt.Image.SCALE_SMOOTH)));
+        }
         setForeground(Color.BLACK);
         state = State.CHECKED;
     }
