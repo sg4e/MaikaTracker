@@ -394,6 +394,12 @@ public class MaikaTracker extends javax.swing.JFrame {
                         .map(PartyLabel::getPartyMember).collect(Collectors.toList());
     }
     
+    public List<PartyLabel> getPartyLabels() {
+        return Arrays.stream(partyPanel.getComponents()).map(c -> (PartyLabel) c)
+                        .filter(PartyLabel::hasPartyMember)
+                        .collect(Collectors.toList());
+    }
+    
     private void showFloor() {
         String dungeon = (String) dungeonComboBox.getSelectedItem();
         String floor = (String) floorComboBox.getSelectedItem();
@@ -450,6 +456,14 @@ public class MaikaTracker extends javax.swing.JFrame {
                 logicPanel.remove(panel);
                 logicPanel.revalidate();
                 logicPanel.repaint();
+                if(panel.getKeyItemLocation().equals(KeyItemLocation.ORDEALS)) {
+                    PartyLabel.MtOrdealsComplete = true;
+                    getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
+                }
+                if(panel.getKeyItemLocation().equals(KeyItemLocation.DWARF_CASTLE)) {
+                    PartyLabel.DwarfCastleComplete = true;
+                    getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
+                }
             });
             logicPanel.add(panel);
         });
@@ -808,12 +822,9 @@ public class MaikaTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_addDMachinButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-
-                
         bossLabels.forEach(boss -> boss.reset());
         atlas.reset();
-        Arrays.stream(partyPanel.getComponents()).map(c -> (PartyLabel) c)
-                        .forEach((member -> member.clearLabel()));
+        getPartyLabels().forEach((member -> member.clearLabel()));
         Arrays.stream(keyItemPanel.getComponents())
                 .map(c -> (KeyItemPanel) c).forEach(panel -> panel.reset(true));
         locationsVisited.clear();
