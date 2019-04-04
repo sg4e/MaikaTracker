@@ -381,6 +381,20 @@ public class MaikaTracker extends javax.swing.JFrame {
         floorComboBox.setSelectedItem(0);
         atlas.showFloor((String) dungeonComboBox.getSelectedItem(), (String) floorComboBox.getSelectedItem());
         
+        initShop("Agart");
+        initShop("Baron");
+        initShop("Eblan Cave");
+        initShop("Fabul");
+        initShop("Kaipo");
+        initShop("Mysidia");
+        initShop("Silvera");
+        initShop("Troia [Item]");
+        initShop("Troia [Pub]");
+        initShop("Dwarf Castle");
+        initShop("Feymarch");
+        initShop("Tomara");
+        initShop("Hummingway");
+        
         updateKeyItemCountLabel();
         updateLogic();
         
@@ -411,6 +425,11 @@ public class MaikaTracker extends javax.swing.JFrame {
         BufferedImage image = loadImageResource(fileUrl);
         atlas.add(new TreasureMap(dungeonName, floorName, image, chests));
         mapPane.add(atlas);
+    }
+    
+    private void initShop(String shopLocation)
+    {
+        shopPanes.add(shopLocation, new ShopPanel(shopLocation));
     }
     
     public void loadBossIcon(String off, String on, String bossName) {
@@ -450,7 +469,8 @@ public class MaikaTracker extends javax.swing.JFrame {
         locs.removeIf(locationsVisited::contains);
         logicPanel.removeAll();
         locs.forEach(l -> {
-            LocationPanel panel = new LocationPanel(l);
+            LocationPanel panel = new LocationPanel(l);            
+            
             panel.setButtonListener((ae) -> {
                 locationsVisited.add(panel.getKeyItemLocation());
                 logicPanel.remove(panel);
@@ -576,6 +596,8 @@ public class MaikaTracker extends javax.swing.JFrame {
         xpTable = new javax.swing.JTable();
         addDMachinButton = new javax.swing.JButton();
         logicTabPanel = new javax.swing.JPanel();
+        shopPane = new javax.swing.JPanel();
+        shopPanes = new javax.swing.JTabbedPane();
         resetPane = new javax.swing.JPanel();
         resetButton = new javax.swing.JButton();
         resetLabel = new javax.swing.JLabel();
@@ -721,8 +743,22 @@ public class MaikaTracker extends javax.swing.JFrame {
         mainTabbedPane.addTab("XP", xpPane);
         mainTabbedPane.addTab("Logic", logicTabPanel);
 
+        shopPanes.setToolTipText("");
+
+        javax.swing.GroupLayout shopPaneLayout = new javax.swing.GroupLayout(shopPane);
+        shopPane.setLayout(shopPaneLayout);
+        shopPaneLayout.setHorizontalGroup(
+            shopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(shopPanes, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+        );
+        shopPaneLayout.setVerticalGroup(
+            shopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(shopPanes, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+        );
+
+        mainTabbedPane.addTab("Shop", shopPane);
+
         resetButton.setText("Reset");
-        resetButton.setActionCommand("Reset");
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
@@ -751,8 +787,6 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(resetButton)
                 .addContainerGap(468, Short.MAX_VALUE))
         );
-
-        resetButton.getAccessibleContext().setAccessibleName("Reset");
 
         mainTabbedPane.addTab("Reset", resetPane);
 
@@ -830,6 +864,9 @@ public class MaikaTracker extends javax.swing.JFrame {
         locationsVisited.clear();
         updateLogic();
         updateKeyItemCountLabel();
+        PartyLabel.MtOrdealsComplete = false;
+        PartyLabel.DwarfCastleComplete = false;
+        ShopPanel.reset();
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void calculateXp(int xpGained) {
@@ -968,6 +1005,8 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JButton resetButton;
     private javax.swing.JLabel resetLabel;
     private javax.swing.JPanel resetPane;
+    private javax.swing.JPanel shopPane;
+    private javax.swing.JTabbedPane shopPanes;
     private javax.swing.JPanel xpPane;
     private javax.swing.JTable xpTable;
     // End of variables declaration//GEN-END:variables
