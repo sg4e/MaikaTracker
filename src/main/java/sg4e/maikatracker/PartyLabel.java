@@ -40,11 +40,15 @@ public class PartyLabel extends StativeLabel {
     private static final Map<LevelData,ImageIcon> CHARACTER_ICONS = Collections.unmodifiableMap(
             Arrays.stream(LevelData.values()).collect(Collectors.toMap((data) -> data, 
                     (data) -> new ImageIcon(MaikaTracker.loadImageResource("characters/" + data.toString().toLowerCase().replaceAll(" ", "") + ".png")))));
+    private static final ImageIcon ADULT_RYDIA_ICON = new ImageIcon(MaikaTracker.loadImageResource("characters/adultrydia.png"));
     
     private LevelData data = null;
     private PartyMember character;
     private final PropertyChangeListener pcl;
     private Runnable onChangeAction = null;
+    
+    public static boolean MtOrdealsComplete;
+    public static boolean DwarfCastleComplete;
     
     public PartyLabel(PropertyChangeListener onLevelUp) {
         this.pcl = onLevelUp;
@@ -57,9 +61,32 @@ public class PartyLabel extends StativeLabel {
                         JMenuItem reset = new JMenuItem("Reset");
                         reset.addActionListener((ae) -> clearLabel());
                         menu.add(reset);
+                        JMenuItem duplicate = new JMenuItem("Replace with Duplicate");
+                        duplicate.addActionListener((ae) -> {
+                            if(character != null && pcl != null)
+                                character.removePropertyChangeListener(pcl);
+                            character = new PartyMember(data);
+                            if(pcl != null)
+                                character.addPropertyChangeListener(pcl);
+                            if(onChangeAction != null)
+                                onChangeAction.run();
+                        });
+                        menu.add(duplicate);
                         menu.add(new JSeparator());
                     }
-                    Arrays.stream(LevelData.values()).forEach((data) -> menu.add(data.toString()).addActionListener((ae) -> setPartyMember(data)));
+                    Arrays.stream(LevelData.values()).forEach((data) -> {                        
+                        if(!(data.equals(LevelData.DARK_KNIGHT_CECIL) && MtOrdealsComplete) &&
+                           !(data.equals(LevelData.PALADIN_CECIL) && !MtOrdealsComplete)) {
+                            if (data.equals(LevelData.PALADIN_CECIL) && MtOrdealsComplete) {
+                                JMenuItem cecil = new JMenuItem(data.toString());
+                                cecil.addActionListener((ae) -> setPartyMember(data));
+                                menu.add(cecil, isCleared() ? 0 : 3);
+                            }
+                            else
+                                menu.add(data.toString()).addActionListener((ae) -> setPartyMember(data));
+                        }
+                            
+                    });
                     menu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
@@ -79,6 +106,9 @@ public class PartyLabel extends StativeLabel {
     }
     
     public void setPartyMember(LevelData member) {
+        if (member.equals(LevelData.DARK_KNIGHT_CECIL) && MtOrdealsComplete)
+            member = LevelData.PALADIN_CECIL;
+
         if(data != member) {
             data = member;
             if(character != null && pcl != null)
@@ -87,10 +117,15 @@ public class PartyLabel extends StativeLabel {
             if(pcl != null)
                 character.addPropertyChangeListener(pcl);
             ImageIcon icon = CHARACTER_ICONS.get(member);
+            if(member.equals(LevelData.RYDIA) && DwarfCastleComplete)
+                icon = ADULT_RYDIA_ICON;
             setNewIconState(icon, icon);
             if(onChangeAction != null)
                 onChangeAction.run();
         }
+        else if(member.equals(LevelData.RYDIA) && DwarfCastleComplete)
+            setNewIconState(ADULT_RYDIA_ICON, ADULT_RYDIA_ICON);
+
     }
     
     public void setOnPartyChangeAction(Runnable action) {
