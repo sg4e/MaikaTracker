@@ -34,6 +34,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked"
+}
+
 // Define the main class for the application
 mainClassName = 'sg4e.maikatracker.MaikaTracker'
 
