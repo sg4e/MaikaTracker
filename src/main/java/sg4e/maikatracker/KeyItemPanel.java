@@ -98,8 +98,7 @@ public class KeyItemPanel extends JPanel {
         add(itemImage, BorderLayout.CENTER);
         
         locationLabel = new JLabel(UNKNOWN_LOCATION, JLabel.CENTER);
-        locationLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        locationLabel.setForeground(new Color(255,255,255));
+        locationLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);        
         add(locationLabel, BorderLayout.CENTER);
     }
     
