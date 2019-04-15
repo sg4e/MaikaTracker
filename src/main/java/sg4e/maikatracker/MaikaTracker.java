@@ -25,6 +25,8 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +57,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import sg4e.ff4stats.fe.FlagSet;
 import sg4e.ff4stats.fe.KeyItem;
 import sg4e.ff4stats.fe.KeyItemLocation;
 import sg4e.ff4stats.party.PartyMember;
@@ -83,8 +86,11 @@ public class MaikaTracker extends javax.swing.JFrame {
     private static final int D_MACHIN_XP = 41500;
     
     private final JPanel logicPanel;
+    private final StativeLabel dmistLabel;
     
     private static final List<StativeLabel> bossLabels = new ArrayList<>();
+    
+    public FlagSet flagset = null;
 
     /**
      * Creates new form MaikaTracker
@@ -98,6 +104,8 @@ public class MaikaTracker extends javax.swing.JFrame {
         Collections.sort(positions);
         AutoCompleteSupport.install(bossComboBox, GlazedLists.eventList(bossNames));
         AutoCompleteSupport.install(positionComboBox, GlazedLists.eventList(positions));
+        
+        flagsTextField.setLineWrap(true);
         
         logicPanel = new JPanel();
         logicPanel.setLayout(new GridLayout(0, 2));
@@ -117,7 +125,15 @@ public class MaikaTracker extends javax.swing.JFrame {
         //add boss icons
         LayoutManager bossIconLayout = new GridLayout(3, 12);
         bossIconPanel.setLayout(bossIconLayout);
-        loadBossIcon("FFIVFE-Bosses-1MistD-Gray.png", "FFIVFE-Bosses-1MistD-Color.png", "D. Mist");
+        dmistLabel = loadBossIcon("FFIVFE-Bosses-1MistD-Gray.png", "FFIVFE-Bosses-1MistD-Color.png", "D. Mist");
+        dmistLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(SwingUtilities.isLeftMouseButton(e)) {
+                    updateLogic();
+                }
+            }
+        });
         loadBossIcon("FFIVFE-Bosses-2Soldier-Gray.png", "FFIVFE-Bosses-2Soldier-Color.png", "Baron Soldiers");
         loadBossIcon("FFIVFE-Bosses-3Octo-Gray.png", "FFIVFE-Bosses-3Octo-Color.png", "Octomam");
         loadBossIcon("FFIVFE-Bosses-4Antlion-Gray.png", "FFIVFE-Bosses-4Antlion-Color.png", "Antlion");
@@ -396,6 +412,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         initShop("Hummingway");
         
         updateKeyItemCountLabel();
+        applyFlagsButtonActionPerformed(null);
         updateLogic();
         
         setTitle("MaikaTracker");
@@ -432,13 +449,14 @@ public class MaikaTracker extends javax.swing.JFrame {
         shopPanes.add(shopLocation, new ShopPanel(shopLocation));
     }
     
-    public void loadBossIcon(String off, String on, String bossName) {
+    public StativeLabel loadBossIcon(String off, String on, String bossName) {
         JPanel holder = new JPanel(new FlowLayout());
         JLabel label = new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/" + off)), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/" + on)));
         label.setToolTipText(bossName);
         holder.add(label);
         bossIconPanel.add(holder);
         bossLabels.add((StativeLabel)label);
+        return (StativeLabel) label;
     }
     
     public static InputStream loadResource(String path) {
@@ -463,29 +481,60 @@ public class MaikaTracker extends javax.swing.JFrame {
         atlas.setChestContents(chestId, keyItem);
     }
     
+    public void createLocationPanel(KeyItemLocation l, Boolean createIfTrue) {
+        if(!createIfTrue) return;
+        
+        LocationPanel panel = new LocationPanel(l);
+
+        panel.setButtonListener((ae) -> {
+            locationsVisited.add(panel.getKeyItemLocation());
+            logicPanel.remove(panel);
+            logicPanel.revalidate();
+            logicPanel.repaint();
+            if (panel.getKeyItemLocation().equals(KeyItemLocation.ORDEALS)) {
+                PartyLabel.MtOrdealsComplete = true;
+                getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
+            }
+            if (panel.getKeyItemLocation().equals(KeyItemLocation.DWARF_CASTLE)) {
+                PartyLabel.DwarfCastleComplete = true;
+                getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
+            }
+        });
+        logicPanel.add(panel);
+    }
+    
     public void updateLogic() {
+        
         List<KeyItemLocation> locs = KeyItemLocation.getAccessibleLocations(getAcquiredKeyItems().stream()
                 .map(KeyItemMetadata::getEnum).collect(Collectors.toSet()));
         locs.removeIf(locationsVisited::contains);
         logicPanel.removeAll();
         locs.forEach(l -> {
-            LocationPanel panel = new LocationPanel(l);            
-            
-            panel.setButtonListener((ae) -> {
-                locationsVisited.add(panel.getKeyItemLocation());
-                logicPanel.remove(panel);
-                logicPanel.revalidate();
-                logicPanel.repaint();
-                if(panel.getKeyItemLocation().equals(KeyItemLocation.ORDEALS)) {
-                    PartyLabel.MtOrdealsComplete = true;
-                    getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
-                }
-                if(panel.getKeyItemLocation().equals(KeyItemLocation.DWARF_CASTLE)) {
-                    PartyLabel.DwarfCastleComplete = true;
-                    getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
-                }
-            });
-            logicPanel.add(panel);
+            switch (l) {
+                case ASURA:
+                case LEVIATAN:
+                case ODIN:
+                case SYLPH:
+                case BAHAMUT:
+                    createLocationPanel(l, flagset == null || flagset.contains("Kq"));
+                    break;
+                case PALE_DIM:
+                case PLAGUE:
+                case DLUNAR:
+                case OGOPOGO:
+                case WYVERN:
+                    createLocationPanel(l, flagset == null || flagset.contains("Km"));
+                    break;
+                case TOROIA:
+                    createLocationPanel(l, flagset == null || !flagset.contains("Nk"));
+                    break;
+                case MIST:
+                    createLocationPanel(l, (flagset == null || flagset.contains("Nk")) && dmistLabel.isActive());
+                    break;
+                default:
+                    createLocationPanel(l, true);
+                    break;
+            }
         });
         logicPanel.revalidate();
         logicPanel.repaint();
@@ -523,6 +572,29 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .map(KeyItemPanel::getItemLocation)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+        
+        if(flagset != null && !flagset.contains("Nk"))
+            knownLocations.add(KeyItemLocation.MIST);
+        
+        if (flagset != null && flagset.contains("Nk"))
+            knownLocations.add(KeyItemLocation.TOROIA);
+        
+        if(flagset != null && !flagset.contains("Kq")) {
+            knownLocations.add(KeyItemLocation.ASURA);
+            knownLocations.add(KeyItemLocation.LEVIATAN);
+            knownLocations.add(KeyItemLocation.SYLPH);
+            knownLocations.add(KeyItemLocation.ODIN);
+            knownLocations.add(KeyItemLocation.BAHAMUT);
+        }
+        
+        if (flagset != null && !flagset.contains("Km")) {
+            knownLocations.add(KeyItemLocation.PALE_DIM);
+            knownLocations.add(KeyItemLocation.PLAGUE);
+            knownLocations.add(KeyItemLocation.DLUNAR);
+            knownLocations.add(KeyItemLocation.OGOPOGO);
+            knownLocations.add(KeyItemLocation.WYVERN);
+        }
+        
         Arrays.stream(KeyItemLocation.values())
                 .filter(ki -> !knownLocations.contains(ki))
                 .forEach(ki -> locationMenu.add(ki.getLocation()).addActionListener((ae) -> actionOnEachItem.accept(ki)));
@@ -601,6 +673,11 @@ public class MaikaTracker extends javax.swing.JFrame {
         resetPane = new javax.swing.JPanel();
         resetButton = new javax.swing.JButton();
         resetLabel = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        flagErrorLabel = new javax.swing.JLabel();
+        applyFlagsButton = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        flagsTextField = new javax.swing.JTextArea();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -737,7 +814,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addDMachinButton)
-                .addGap(0, 370, Short.MAX_VALUE))
+                .addGap(0, 375, Short.MAX_VALUE))
         );
 
         mainTabbedPane.addTab("XP", xpPane);
@@ -753,7 +830,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         );
         shopPaneLayout.setVerticalGroup(
             shopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(shopPanes, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+            .addComponent(shopPanes, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
         );
 
         mainTabbedPane.addTab("Shop", shopPane);
@@ -767,6 +844,23 @@ public class MaikaTracker extends javax.swing.JFrame {
 
         resetLabel.setText("<html>Are you sure you would like to reset everything?<br>\n<br>\nThis Action cannot be undone");
 
+        jLabel4.setText("Flags:");
+
+        flagErrorLabel.setForeground(new java.awt.Color(255, 0, 0));
+        flagErrorLabel.setText("jLabel5");
+
+        applyFlagsButton.setText("Apply Flags");
+        applyFlagsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyFlagsButtonActionPerformed(evt);
+            }
+        });
+
+        flagsTextField.setColumns(20);
+        flagsTextField.setRows(5);
+        flagsTextField.setWrapStyleWord(true);
+        jScrollPane5.setViewportView(flagsTextField);
+
         javax.swing.GroupLayout resetPaneLayout = new javax.swing.GroupLayout(resetPane);
         resetPane.setLayout(resetPaneLayout);
         resetPaneLayout.setHorizontalGroup(
@@ -774,9 +868,21 @@ public class MaikaTracker extends javax.swing.JFrame {
             .addGroup(resetPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(resetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(resetButton))
-                .addContainerGap(357, Short.MAX_VALUE))
+                    .addGroup(resetPaneLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane5))
+                    .addGroup(resetPaneLayout.createSequentialGroup()
+                        .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(resetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(resetPaneLayout.createSequentialGroup()
+                                .addComponent(resetButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(applyFlagsButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(flagErrorLabel)))
+                        .addGap(0, 347, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         resetPaneLayout.setVerticalGroup(
             resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -784,8 +890,16 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addComponent(resetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(resetButton)
-                .addContainerGap(468, Short.MAX_VALUE))
+                .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(resetButton)
+                        .addComponent(applyFlagsButton))
+                    .addComponent(flagErrorLabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(18, 18, 18)
+                .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(326, Short.MAX_VALUE))
         );
 
         mainTabbedPane.addTab("Reset", resetPane);
@@ -834,7 +948,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(keyItemCountLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(mainTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 562, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -856,6 +970,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_addDMachinButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        applyFlagsButtonActionPerformed(evt);
         bossLabels.forEach(boss -> boss.reset());
         atlas.reset();
         getPartyLabels().forEach((member -> member.clearLabel()));
@@ -868,6 +983,23 @@ public class MaikaTracker extends javax.swing.JFrame {
         PartyLabel.DwarfCastleComplete = false;
         ShopPanel.reset();
     }//GEN-LAST:event_resetButtonActionPerformed
+
+    private void applyFlagsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyFlagsButtonActionPerformed
+        flagErrorLabel.setText("");
+        try {
+        if(flagsTextField.getText().startsWith("b"))
+            flagset = FlagSet.fromBinary(flagsTextField.getText());
+        else
+            flagset = FlagSet.fromString(flagsTextField.getText());
+        }
+        catch (IllegalArgumentException ex) {
+            flagErrorLabel.setText(ex.getMessage());
+            flagset = null;
+        }
+        ShopPanel.UpdateFlags(flagset);
+        PartyLabel.flagset = flagset;
+        updateLogic();
+    }//GEN-LAST:event_applyFlagsButtonActionPerformed
 
     private void calculateXp(int xpGained) {
         int kiMultipler = getKeyItemCount() >= 10 ? 2 : 1;
@@ -980,21 +1112,26 @@ public class MaikaTracker extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addDMachinButton;
+    private javax.swing.JButton applyFlagsButton;
     private javax.swing.JComboBox<String> bossComboBox;
     private javax.swing.JPanel bossIconPanel;
     private javax.swing.JPanel bossPane;
     private javax.swing.JTable bossTable;
     private javax.swing.JComboBox<String> dungeonComboBox;
     private javax.swing.JTextArea enemyScriptTextArea;
+    private javax.swing.JLabel flagErrorLabel;
+    private javax.swing.JTextArea flagsTextField;
     private javax.swing.JComboBox<String> floorComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel keyItemCountLabel;
     private javax.swing.JPanel keyItemPanel;
     private javax.swing.JPanel logicTabPanel;

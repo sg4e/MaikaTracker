@@ -28,6 +28,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
+import sg4e.ff4stats.fe.FlagSet;
 import sg4e.ff4stats.party.LevelData;
 import sg4e.ff4stats.party.PartyMember;
 
@@ -49,6 +50,7 @@ public class PartyLabel extends StativeLabel {
     
     public static boolean MtOrdealsComplete;
     public static boolean DwarfCastleComplete;
+    public static FlagSet flagset;
     
     public PartyLabel(PropertyChangeListener onLevelUp) {
         this.pcl = onLevelUp;
@@ -57,6 +59,8 @@ public class PartyLabel extends StativeLabel {
             public void mouseClicked(MouseEvent e) {
                 if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu menu = new JPopupMenu();
+                    int count = 0;
+                    int baseCount = 0;
                     if(!isCleared()) {
                         JMenuItem reset = new JMenuItem("Reset");
                         reset.addActionListener((ae) -> clearLabel());
@@ -73,20 +77,68 @@ public class PartyLabel extends StativeLabel {
                         });
                         menu.add(duplicate);
                         menu.add(new JSeparator());
+                        baseCount = 3;
                     }
-                    Arrays.stream(LevelData.values()).forEach((data) -> {                        
-                        if(!(data.equals(LevelData.DARK_KNIGHT_CECIL) && MtOrdealsComplete) &&
-                           !(data.equals(LevelData.PALADIN_CECIL) && !MtOrdealsComplete)) {
-                            if (data.equals(LevelData.PALADIN_CECIL) && MtOrdealsComplete) {
-                                JMenuItem cecil = new JMenuItem(data.toString());
-                                cecil.addActionListener((ae) -> setPartyMember(data));
-                                menu.add(cecil, isCleared() ? 0 : 3);
-                            }
-                            else
-                                menu.add(data.toString()).addActionListener((ae) -> setPartyMember(data));
+                    for(LevelData data : LevelData.values())
+                    {
+                        Boolean addMember;
+                        int position = count++;
+                        switch(data) {
+                            case DARK_KNIGHT_CECIL:
+                                addMember = flagset == null || flagset.contains("-startcecil") || !flagset.contains("-nocecil");
+                                addMember &= !MtOrdealsComplete;
+                                break;
+                            case PALADIN_CECIL:
+                                addMember = flagset == null || flagset.contains("-startcecil") || !flagset.contains("-nocecil");
+                                addMember &= MtOrdealsComplete;
+                                position = 0;
+                                break;
+                            case CID:
+                                addMember = flagset == null || flagset.contains("-startcid") || !flagset.contains("-nocid");
+                                break;                                        
+                            case EDGE:
+                                addMember = flagset == null || flagset.contains("-startedge") || !flagset.contains("-noedge");
+                                break;
+                            case EDWARD:
+                                addMember = flagset == null || flagset.contains("-startedward") || !flagset.contains("-noedward");
+                                break;
+                            case FUSOYA:
+                                addMember = flagset == null || flagset.contains("-startfusoya") || !flagset.contains("-nofusoya");
+                                break;
+                            case KAIN:
+                                addMember = flagset == null || flagset.contains("-startkain") || !flagset.contains("-nokain");
+                                break;
+                            case PALOM:
+                                addMember = flagset == null || flagset.contains("-startpalom") || !flagset.contains("-nopalom");
+                                break;
+                            case POROM:
+                                addMember = flagset == null || flagset.contains("-startporom") || !flagset.contains("-noporom");
+                                break;
+                            case ROSA:
+                                addMember = flagset == null || flagset.contains("-startrosa") || !flagset.contains("-norosa");
+                                break;
+                            case RYDIA:
+                                addMember = flagset == null || flagset.contains("-startrydia") || !flagset.contains("-norydia");
+                                break;
+                            case TELLAH:
+                                addMember = flagset == null || flagset.contains("-starttellah") || !flagset.contains("-notellah");
+                                break;
+                            case YANG:
+                                addMember = flagset == null || flagset.contains("-startyang") || !flagset.contains("-noyang");
+                                break;
+                            default:
+                                addMember = false;
+                                break;
+                        }                        
+                        if(addMember) {
+                            JMenuItem member = new JMenuItem(data.toString());
+                            member.addActionListener((ae) -> setPartyMember(data));
+                            menu.add(member, position + baseCount);
                         }
-                            
-                    });
+                        else {
+                            count--;
+                        }
+                    }
                     menu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
