@@ -108,7 +108,7 @@ public class PartyTableModel extends DefaultTableModel {
     public int getStartingLevel(PartyMember member) {
         int index = members.indexOf(member);
         Object value = getValueAt(index, STARTING_LEVEL_COLUMN);
-        if(value == null || new Integer(0).equals(value)) {
+        if(value == null || Integer.valueOf(0).equals(value)) {
             Object xpValue = getValueAt(index, STARTING_XP_COLUMN);
             return member.getData().getLevelForTotalExperience(xpValue == null ? 0 : (Integer) xpValue);
         }
@@ -120,7 +120,7 @@ public class PartyTableModel extends DefaultTableModel {
     public int getStartingXp(PartyMember member) {
         int index = members.indexOf(member);
         Object value = getValueAt(index, STARTING_XP_COLUMN);
-        if(value == null || new Integer(0).equals(value)) {
+        if(value == null || Integer.valueOf(0).equals(value)) {
             Object levelValue = getValueAt(index, STARTING_LEVEL_COLUMN);
             return levelValue == null || ((Integer)levelValue) < member.getData().getStartingLevel() ?  0 : member.getData().getMinimumXpForLevel((Integer) levelValue);
         }
