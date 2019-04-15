@@ -60,6 +60,7 @@ import org.apache.logging.log4j.Logger;
 import sg4e.ff4stats.fe.FlagSet;
 import sg4e.ff4stats.fe.KeyItem;
 import sg4e.ff4stats.fe.KeyItemLocation;
+import sg4e.ff4stats.party.LevelData;
 import sg4e.ff4stats.party.PartyMember;
 
 /**
@@ -120,6 +121,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             if(i != 0)
                 label.setBorder(new EmptyBorder(0, 30, 0, 0));
             partyPanel.add(label);
+            PartyLabel.PartyMembers.add(label);
         }
         
         //add boss icons
@@ -637,6 +639,35 @@ public class MaikaTracker extends javax.swing.JFrame {
     public TreasureAtlas getAtlas() {
         return atlas;
     }
+    
+    public void SetStartingMember() {
+        if(flagset == null) return;
+        PartyLabel label = PartyLabel.PartyMembers.get(0);
+        if(flagset.contains("-startcecil"))
+            label.setPartyMember(LevelData.DARK_KNIGHT_CECIL);
+        else if (flagset.contains("-startkain"))
+            label.setPartyMember(LevelData.KAIN);
+        else if (flagset.contains("-startrydia"))
+            label.setPartyMember(LevelData.RYDIA);
+        else if (flagset.contains("-startedward"))
+            label.setPartyMember(LevelData.EDWARD);
+        else if (flagset.contains("-startrosa"))
+            label.setPartyMember(LevelData.ROSA);
+        else if (flagset.contains("-starttellah"))
+            label.setPartyMember(LevelData.TELLAH);
+        else if (flagset.contains("-startyang"))
+            label.setPartyMember(LevelData.YANG);
+        else if (flagset.contains("-startpalom"))
+            label.setPartyMember(LevelData.PALOM);
+        else if (flagset.contains("-startporom"))
+            label.setPartyMember(LevelData.POROM);
+        else if (flagset.contains("-startedge"))
+            label.setPartyMember(LevelData.EDGE);
+        else if (flagset.contains("-startcid"))
+            label.setPartyMember(LevelData.CID);
+        else if (flagset.contains("-startfusoya"))
+            label.setPartyMember(LevelData.FUSOYA);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -982,6 +1013,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         PartyLabel.MtOrdealsComplete = false;
         PartyLabel.DwarfCastleComplete = false;
         ShopPanel.reset();
+        SetStartingMember();        
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void applyFlagsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyFlagsButtonActionPerformed

@@ -44,12 +44,13 @@ public class PartyLabel extends StativeLabel {
             Arrays.stream(LevelData.values()).collect(Collectors.toMap((data) -> data, 
                     (data) -> new ImageIcon(MaikaTracker.loadImageResource("characters/" + data.toString().toLowerCase().replaceAll(" ", "") + ".png")))));
     private static final ImageIcon ADULT_RYDIA_ICON = new ImageIcon(MaikaTracker.loadImageResource("characters/adultrydia.png"));
-    private static final List<PartyLabel> partyMembers = new ArrayList<PartyLabel>();
     
     private LevelData data = null;
     private PartyMember character;
     private final PropertyChangeListener pcl;
     private Runnable onChangeAction = null;
+    
+    public static final List<PartyLabel> PartyMembers = new ArrayList<PartyLabel>();
     
     public static boolean MtOrdealsComplete;
     public static boolean DwarfCastleComplete;
@@ -57,7 +58,6 @@ public class PartyLabel extends StativeLabel {
     
     
     public PartyLabel(PropertyChangeListener onLevelUp) {
-        partyMembers.add(this);
         this.pcl = onLevelUp;
         addMouseListener(new MouseAdapter() {
             @Override
@@ -70,19 +70,22 @@ public class PartyLabel extends StativeLabel {
                         JMenuItem reset = new JMenuItem("Reset");
                         reset.addActionListener((ae) -> clearLabel());
                         menu.add(reset);
-                        JMenuItem duplicate = new JMenuItem("Replace with Duplicate");
-                        duplicate.addActionListener((ae) -> {
-                            if(character != null && pcl != null)
-                                character.removePropertyChangeListener(pcl);
-                            character = new PartyMember(data);
-                            if(pcl != null)
-                                character.addPropertyChangeListener(pcl);
-                            if(onChangeAction != null)
-                                onChangeAction.run();
-                        });
-                        menu.add(duplicate);
+                        if(isDupeAllowed(data)) {
+                            JMenuItem duplicate = new JMenuItem("Replace with Duplicate");
+                            duplicate.addActionListener((ae) -> {
+                                if(character != null && pcl != null)
+                                    character.removePropertyChangeListener(pcl);
+                                character = new PartyMember(data);
+                                if(pcl != null)
+                                    character.addPropertyChangeListener(pcl);
+                                if(onChangeAction != null)
+                                    onChangeAction.run();
+                            });
+                            menu.add(duplicate);
+                            baseCount++;
+                        }
                         menu.add(new JSeparator());
-                        baseCount = 3;
+                        baseCount += 2;
                     }
                     for(LevelData data : LevelData.values())
                     {
@@ -201,7 +204,7 @@ public class PartyLabel extends StativeLabel {
         
         if(notAllowed)
         {
-            for(PartyLabel label : partyMembers) {
+            for(PartyLabel label : PartyMembers) {
                 if(label.data == member)
                     return false;
             }
