@@ -19,8 +19,10 @@ package sg4e.maikatracker;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
@@ -42,6 +44,7 @@ public class PartyLabel extends StativeLabel {
             Arrays.stream(LevelData.values()).collect(Collectors.toMap((data) -> data, 
                     (data) -> new ImageIcon(MaikaTracker.loadImageResource("characters/" + data.toString().toLowerCase().replaceAll(" ", "") + ".png")))));
     private static final ImageIcon ADULT_RYDIA_ICON = new ImageIcon(MaikaTracker.loadImageResource("characters/adultrydia.png"));
+    private static final List<PartyLabel> partyMembers = new ArrayList<PartyLabel>();
     
     private LevelData data = null;
     private PartyMember character;
@@ -52,7 +55,9 @@ public class PartyLabel extends StativeLabel {
     public static boolean DwarfCastleComplete;
     public static FlagSet flagset;
     
+    
     public PartyLabel(PropertyChangeListener onLevelUp) {
+        partyMembers.add(this);
         this.pcl = onLevelUp;
         addMouseListener(new MouseAdapter() {
             @Override
@@ -130,7 +135,7 @@ public class PartyLabel extends StativeLabel {
                                 addMember = false;
                                 break;
                         }                        
-                        if(addMember) {
+                        if(addMember && isDupeAllowed(data)) {
                             JMenuItem member = new JMenuItem(data.toString());
                             member.addActionListener((ae) -> setPartyMember(data));
                             menu.add(member, position + baseCount);
@@ -143,6 +148,65 @@ public class PartyLabel extends StativeLabel {
                 }
             }
         });
+    }
+    
+    private Boolean isDupeAllowed(LevelData member)
+    {
+        if(member == null || flagset == null) return true;
+        
+        Boolean notAllowed = flagset.contains("-nodupes");
+
+        switch(member)
+        {
+            case CID:
+                notAllowed |= flagset.contains("-nocid");
+                break;
+            case DARK_KNIGHT_CECIL:
+            case PALADIN_CECIL:
+                notAllowed |= flagset.contains("-nocecil");
+                break;
+            case EDGE:
+                notAllowed |= flagset.contains("-noedge");
+                break;
+            case EDWARD:
+                notAllowed |= flagset.contains("-noedward");
+                break;
+            case FUSOYA:
+                notAllowed |= flagset.contains("-nofusoya");
+                break;
+            case KAIN:
+                notAllowed |= flagset.contains("-nokain");
+                break;
+            case PALOM:
+                notAllowed |= flagset.contains("-nopalom");
+                break;
+            case POROM:
+                notAllowed |= flagset.contains("-noporom");
+                break;
+            case ROSA:
+                notAllowed |= flagset.contains("-norosa");
+                break;
+            case RYDIA:
+                notAllowed |= flagset.contains("-norydia");
+                break;
+            case TELLAH:
+                notAllowed |= flagset.contains("-notellah");
+                break;
+            case YANG:
+                notAllowed |= flagset.contains("-noyang");
+                break;
+            default:
+                return false;
+        }
+        
+        if(notAllowed)
+        {
+            for(PartyLabel label : partyMembers) {
+                if(label.data == member)
+                    return false;
+            }
+        }
+        return true;
     }
     
     public LevelData getData() {
