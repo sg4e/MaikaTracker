@@ -9,7 +9,7 @@
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
-    
+
     // Apply the application plugin to add support for building an application
     id 'application'
 }
@@ -23,6 +23,15 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    maven { url 'https://jitpack.io' }
+}
+
+configurations.all {
+    if (file("../FF4StatsLib").exists()) {
+        resolutionStrategy.dependencySubstitution {
+            substitute project(":FF4StatsLib") with module("com.github.sg4e:FF4StatsLib:master-SNAPSHOT")
+        }
+    }
 }
 
 dependencies {
@@ -31,9 +40,8 @@ dependencies {
     compile(group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1')
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
     annotationProcessor(group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1')
-    compile project(":FF4StatsLib")
     compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.26'
-
+    compile 'com.github.sg4e:FF4StatsLib:master-SNAPSHOT'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
@@ -51,7 +59,7 @@ jar {
     manifest {
         attributes "Main-Class": mainClassName
     }
- 
+
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
