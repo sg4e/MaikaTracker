@@ -1299,13 +1299,19 @@ public class MaikaTracker extends javax.swing.JFrame {
             model.setValueAt(NUMBER_FORMAT.format(enemy.getMinSpeed()), i, 3);
             model.setValueAt(NUMBER_FORMAT.format(enemy.getMaxSpeed()), i, 4);
             model.setValueAt(NUMBER_FORMAT.format(enemy.getSpellPower()), i, 5);
+                        
+            StringBuilder enemyScript = new StringBuilder();
             enemy.getScriptValues().forEach(scr -> {
                 if(scr.length() > 0) {
-                    if(scripts.length() > 0)
-                        scripts.append("\n");
-                    scripts.append(scr);
+                    if(enemyScript.length() > 0)
+                        enemyScript.append("\n");
+                    enemyScript.append(scr);
                 }
             });
+            
+            if(scripts.length() > 0 && enemyScript.length() > 0)
+                scripts.append("\n-----------\n");
+            scripts.append(enemyScript);
         }
         enemyScriptTextArea.setText(scripts.toString());
     }
