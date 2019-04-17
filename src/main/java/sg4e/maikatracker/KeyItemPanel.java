@@ -17,8 +17,10 @@
 package sg4e.maikatracker;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -58,19 +60,11 @@ public class KeyItemPanel extends JPanel {
                 if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu;
                     MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
-                    if(isKnown()) {
-                        locationMenu = new JPopupMenu("Locations");
-                        locationMenu.add("Reset").addActionListener((ae) -> reset());
-                        if(isInChest()) {
-                            locationMenu.add(new JSeparator(), 0);
-                            JMenuItem goToChest = new JMenuItem("Show chest"/*slmLewd*/);
-                            goToChest.addActionListener((ae) -> tracker.getAtlas().showChest(locationLabel.getText()));
-                            locationMenu.add(goToChest, 0);
-                        }
-                    }
-                    else {
+                    if(!isKnown() || !tracker.isResetOnly()) {
                         locationMenu = ((MaikaTracker)SwingUtilities.getWindowAncestor(KeyItemPanel.this))
                                 .getAvailableLocationsMenu(loc -> {
+                                    if(isKnown())
+                                        reset();
                                     location = loc;
                                     locationLabel.setText(loc.getAbbreviatedLocation());
                                     locationLabel.setToolTipText(loc.getLocation());
@@ -81,6 +75,14 @@ public class KeyItemPanel extends JPanel {
                             String customOption = JOptionPane.showInputDialog("Enter chest location");
                             String chestId = customOption.toUpperCase();
                             if(tracker.getAtlas().hasChestId(chestId)) {
+                                final List<KeyItemPanel> panels = tracker.getKeyItemPanels();
+                                panels.forEach(panel -> {
+                                    if(panel.locationLabel.getText().equals(chestId)) {
+                                        panel.reset();
+                                    }
+                                });
+                                if(isKnown())
+                                    reset();
                                 locationLabel.setText(chestId);
                                 tracker.updateKeyItemLocation(metadata, chestId);
                             }
@@ -89,6 +91,22 @@ public class KeyItemPanel extends JPanel {
                             }
                         });
                         locationMenu.add(custom, 0);
+                    }
+                    else {
+                        locationMenu = new JPopupMenu();
+                    }
+                    if(isKnown()) {                        
+                        if(!tracker.isResetOnly())
+                            locationMenu.add(new JSeparator(), 0);
+                        JMenuItem resetMenu = new JMenuItem("Reset");
+                        resetMenu.addActionListener((ae) -> reset());
+                        locationMenu.add(resetMenu, 0);
+                        if(isInChest()) {
+                            locationMenu.add(new JSeparator(), 0);
+                            JMenuItem goToChest = new JMenuItem("Show chest"/*slmLewd*/);
+                            goToChest.addActionListener((ae) -> tracker.getAtlas().showChest(locationLabel.getText()));
+                            locationMenu.add(goToChest, 0);
+                        }                        
                     }
                     locationMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -100,6 +118,15 @@ public class KeyItemPanel extends JPanel {
         locationLabel = new JLabel(UNKNOWN_LOCATION, JLabel.CENTER);
         locationLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);        
         add(locationLabel, BorderLayout.CENTER);
+    }
+    
+    public void setTextColor(Color color) {
+        locationLabel.setForeground(color);
+    }
+    
+    public void setBackgroundColor(Color color) {
+        setBackground(color);
+        itemImage.setBackground(color);
     }
     
     public KeyItemLocation getItemLocation() {

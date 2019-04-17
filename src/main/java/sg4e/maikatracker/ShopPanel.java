@@ -5,6 +5,7 @@
  */
 package sg4e.maikatracker;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,6 +108,33 @@ public class ShopPanel extends javax.swing.JPanel {
             }
         });
         UpdateToolTips();
+    }
+    
+    public static void setTextColor(Color color) {
+        shopPanels.forEach(panel -> {
+            Component[] components = (Component[])panel.getComponents();
+            
+            for (Component comp : components) {
+                if (comp instanceof JCheckBox) {
+                    JCheckBox box = (JCheckBox) comp;
+                    box.setForeground(color);
+                }
+            }
+        });
+    }
+    
+    public static void setBackgroundColor(Color color) {
+        shopPanels.forEach(panel -> {
+            panel.setBackground(color);
+            Component[] components = (Component[])panel.getComponents();
+            
+            for (Component comp : components) {
+                if (comp instanceof JCheckBox) {
+                    JCheckBox box = (JCheckBox) comp;
+                    box.setBackground(color);
+                }
+            }
+        });
     }
     
     private static void UpdateToolTips() {

@@ -16,6 +16,7 @@
  */
 package sg4e.maikatracker;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import sg4e.ff4stats.fe.KeyItemLocation;
@@ -27,6 +28,9 @@ import sg4e.ff4stats.fe.KeyItemLocation;
 public class LocationPanel extends javax.swing.JPanel {
     
     private KeyItemLocation location;
+    
+    public static Color textColor = new Color(0,0,0);
+    public static Color backgroundColor = new Color(240, 240, 240);
 
     /**
      * Creates new form LocationPanel
@@ -39,6 +43,8 @@ public class LocationPanel extends javax.swing.JPanel {
         this();
         location = loc;
         locationLabel.setText(loc.getLocation());
+        locationLabel.setForeground(textColor);
+        setBackground(backgroundColor);
     }
     
     public void setButtonListener(ActionListener l) {
