@@ -29,7 +29,7 @@ repositories {
 configurations.all {
     if (file("../FF4StatsLib").exists()) {
         resolutionStrategy.dependencySubstitution {
-            substitute project(":FF4StatsLib") with module("com.github.sg4e:FF4StatsLib:master-SNAPSHOT")
+            substitute module("com.github.sg4e:FF4StatsLib:master-SNAPSHOT") with project(":FF4StatsLib")
         }
     }
 }

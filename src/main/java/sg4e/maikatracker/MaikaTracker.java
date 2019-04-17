@@ -897,8 +897,8 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(scriptLabel)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(125, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(235, Short.MAX_VALUE))
         );
 
         mainTabbedPane.addTab("Bosses", bossPane);
@@ -1299,11 +1299,19 @@ public class MaikaTracker extends javax.swing.JFrame {
             model.setValueAt(NUMBER_FORMAT.format(enemy.getMinSpeed()), i, 3);
             model.setValueAt(NUMBER_FORMAT.format(enemy.getMaxSpeed()), i, 4);
             model.setValueAt(NUMBER_FORMAT.format(enemy.getSpellPower()), i, 5);
+                        
+            StringBuilder enemyScript = new StringBuilder();
             enemy.getScriptValues().forEach(scr -> {
-                if(scripts.length() > 0)
-                    scripts.append("\n");
-                scripts.append(scr);
+                if(scr.length() > 0) {
+                    if(enemyScript.length() > 0)
+                        enemyScript.append("\n");
+                    enemyScript.append(scr);
+                }
             });
+            
+            if(scripts.length() > 0 && enemyScript.length() > 0)
+                scripts.append("\n-----------\n");
+            scripts.append(enemyScript);
         }
         enemyScriptTextArea.setText(scripts.toString());
     }
