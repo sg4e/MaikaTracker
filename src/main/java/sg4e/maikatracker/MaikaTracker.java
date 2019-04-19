@@ -430,6 +430,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         resetOnly.setSelected(prefs.getBoolean(RESET_ONLY_ID, resetOnly.isSelected()));
         setTextColor(false);
         setBackgroundColor(false);
+        setTenKeyItemColor(false);
     }
     
     public List<PartyMember> getPartyMembers() {
@@ -640,6 +641,8 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     public void updateKeyItemCountLabel() {
         keyItemCountLabel.setText("Key Items: " + getKeyItemCount());
+        Boolean keyItemBonusXP = flagset == null || flagset.contains("Xk");
+        keyItemCountLabel.setForeground(getKeyItemCount() >= 10 && keyItemBonusXP ? tenKeyItemColorLabel.getForeground() : textColorLabel.getForeground());
     }
         
     public int getKeyItemCount() {
@@ -661,6 +664,17 @@ public class MaikaTracker extends javax.swing.JFrame {
         return atlas;
     }
     
+    public Color selectColor(Boolean showPicker, String prefsNode, String colorPickerTitle, Component colorPanel, Boolean background) {
+        Color color = getColor(prefsNode, background ? colorPanel.getBackground() : colorPanel.getForeground());
+        
+        if(showPicker) {
+            color = JColorChooser.showDialog(this, colorPickerTitle, color);
+            if(color != null)
+                putColor(prefsNode, color);
+        }
+        return color;
+    }
+    
     public Color getColor(String prefsNode, Color defaultColor)
     {
         int red = prefs.node(prefsNode).getInt("Red", defaultColor.getRed());
@@ -676,35 +690,27 @@ public class MaikaTracker extends javax.swing.JFrame {
     }
     
     public final void setTextColor(Boolean showPicker) {
-        Color textColor = getColor("TextColor", textColorPanel.getBackground());
-        
-        if(showPicker) {
-            textColor = JColorChooser.showDialog(this, "Choose Text Color", textColorPanel.getBackground());
-            if(textColor == null)
-                return;
-            putColor("TextColor", textColor);
-        }
-        textColorPanel.setBackground(textColor);
-        keyItemCountLabel.setForeground(textColor);
+        Color textColor = selectColor(showPicker, "TextColor", "Choose Text Color", textColorLabel, false);
+        if(textColor == null)
+            return;
+
+        textColorLabel.setForeground(textColor);
+        updateKeyItemCountLabel();
         floorLabel.setForeground(textColor);
         bossAtLabel.setForeground(textColor);
         scriptLabel.setForeground(textColor);
         LocationPanel.textColor = textColor;
-        for(KeyItemPanel panel : getKeyItemPanels()) {
+        getKeyItemPanels().forEach((panel) -> {
             panel.setTextColor(textColor);
-        }
+        });
         ShopPanel.setTextColor(textColor);
         updateLogic();
     }
     
     public final void setBackgroundColor(Boolean showPicker) {
-        Color backgroundColor = getColor("BackgroundColor", backgroundColorPanel.getBackground());
-        if(showPicker) {
-            backgroundColor = JColorChooser.showDialog(this, "Choose Background Color", backgroundColorPanel.getBackground());
-            if(backgroundColor == null)
-                return;
-            putColor("BackgroundColor", backgroundColor);
-        }
+        Color backgroundColor = selectColor(showPicker, "BackgroundColor", "Choose Background Color", backgroundColorPanel, true);
+        if(backgroundColor == null)
+            return;
         backgroundColorPanel.setBackground(backgroundColor);
         getContentPane().setBackground(backgroundColor);
         logicPanel.setBackground(backgroundColor);
@@ -720,15 +726,25 @@ public class MaikaTracker extends javax.swing.JFrame {
         mapSelectionPanel.setBackground(backgroundColor);
         bossSelectionPanel.setBackground(backgroundColor);
         LocationPanel.backgroundColor = backgroundColor;
-        for(StativeLabel boss : bossLabels) {
+        bossLabels.stream().map((boss) -> {
             boss.getParent().setBackground(backgroundColor);
+            return boss;
+        }).forEachOrdered((boss) -> {
             boss.setBackground(backgroundColor);
-        }
-        for(KeyItemPanel panel : getKeyItemPanels()) {
+        });
+        getKeyItemPanels().forEach((panel) -> {
             panel.setBackgroundColor(backgroundColor);
-        }
+        });
         ShopPanel.setBackgroundColor(backgroundColor);
         updateLogic();
+    }
+    
+    public final void setTenKeyItemColor(Boolean showPicker) {
+        Color color = selectColor(showPicker, "TenKeyItemColor", "Choose Color for Ten+ Key items", tenKeyItemColorLabel, false);
+        if(color == null)
+            return;
+        tenKeyItemColorLabel.setForeground(color);
+        updateKeyItemCountLabel();        
     }
     
     public void SetStartingMember() {
@@ -804,9 +820,11 @@ public class MaikaTracker extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         resetOnly = new javax.swing.JCheckBox();
         backgroundColorPanel = new javax.swing.JPanel();
+        tenKeyItemColorLabel = new javax.swing.JLabel();
+        textColorLabel = new javax.swing.JLabel();
         backgroundColorButton = new javax.swing.JButton();
-        textColorPanel = new javax.swing.JPanel();
         textColorButton = new javax.swing.JButton();
+        tenKeyItemColorButton = new javax.swing.JButton();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -880,7 +898,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         bossPane.setLayout(bossPaneLayout);
         bossPaneLayout.setHorizontalGroup(
             bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
             .addGroup(bossPaneLayout.createSequentialGroup()
                 .addComponent(scriptLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -932,7 +950,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         xpPane.setLayout(xpPaneLayout);
         xpPaneLayout.setHorizontalGroup(
             xpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
             .addGroup(xpPaneLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(addDMachinButton))
@@ -955,7 +973,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         shopPane.setLayout(shopPaneLayout);
         shopPaneLayout.setHorizontalGroup(
             shopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(shopPanes, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+            .addComponent(shopPanes, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
         );
         shopPaneLayout.setVerticalGroup(
             shopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1042,28 +1060,37 @@ public class MaikaTracker extends javax.swing.JFrame {
 
         backgroundColorPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        tenKeyItemColorLabel.setForeground(new java.awt.Color(0, 153, 51));
+        tenKeyItemColorLabel.setText("10+ Key Items Color");
+
+        textColorLabel.setText("Text Color");
+
+        javax.swing.GroupLayout backgroundColorPanelLayout = new javax.swing.GroupLayout(backgroundColorPanel);
+        backgroundColorPanel.setLayout(backgroundColorPanelLayout);
+        backgroundColorPanelLayout.setHorizontalGroup(
+            backgroundColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(backgroundColorPanelLayout.createSequentialGroup()
+                .addGap(136, 136, 136)
+                .addComponent(textColorLabel)
+                .addGap(39, 39, 39)
+                .addComponent(tenKeyItemColorLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        backgroundColorPanelLayout.setVerticalGroup(
+            backgroundColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(backgroundColorPanelLayout.createSequentialGroup()
+                .addGroup(backgroundColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tenKeyItemColorLabel)
+                    .addComponent(textColorLabel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         backgroundColorButton.setText("Background Color");
         backgroundColorButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backgroundColorButtonActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout backgroundColorPanelLayout = new javax.swing.GroupLayout(backgroundColorPanel);
-        backgroundColorPanel.setLayout(backgroundColorPanelLayout);
-        backgroundColorPanelLayout.setHorizontalGroup(
-            backgroundColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundColorPanelLayout.createSequentialGroup()
-                .addGap(0, 25, Short.MAX_VALUE)
-                .addComponent(backgroundColorButton))
-        );
-        backgroundColorPanelLayout.setVerticalGroup(
-            backgroundColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(backgroundColorButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        textColorPanel.setBackground(new java.awt.Color(0, 0, 0));
-        textColorPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         textColorButton.setText("Text Color");
         textColorButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1072,18 +1099,12 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout textColorPanelLayout = new javax.swing.GroupLayout(textColorPanel);
-        textColorPanel.setLayout(textColorPanelLayout);
-        textColorPanelLayout.setHorizontalGroup(
-            textColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, textColorPanelLayout.createSequentialGroup()
-                .addGap(0, 25, Short.MAX_VALUE)
-                .addComponent(textColorButton))
-        );
-        textColorPanelLayout.setVerticalGroup(
-            textColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(textColorButton, javax.swing.GroupLayout.Alignment.TRAILING)
-        );
+        tenKeyItemColorButton.setText("10+ Key Items Color");
+        tenKeyItemColorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tenKeyItemColorButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -1091,22 +1112,32 @@ public class MaikaTracker extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(resetOnly)
-                    .addComponent(backgroundColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(162, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(backgroundColorButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(textColorButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tenKeyItemColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(backgroundColorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(resetOnly)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(backgroundColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tenKeyItemColorButton)
+                    .addComponent(backgroundColorButton)
+                    .addComponent(textColorButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5))
+                .addComponent(backgroundColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
+
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {backgroundColorButton, tenKeyItemColorButton, textColorButton});
 
         javax.swing.GroupLayout resetPaneLayout = new javax.swing.GroupLayout(resetPane);
         resetPane.setLayout(resetPaneLayout);
@@ -1128,7 +1159,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 113, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(264, 264, 264))
@@ -1232,6 +1263,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         ShopPanel.UpdateFlags(flagset);
         PartyLabel.flagset = flagset;
         updateLogic();
+        updateKeyItemCountLabel();
     }//GEN-LAST:event_applyFlagsButtonActionPerformed
 
     private void resetOnlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetOnlyActionPerformed
@@ -1246,8 +1278,12 @@ public class MaikaTracker extends javax.swing.JFrame {
         setBackgroundColor(true);
     }//GEN-LAST:event_backgroundColorButtonActionPerformed
 
+    private void tenKeyItemColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tenKeyItemColorButtonActionPerformed
+        setTenKeyItemColor(true);
+    }//GEN-LAST:event_tenKeyItemColorButtonActionPerformed
+
     private void calculateXp(int xpGained) {
-        int kiMultipler = getKeyItemCount() >= 10 ? 2 : 1;
+        int kiMultipler = getKeyItemCount() >= 10 && (flagset == null || flagset.contains("Xk")) ? 2 : 1;
         List<PartyMember> members = getPartyMembers();
         PartyTableModel model = (PartyTableModel) xpTable.getModel();
         List<Integer> partyLevels = members.stream().map(p -> model.getStartingLevel(p)).collect(Collectors.toList());
@@ -1402,8 +1438,10 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JLabel scriptLabel;
     private javax.swing.JPanel shopPane;
     private javax.swing.JTabbedPane shopPanes;
+    private javax.swing.JButton tenKeyItemColorButton;
+    private javax.swing.JLabel tenKeyItemColorLabel;
     private javax.swing.JButton textColorButton;
-    private javax.swing.JPanel textColorPanel;
+    private javax.swing.JLabel textColorLabel;
     private javax.swing.JPanel xpPane;
     private javax.swing.JTable xpTable;
     // End of variables declaration//GEN-END:variables
