@@ -1247,7 +1247,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_backgroundColorButtonActionPerformed
 
     private void calculateXp(int xpGained) {
-        int kiMultipler = getKeyItemCount() >= 10 ? 2 : 1;
+        int kiMultipler = getKeyItemCount() >= 10 && (flagset == null || flagset.contains("Xk")) ? 2 : 1;
         List<PartyMember> members = getPartyMembers();
         PartyTableModel model = (PartyTableModel) xpTable.getModel();
         List<Integer> partyLevels = members.stream().map(p -> model.getStartingLevel(p)).collect(Collectors.toList());
