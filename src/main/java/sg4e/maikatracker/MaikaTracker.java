@@ -430,6 +430,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         resetOnly.setSelected(prefs.getBoolean(RESET_ONLY_ID, resetOnly.isSelected()));
         setTextColor(false);
         setBackgroundColor(false);
+        setTenKeyItemColor(false);
     }
     
     public List<PartyMember> getPartyMembers() {
@@ -641,7 +642,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     public void updateKeyItemCountLabel() {
         keyItemCountLabel.setText("Key Items: " + getKeyItemCount());
         Boolean keyItemBonusXP = flagset == null || flagset.contains("Xk");
-        keyItemCountLabel.setForeground(getKeyItemCount() >= 10 && keyItemBonusXP ? tenKeyItemColorButton.getForeground() : textColorLabel.getForeground());
+        keyItemCountLabel.setForeground(getKeyItemCount() >= 10 && keyItemBonusXP ? tenKeyItemColorLabel.getForeground() : textColorLabel.getForeground());
     }
         
     public int getKeyItemCount() {
@@ -693,7 +694,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         if(textColor == null)
             return;
 
-        textColorLabel.setBackground(textColor);
+        textColorLabel.setForeground(textColor);
         updateKeyItemCountLabel();
         floorLabel.setForeground(textColor);
         bossAtLabel.setForeground(textColor);
@@ -1262,6 +1263,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         ShopPanel.UpdateFlags(flagset);
         PartyLabel.flagset = flagset;
         updateLogic();
+        updateKeyItemCountLabel();
     }//GEN-LAST:event_applyFlagsButtonActionPerformed
 
     private void resetOnlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetOnlyActionPerformed
