@@ -99,11 +99,21 @@ public class PartyTableModel extends DefaultTableModel {
             setValueAt(hpRange.lowerEndpoint() + "-" + hpRange.upperEndpoint(), i, 5);
             setValueAt(mpRange.lowerEndpoint() + "-" + mpRange.upperEndpoint(), i, 6);
             Stats s = m.getStats();
-            setValueAt(s.getStrength(), i, 6);
-            setValueAt(s.getAgility(), i, 7);
-            setValueAt(s.getVitality(), i, 8);
-            setValueAt(s.getWillpower(), i, 9);
-            setValueAt(s.getWisdom(), i, 10);
+            Stats smax = m.getStatsMax();
+            if(smax == null || s.equals(smax)) {
+                setValueAt(s.getStrength(), i, 7);
+                setValueAt(s.getAgility(), i, 8);
+                setValueAt(s.getVitality(), i, 9);
+                setValueAt(s.getWillpower(), i, 10);
+                setValueAt(s.getWisdom(), i, 11);
+            }
+            else {
+                setValueAt(s.getStrength() + "-" + smax.getStrength(), i, 7);
+                setValueAt(s.getAgility() + "-" + smax.getAgility(), i, 8);
+                setValueAt(s.getVitality() + "-" + smax.getVitality(), i, 9);
+                setValueAt(s.getWillpower() + "-" + smax.getWillpower(), i, 10);
+                setValueAt(s.getWisdom() + "-" + smax.getWisdom(), i, 11);
+            }
         }
     }
     
