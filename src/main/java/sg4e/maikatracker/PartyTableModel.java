@@ -32,10 +32,10 @@ import sg4e.ff4stats.party.Stats;
 public class PartyTableModel extends DefaultTableModel {
     
     private final Class[] types = new Class [] {
-        java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+        java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
     };
     private final boolean[] canEdit = new boolean [] {
-        false, true, true, false, false, false, false, false, false, false, false
+        false, true, true, false, false, false, false, false, false, false, false, false
     };
     
     private List<PartyMember> members = new ArrayList<>();
@@ -44,14 +44,14 @@ public class PartyTableModel extends DefaultTableModel {
     
     public PartyTableModel() {
         super(new Object [][] {
-            {null, null, null, null, null, null, null, null, null, null, null},
-            {null, null, null, null, null, null, null, null, null, null, null},
-            {null, null, null, null, null, null, null, null, null, null, null},
-            {null, null, null, null, null, null, null, null, null, null, null},
-            {null, null, null, null, null, null, null, null, null, null, null}
+            {null, null, null, null, null, null, null, null, null, null, null, null},
+            {null, null, null, null, null, null, null, null, null, null, null, null},
+            {null, null, null, null, null, null, null, null, null, null, null, null},
+            {null, null, null, null, null, null, null, null, null, null, null, null},
+            {null, null, null, null, null, null, null, null, null, null, null, null}
         },
         new String [] {
-            "Party", "Start Lvl", "Start XP", "Level", "XP", "HP", "Str", "Agi", "Vit", "Will", "Wis"
+            "Party", "Start Lvl", "Start XP", "Level", "XP", "HP", "MP", "Str", "Agi", "Vit", "Will", "Wis"
         });
 //        addTableModelListener((tableEvent) -> {
 //            final int col = tableEvent.getColumn();
@@ -92,10 +92,12 @@ public class PartyTableModel extends DefaultTableModel {
         for(int i = 0; i < members.size(); i++) {
             PartyMember m = members.get(i);
             Range<Integer> hpRange = m.getData().getHpRangeAtLevel(m.getLevel());
+            Range<Integer> mpRange = m.getData().getMpRangeAtLevel(m.getLevel());
             setValueAt(m.getData().toString(), i, 0);
             setValueAt(m.getLevel(), i, 3);
             setValueAt(m.getXp(), i, 4);
             setValueAt(hpRange.lowerEndpoint() + "-" + hpRange.upperEndpoint(), i, 5);
+            setValueAt(mpRange.lowerEndpoint() + "-" + mpRange.upperEndpoint(), i, 6);
             Stats s = m.getStats();
             setValueAt(s.getStrength(), i, 6);
             setValueAt(s.getAgility(), i, 7);
