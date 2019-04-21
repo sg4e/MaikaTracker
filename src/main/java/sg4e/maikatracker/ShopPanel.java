@@ -8,12 +8,14 @@ package sg4e.maikatracker;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.JCheckBox;
 import sg4e.ff4stats.fe.FlagSet;
 
@@ -25,8 +27,24 @@ public class ShopPanel extends javax.swing.JPanel {
 
     private static final List<ShopPanel> shopPanels = new ArrayList<ShopPanel>();
     private static final Map<String,Set<String>> itemLocations = new HashMap<String, Set<String>>();
+    public static ShopPanel knownLocationsPanel = null;
     
     private final String shopLocation;
+    
+    public ShopPanel() {
+        initComponents();
+        shopPanels.add(this);
+        shopLocation = null;
+        
+        Component[] components = (Component[])getComponents();
+        for (Component comp : components) {
+            if (comp instanceof JCheckBox) {
+                JCheckBox box = (JCheckBox) comp;
+                itemLocations.put(box.getText(), new HashSet<String>());
+            }
+        }
+        knownLocationsPanel = this;
+    }
     
     /**
      * Creates new form ShopPanel
@@ -45,6 +63,12 @@ public class ShopPanel extends javax.swing.JPanel {
         }
     }
     
+    private static List<JCheckBox> getCheckBoxes(ShopPanel panel) {
+        return Arrays.stream(panel.getComponents()).map(c -> (Component) c)
+                        .filter(c -> c instanceof JCheckBox)
+                        .map(c -> (JCheckBox) c).collect(Collectors.toList());
+    }
+    
     public static void UpdateFlags(FlagSet flagset)
     {
         
@@ -59,36 +83,31 @@ public class ShopPanel extends javax.swing.JPanel {
         final Boolean noApples = flagset != null && flagset.contains("-noapples");
         final Boolean pass = flagset == null || flagset.contains("Ps");
        
-        shopPanels.forEach(panel -> {
-            Component[] components = (Component[])panel.getComponents();
-            
-            for (Component comp : components) {
-                if (comp instanceof JCheckBox) {
-                    JCheckBox box = (JCheckBox) comp;
-                    switch(box.getName())
-                    {
-                        case "j item":                        
-                            box.setVisible(jItems && !vanillaShop && !cabinsOnly && !emptyShop);
-                            break;
-                        case "siren":
-                            box.setVisible(jItems && !noSirens && !vanillaShop && !cabinsOnly && !emptyShop);
-                            break;
-                        case "apples":
-                            box.setVisible(jItems && wildShops && !noApples && !vanillaShop && !cabinsOnly && !emptyShop);
-                            break;
-                            
-                        case "pass":
-                            box.setVisible(pass);
-                            break;
-                            
-                        case "cabin":
-                            box.setVisible(!emptyShop);
-                            break;
-                            
-                        case "default":
-                            box.setVisible(!emptyShop && !cabinsOnly);
-                            break;
-                    }
+        shopPanels.forEach(panel -> {            
+            for (JCheckBox box : getCheckBoxes(panel)) {
+                switch(box.getName())
+                {
+                    case "j item":                        
+                        box.setVisible(jItems && !vanillaShop && !cabinsOnly && !emptyShop);
+                        break;
+                    case "siren":
+                        box.setVisible(jItems && !noSirens && !vanillaShop && !cabinsOnly && !emptyShop);
+                        break;
+                    case "apples":
+                        box.setVisible(jItems && wildShops && !noApples && !vanillaShop && !cabinsOnly && !emptyShop);
+                        break;
+
+                    case "pass":
+                        box.setVisible(pass);
+                        break;
+
+                    case "cabin":
+                        box.setVisible(!emptyShop);
+                        break;
+
+                    case "default":
+                        box.setVisible(!emptyShop && !cabinsOnly);
+                        break;
                 }
             }
         });
@@ -96,15 +115,10 @@ public class ShopPanel extends javax.swing.JPanel {
     
     public static void reset() {
         shopPanels.forEach(panel -> {
-            Component[] components = (Component[])panel.getComponents();
-            
-            for (Component comp : components) {
-                if (comp instanceof JCheckBox) {
-                    JCheckBox box = (JCheckBox) comp;
-                    box.setSelected(false);
-                    if(!itemLocations.get(box.getText()).isEmpty())
-                        itemLocations.get(box.getText()).clear();
-                }
+            for (JCheckBox box : getCheckBoxes(panel)) {
+                box.setSelected(false);
+                if(!itemLocations.get(box.getText()).isEmpty())
+                    itemLocations.get(box.getText()).clear();
             }
         });
         UpdateToolTips();
@@ -112,13 +126,8 @@ public class ShopPanel extends javax.swing.JPanel {
     
     public static void setTextColor(Color color) {
         shopPanels.forEach(panel -> {
-            Component[] components = (Component[])panel.getComponents();
-            
-            for (Component comp : components) {
-                if (comp instanceof JCheckBox) {
-                    JCheckBox box = (JCheckBox) comp;
-                    box.setForeground(color);
-                }
+            for (JCheckBox box : getCheckBoxes(panel)) {
+                box.setForeground(color);
             }
         });
     }
@@ -126,26 +135,20 @@ public class ShopPanel extends javax.swing.JPanel {
     public static void setBackgroundColor(Color color) {
         shopPanels.forEach(panel -> {
             panel.setBackground(color);
-            Component[] components = (Component[])panel.getComponents();
-            
-            for (Component comp : components) {
-                if (comp instanceof JCheckBox) {
-                    JCheckBox box = (JCheckBox) comp;
-                    box.setBackground(color);
-                }
+            for (JCheckBox box : getCheckBoxes(panel)) {
+                box.setBackground(color);
             }
         });
     }
     
     private static void UpdateToolTips() {
         shopPanels.forEach(panel -> {
-            Component[] components = (Component[])panel.getComponents();
-            
-            for (Component comp : components) {
-                if (comp instanceof JCheckBox) {
-                    JCheckBox box = (JCheckBox) comp;
-                    box.setToolTipText(String.join(", ", itemLocations.get(box.getText()).stream().sorted().collect(Collectors.toList())));
-                }
+            for (JCheckBox box : getCheckBoxes(panel)) {
+                List<String> locations = itemLocations.get(box.getText()).stream().sorted().collect(Collectors.toList());
+                if(locations.isEmpty())
+                    box.setToolTipText(null);
+                else
+                    box.setToolTipText(String.join(", ", locations));
             }
         });
     }
@@ -563,11 +566,26 @@ public class ShopPanel extends javax.swing.JPanel {
     private void checkboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxActionPerformed
         if(evt.getSource() instanceof JCheckBox) {
             JCheckBox box = (JCheckBox) evt.getSource();
-            if(box.isSelected())
-                itemLocations.get(box.getText()).add(shopLocation);
-            else
-                itemLocations.get(box.getText()).remove(shopLocation);
+            if(this == knownLocationsPanel) {
+                box.setSelected(!itemLocations.get(box.getText()).isEmpty());
+            }
+            else {                
+                if(box.isSelected())
+                    itemLocations.get(box.getText()).add(shopLocation);
+                else
+                    itemLocations.get(box.getText()).remove(shopLocation);
+                
+                if(knownLocationsPanel == null)
+                    return; 
+                
+                getCheckBoxes(knownLocationsPanel).stream()
+                        .filter(c -> c.getText().equals(box.getText()))
+                        .collect(Collectors.toList()).forEach((b) -> {
+                            b.setSelected(!itemLocations.get(box.getText()).isEmpty());
+                });
+            }
         }
+        
         UpdateToolTips();
     }//GEN-LAST:event_checkboxActionPerformed
 
