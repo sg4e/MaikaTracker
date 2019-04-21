@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -36,6 +37,7 @@ import java.util.AbstractSequentialList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -88,6 +90,8 @@ public class MaikaTracker extends javax.swing.JFrame {
     private static final String LUNAR_CORE = "Lunar Core";
     private static final String SYLPH_CAVE = "Sylph Cave";
     private static final int D_MACHIN_XP = 41500;
+    
+    private final Map<String, ShopPanel> shopMap = new HashMap<>();
     
     private final JPanel logicPanel;
     private final StativeLabel dmistLabel;
@@ -406,19 +410,23 @@ public class MaikaTracker extends javax.swing.JFrame {
         floorComboBox.setSelectedItem(0);
         atlas.showFloor((String) dungeonComboBox.getSelectedItem(), (String) floorComboBox.getSelectedItem());
         
-        initShop("Agart");
-        initShop("Baron");
-        initShop("Eblan Cave");
-        initShop("Fabul");
-        initShop("Kaipo");
-        initShop("Mysidia");
-        initShop("Silvera");
-        initShop("Troia [Item]");
-        initShop("Troia [Pub]");
-        initShop("Dwarf Castle");
-        initShop("Feymarch");
-        initShop("Tomara");
-        initShop("Hummingway");
+        initShop(agartShopLabel.getText(), false);
+        initShop(baronShopLabel.getText(), true);
+        initShop(eblanCaveShopLabel.getText(), false);
+        initShop(fabulShopLabel.getText(), false);
+        initShop(kaipoShopLabel.getText(), false);
+        initShop(mysidiaShopLabel.getText(), false);
+        initShop(silveraShopLabel.getText(), false);
+        initShop(troiaItemShopLabel.getText(), false);
+        initShop(troiaPubShopLabel.getText(), false);
+        initShop(dwarfCastleShopLabel.getText(), false);
+        initShop(feymarchShopLabel.getText(), false);
+        initShop(tomaraShopLabel.getText(), false);
+        initShop(hummingwayShopLabel.getText(), false);
+        
+        ShopPanel.knownLocationsPanel = initShop(knownShopLocationsLabel.getText(), false);
+        
+        //shopPanel2.setVisible(false);
         
         updateKeyItemCountLabel();
         applyFlagsButtonActionPerformed(null);
@@ -458,9 +466,23 @@ public class MaikaTracker extends javax.swing.JFrame {
         mapPane.add(atlas);
     }
     
-    private void initShop(String shopLocation)
+    private ShopPanel initShop(String shopLocation, Boolean visible)
     {
-        shopPanes.add(shopLocation, new ShopPanel(shopLocation));
+        if(shopMap.containsKey(shopLocation)) {
+            return shopMap.get(shopLocation);
+        }
+        
+        ShopPanel shopPanel = new ShopPanel(shopLocation);
+        shopPanelsPanel.add(shopPanel);
+        shopPanel.setVisible(visible);
+        shopMap.put(shopLocation, shopPanel);
+        
+        setTextColor(false);
+        setBackgroundColor(false);
+        ShopPanel.UpdateFlags(flagset);
+
+        return shopPanel;
+        //shopPanes.add(shopLocation, new ShopPanel(shopLocation));
     }
     
     public StativeLabel loadBossIcon(String off, String on, String bossName) {
@@ -704,6 +726,23 @@ public class MaikaTracker extends javax.swing.JFrame {
             panel.setTextColor(textColor);
         });
         ShopPanel.setTextColor(textColor);
+        
+        agartShopLabel.setForeground(textColor);
+        baronShopLabel.setForeground(textColor);
+        eblanCaveShopLabel.setForeground(textColor);
+        fabulShopLabel.setForeground(textColor);
+        kaipoShopLabel.setForeground(textColor);
+        mysidiaShopLabel.setForeground(textColor);
+        silveraShopLabel.setForeground(textColor);
+        troiaItemShopLabel.setForeground(textColor);
+        troiaPubShopLabel.setForeground(textColor);
+        dwarfCastleShopLabel.setForeground(textColor);
+        feymarchShopLabel.setForeground(textColor);
+        tomaraShopLabel.setForeground(textColor);
+        hummingwayShopLabel.setForeground(textColor);
+        activeShopPointerLabel.setForeground(textColor);
+        knownShopLocationsLabel.setForeground(textColor);
+        
         updateLogic();
     }
     
@@ -712,6 +751,8 @@ public class MaikaTracker extends javax.swing.JFrame {
         if(backgroundColor == null)
             return;
         backgroundColorPanel.setBackground(backgroundColor);
+        shopLocationsPanel.setBackground(backgroundColor);
+        shopPanelsPanel.setBackground(backgroundColor);
         getContentPane().setBackground(backgroundColor);
         logicPanel.setBackground(backgroundColor);
         bossPane.setBackground(backgroundColor);
@@ -807,7 +848,23 @@ public class MaikaTracker extends javax.swing.JFrame {
         addDMachinButton = new javax.swing.JButton();
         logicTabPanel = new javax.swing.JPanel();
         shopPane = new javax.swing.JPanel();
-        shopPanes = new javax.swing.JTabbedPane();
+        shopPanelsPanel = new javax.swing.JPanel();
+        shopLocationsPanel = new javax.swing.JPanel();
+        agartShopLabel = new javax.swing.JLabel();
+        baronShopLabel = new javax.swing.JLabel();
+        eblanCaveShopLabel = new javax.swing.JLabel();
+        fabulShopLabel = new javax.swing.JLabel();
+        kaipoShopLabel = new javax.swing.JLabel();
+        mysidiaShopLabel = new javax.swing.JLabel();
+        silveraShopLabel = new javax.swing.JLabel();
+        troiaItemShopLabel = new javax.swing.JLabel();
+        troiaPubShopLabel = new javax.swing.JLabel();
+        dwarfCastleShopLabel = new javax.swing.JLabel();
+        feymarchShopLabel = new javax.swing.JLabel();
+        tomaraShopLabel = new javax.swing.JLabel();
+        hummingwayShopLabel = new javax.swing.JLabel();
+        knownShopLocationsLabel = new javax.swing.JLabel();
+        activeShopPointerLabel = new javax.swing.JLabel();
         resetPane = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         resetLabel = new javax.swing.JLabel();
@@ -898,7 +955,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         bossPane.setLayout(bossPaneLayout);
         bossPaneLayout.setHorizontalGroup(
             bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
             .addGroup(bossPaneLayout.createSequentialGroup()
                 .addComponent(scriptLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -950,7 +1007,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         xpPane.setLayout(xpPaneLayout);
         xpPaneLayout.setHorizontalGroup(
             xpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
             .addGroup(xpPaneLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(addDMachinButton))
@@ -967,17 +1024,175 @@ public class MaikaTracker extends javax.swing.JFrame {
         mainTabbedPane.addTab("XP", xpPane);
         mainTabbedPane.addTab("Logic", logicTabPanel);
 
-        shopPanes.setToolTipText("");
+        shopPanelsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        shopLocationsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        shopLocationsPanel.setLayout(null);
+
+        agartShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        agartShopLabel.setText("Agart");
+        agartShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(agartShopLabel);
+        agartShopLabel.setBounds(50, 10, 49, 22);
+
+        baronShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        baronShopLabel.setText("Baron");
+        baronShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(baronShopLabel);
+        baronShopLabel.setBounds(50, 30, 54, 22);
+
+        eblanCaveShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        eblanCaveShopLabel.setText("Eblan Cave");
+        eblanCaveShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(eblanCaveShopLabel);
+        eblanCaveShopLabel.setBounds(50, 50, 99, 22);
+
+        fabulShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        fabulShopLabel.setText("Fabul");
+        fabulShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(fabulShopLabel);
+        fabulShopLabel.setBounds(50, 70, 49, 22);
+
+        kaipoShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        kaipoShopLabel.setText("Kaipo");
+        kaipoShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(kaipoShopLabel);
+        kaipoShopLabel.setBounds(50, 90, 51, 22);
+
+        mysidiaShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        mysidiaShopLabel.setText("Mysidia");
+        mysidiaShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(mysidiaShopLabel);
+        mysidiaShopLabel.setBounds(50, 110, 67, 22);
+
+        silveraShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        silveraShopLabel.setText("Silvera");
+        silveraShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(silveraShopLabel);
+        silveraShopLabel.setBounds(50, 130, 61, 22);
+
+        troiaItemShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        troiaItemShopLabel.setText("Troia [Item]");
+        troiaItemShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(troiaItemShopLabel);
+        troiaItemShopLabel.setBounds(50, 150, 111, 22);
+
+        troiaPubShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        troiaPubShopLabel.setText("Troia [Pub]");
+        troiaPubShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(troiaPubShopLabel);
+        troiaPubShopLabel.setBounds(50, 170, 102, 22);
+
+        dwarfCastleShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        dwarfCastleShopLabel.setText("Dwarf Castle");
+        dwarfCastleShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(dwarfCastleShopLabel);
+        dwarfCastleShopLabel.setBounds(50, 210, 116, 22);
+
+        feymarchShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        feymarchShopLabel.setText("Feymarch");
+        feymarchShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(feymarchShopLabel);
+        feymarchShopLabel.setBounds(50, 230, 89, 22);
+
+        tomaraShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        tomaraShopLabel.setText("Tomara");
+        tomaraShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(tomaraShopLabel);
+        tomaraShopLabel.setBounds(50, 250, 69, 22);
+
+        hummingwayShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        hummingwayShopLabel.setText("Hummingway");
+        hummingwayShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(hummingwayShopLabel);
+        hummingwayShopLabel.setBounds(50, 290, 125, 22);
+
+        knownShopLocationsLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        knownShopLocationsLabel.setText("Known Locations");
+        knownShopLocationsLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shopLabelClicked(evt);
+            }
+        });
+        shopLocationsPanel.add(knownShopLocationsLabel);
+        knownShopLocationsLabel.setBounds(50, 330, 155, 22);
+
+        activeShopPointerLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        activeShopPointerLabel.setText("-->");
+        shopLocationsPanel.add(activeShopPointerLabel);
+        activeShopPointerLabel.setBounds(10, 30, 31, 22);
 
         javax.swing.GroupLayout shopPaneLayout = new javax.swing.GroupLayout(shopPane);
         shopPane.setLayout(shopPaneLayout);
         shopPaneLayout.setHorizontalGroup(
             shopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(shopPanes, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+            .addGroup(shopPaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(shopLocationsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(shopPanelsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                .addContainerGap())
         );
         shopPaneLayout.setVerticalGroup(
             shopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(shopPanes, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+            .addGroup(shopPaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(shopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(shopPanelsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(shopLocationsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(161, Short.MAX_VALUE))
         );
 
         mainTabbedPane.addTab("Shop", shopPane);
@@ -1121,7 +1336,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tenKeyItemColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(backgroundColorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1282,6 +1497,18 @@ public class MaikaTracker extends javax.swing.JFrame {
         setTenKeyItemColor(true);
     }//GEN-LAST:event_tenKeyItemColorButtonActionPerformed
 
+    private void shopLabelClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_shopLabelClicked
+        if(evt.getSource() instanceof JLabel) {
+            JLabel label = (JLabel)evt.getSource();
+
+            shopMap.values().forEach(panel -> panel.setVisible(false));
+            shopMap.get(label.getText()).setVisible(true);
+
+            Rectangle bounds = activeShopPointerLabel.getBounds();
+            activeShopPointerLabel.setBounds(bounds.x, label.getBounds().y, bounds.width, bounds.height);
+        }
+    }//GEN-LAST:event_shopLabelClicked
+
     private void calculateXp(int xpGained) {
         int kiMultipler = getKeyItemCount() >= 10 && (flagset == null || flagset.contains("Xk")) ? 2 : 1;
         List<PartyMember> members = getPartyMembers();
@@ -1400,10 +1627,13 @@ public class MaikaTracker extends javax.swing.JFrame {
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault());
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel activeShopPointerLabel;
     private javax.swing.JButton addDMachinButton;
+    private javax.swing.JLabel agartShopLabel;
     private javax.swing.JButton applyFlagsButton;
     private javax.swing.JButton backgroundColorButton;
     private javax.swing.JPanel backgroundColorPanel;
+    private javax.swing.JLabel baronShopLabel;
     private javax.swing.JLabel bossAtLabel;
     private javax.swing.JComboBox<String> bossComboBox;
     private javax.swing.JPanel bossIconPanel;
@@ -1411,11 +1641,16 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel bossSelectionPanel;
     private javax.swing.JTable bossTable;
     private javax.swing.JComboBox<String> dungeonComboBox;
+    private javax.swing.JLabel dwarfCastleShopLabel;
+    private javax.swing.JLabel eblanCaveShopLabel;
     private javax.swing.JTextArea enemyScriptTextArea;
+    private javax.swing.JLabel fabulShopLabel;
+    private javax.swing.JLabel feymarchShopLabel;
     private javax.swing.JLabel flagErrorLabel;
     private javax.swing.JTextArea flagsTextField;
     private javax.swing.JComboBox<String> floorComboBox;
     private javax.swing.JLabel floorLabel;
+    private javax.swing.JLabel hummingwayShopLabel;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -1423,12 +1658,15 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JLabel kaipoShopLabel;
     private javax.swing.JLabel keyItemCountLabel;
     private javax.swing.JPanel keyItemPanel;
+    private javax.swing.JLabel knownShopLocationsLabel;
     private javax.swing.JPanel logicTabPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JPanel mapPane;
     private javax.swing.JPanel mapSelectionPanel;
+    private javax.swing.JLabel mysidiaShopLabel;
     private javax.swing.JPanel partyPanel;
     private javax.swing.JComboBox<String> positionComboBox;
     private javax.swing.JButton resetButton;
@@ -1436,12 +1674,17 @@ public class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JCheckBox resetOnly;
     private javax.swing.JPanel resetPane;
     private javax.swing.JLabel scriptLabel;
+    private javax.swing.JPanel shopLocationsPanel;
     private javax.swing.JPanel shopPane;
-    private javax.swing.JTabbedPane shopPanes;
+    private javax.swing.JPanel shopPanelsPanel;
+    private javax.swing.JLabel silveraShopLabel;
     private javax.swing.JButton tenKeyItemColorButton;
     private javax.swing.JLabel tenKeyItemColorLabel;
     private javax.swing.JButton textColorButton;
     private javax.swing.JLabel textColorLabel;
+    private javax.swing.JLabel tomaraShopLabel;
+    private javax.swing.JLabel troiaItemShopLabel;
+    private javax.swing.JLabel troiaPubShopLabel;
     private javax.swing.JPanel xpPane;
     private javax.swing.JTable xpTable;
     // End of variables declaration//GEN-END:variables
