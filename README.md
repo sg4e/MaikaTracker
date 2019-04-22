@@ -57,6 +57,8 @@ MaikaTracker makes use of [Netbeans GUI Builder](https://netbeans.org/kb/docs/ja
 
 Maps were rendered by aexoden, who is also the author of [an excellent map-navigation resource](https://ff4kb.aexoden.com/tools/map-viewer/).
 
+The D. Machin encounter-manipulation image was created by Myself086.
+
 This repository contains some 3rd-party assets, which are provided under different licenses from the codebase. These are specified below:
 
 Key-item and boss icons (`src/main/resources/key-items`) are by SchalaKitty. All rights reserved. Used with permission. Derivative projects will need to contact SchalaKitty for permission to use these assets. See http://schala-kitty.net/ff4fe-tracker/
