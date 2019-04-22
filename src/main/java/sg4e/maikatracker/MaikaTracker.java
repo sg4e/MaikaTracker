@@ -350,6 +350,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("G7", 6, 26));
         initMap(giant, "4", GIANT_OF_BABIL, "Passage",
                 new TreasureChest("G8", 21, 14));
+        initMap(giant, "GrindFightManip", GIANT_OF_BABIL, "D-Machine Grind");
         final String lunar = "lunar";
         initMap(lunar, "path", LUNAR_PATH, "1F",
                 new TreasureChest("P1", 22, 26),
@@ -955,7 +956,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         bossPane.setLayout(bossPaneLayout);
         bossPaneLayout.setHorizontalGroup(
             bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
             .addGroup(bossPaneLayout.createSequentialGroup()
                 .addComponent(scriptLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1007,7 +1008,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         xpPane.setLayout(xpPaneLayout);
         xpPaneLayout.setHorizontalGroup(
             xpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
             .addGroup(xpPaneLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(addDMachinButton))
@@ -1182,7 +1183,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(shopLocationsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(shopPanelsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                .addComponent(shopPanelsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
                 .addContainerGap())
         );
         shopPaneLayout.setVerticalGroup(
@@ -1336,7 +1337,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tenKeyItemColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(backgroundColorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1404,7 +1405,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane)
+            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 669, Short.MAX_VALUE)
             .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(partyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
