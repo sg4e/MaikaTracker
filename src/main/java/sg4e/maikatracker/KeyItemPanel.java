@@ -62,13 +62,7 @@ public class KeyItemPanel extends JPanel {
                     MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
                     if(!isKnown() || !tracker.isResetOnly()) {
                         locationMenu = ((MaikaTracker)SwingUtilities.getWindowAncestor(KeyItemPanel.this))
-                                .getAvailableLocationsMenu(loc -> {
-                                    if(isKnown())
-                                        reset();
-                                    location = loc;
-                                    locationLabel.setText(loc.getAbbreviatedLocation());
-                                    locationLabel.setToolTipText(loc.getLocation());
-                                });
+                                .getAvailableLocationsMenu(loc -> setLocation(loc));
                         locationMenu.add(new JSeparator(), 0);
                         JMenuItem custom = new JMenuItem("Chest location");
                         custom.addActionListener((ae) -> {
@@ -118,6 +112,14 @@ public class KeyItemPanel extends JPanel {
         locationLabel = new JLabel(UNKNOWN_LOCATION, JLabel.CENTER);
         locationLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);        
         add(locationLabel, BorderLayout.CENTER);
+    }
+    
+    public void setLocation(KeyItemLocation loc) {
+        if(isKnown())
+            reset();
+        location = loc;
+        locationLabel.setText(loc.getAbbreviatedLocation());
+        locationLabel.setToolTipText(loc.getLocation());
     }
     
     public void setTextColor(Color color) {
@@ -171,6 +173,75 @@ public class KeyItemPanel extends JPanel {
         location = null;
         if(resetIcon)
             ((StativeLabel)itemImage).reset();
+        
+        if(tracker.flagset == null) {
+            resetting = false;
+            return;
+        }
+        
+        if (tracker.flagset != null && !tracker.flagset.contains("K")) {
+            switch(metadata) {
+                case ADAMANT:
+                    setLocation(KeyItemLocation.RAT_TAIL);
+                    break;
+                case BARON_KEY:
+                    setLocation(KeyItemLocation.BARON_INN);
+                    break;
+                case CRYSTAL:
+                    setLocation(tracker.flagset.contains("V1") ? KeyItemLocation.KOKKOL : KeyItemLocation.ZEROMUS);
+                    break;
+                case DARKNESS:
+                    setLocation(KeyItemLocation.SEALED_CAVE);
+                    break;
+                case EARTH:
+                    setLocation(KeyItemLocation.DARK_ELF);
+                    break;
+                case HOOK:
+                    setLocation(KeyItemLocation.LOW_BABIL);
+                    break;
+                case LEGEND:
+                    setLocation(KeyItemLocation.ORDEALS);
+                    break;
+                case LUCA_KEY:
+                    setLocation(KeyItemLocation.DWARF_CASTLE);
+                    break;
+                case MAGMA_KEY:
+                    setLocation(KeyItemLocation.ZOT);
+                    break;
+                case PACKAGE:
+                    setLocation(KeyItemLocation.START);
+                    break;
+                case PAN:
+                    setLocation(KeyItemLocation.SHEILA_PANLESS);
+                    break;
+                case PASS:
+                    if(tracker.flagset.contains("Pk"))
+                        setLocation(KeyItemLocation.BARON_CASTLE);
+                    break;
+                case PINK_TAIL:                    
+                    break;
+                case RAT_TAIL:
+                    setLocation(KeyItemLocation.SUMMONED_MONSTERS_CHEST);
+                    break;
+                case SAND_RUBY:
+                    setLocation(KeyItemLocation.ANTLION);
+                    break;
+                case SPOON:
+                    setLocation(KeyItemLocation.SHEILA_PAN);
+                    break;
+                case TOWER_KEY:
+                    setLocation(KeyItemLocation.TOP_BABIL);
+                    break;
+                case TWIN_HARP:
+                    if(tracker.flagset == null)
+                        break;
+                    setLocation(tracker.flagset.contains("Nk") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
+                    break;
+            }
+        }
+        else if(tracker.flagset.contains("V1") && metadata.equals(KeyItemMetadata.CRYSTAL))
+            setLocation(KeyItemLocation.KOKKOL);
+        
         
         resetting = false;
     }
