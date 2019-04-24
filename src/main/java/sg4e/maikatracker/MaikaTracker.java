@@ -1494,9 +1494,9 @@ public class MaikaTracker extends javax.swing.JFrame {
         flagErrorLabel.setText("");
         try {
         if(flagsTextField.getText().startsWith("b"))
-            flagset = FlagSet.fromBinary(flagsTextField.getText());
+            flagset = FlagSet.fromBinary(flagsTextField.getText().trim());
         else
-            flagset = FlagSet.fromString(flagsTextField.getText());
+            flagset = FlagSet.fromString(flagsTextField.getText().trim());
         }
         catch (IllegalArgumentException ex) {
             flagErrorLabel.setText(ex.getMessage());
