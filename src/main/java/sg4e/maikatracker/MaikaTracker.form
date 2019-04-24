@@ -23,7 +23,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="mainTabbedPane" pref="669" max="32767" attributes="0"/>
+          <Component id="mainTabbedPane" max="32767" attributes="0"/>
           <Component id="keyItemPanel" alignment="0" max="32767" attributes="0"/>
           <Component id="partyPanel" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="1" attributes="0">

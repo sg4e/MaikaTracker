@@ -568,6 +568,20 @@ public class MaikaTracker extends javax.swing.JFrame {
                 case MIST:
                     createLocationPanel(l, (flagset == null || flagset.contains("Nk")) && dmistLabel.isActive());
                     break;
+                case KOKKOL:
+                    createLocationPanel(l, flagset == null || flagset.contains("V1"));
+                    break;
+                case ZEROMUS:
+                    break;
+                    
+                case FABUL:
+                    createLocationPanel(l, flagset == null || flagset.contains("K"));
+                    break;
+                    
+                case BARON_CASTLE:
+                    createLocationPanel(l, flagset == null || flagset.contains("K") || flagset.contains("Pk"));
+                    break;
+                    
                 default:
                     createLocationPanel(l, true);
                     break;
@@ -631,6 +645,18 @@ public class MaikaTracker extends javax.swing.JFrame {
             knownLocations.add(KeyItemLocation.OGOPOGO);
             knownLocations.add(KeyItemLocation.WYVERN);
         }
+        
+        if (flagset != null && !flagset.contains("K")) {
+            knownLocations.add(KeyItemLocation.FABUL);
+            if(!flagset.contains("Pk"))
+                knownLocations.add(KeyItemLocation.BARON_CASTLE);
+        }
+        
+        if (flagset != null && !flagset.contains("V1"))
+            knownLocations.add(KeyItemLocation.KOKKOL);
+        
+        //Always.  Crystal location set there automatically on K0 seeds.
+        knownLocations.add(KeyItemLocation.ZEROMUS);
         
         Arrays.stream(KeyItemLocation.values())
                 .filter(ki -> !knownLocations.contains(ki))
@@ -1468,9 +1494,9 @@ public class MaikaTracker extends javax.swing.JFrame {
         flagErrorLabel.setText("");
         try {
         if(flagsTextField.getText().startsWith("b"))
-            flagset = FlagSet.fromBinary(flagsTextField.getText());
+            flagset = FlagSet.fromBinary(flagsTextField.getText().trim());
         else
-            flagset = FlagSet.fromString(flagsTextField.getText());
+            flagset = FlagSet.fromString(flagsTextField.getText().trim());
         }
         catch (IllegalArgumentException ex) {
             flagErrorLabel.setText(ex.getMessage());
