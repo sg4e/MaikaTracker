@@ -622,6 +622,15 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     public JPopupMenu getAvailableLocationsMenu(Consumer<KeyItemLocation> actionOnEachItem) {
         JPopupMenu locationMenu = new JPopupMenu("Locations");
+        
+        List<KeyItemLocation> dLunar = Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .map(KeyItemPanel::getItemLocation)
+                .filter(Objects::nonNull)
+                .filter(ki -> ki.equals(KeyItemLocation.DLUNAR))
+                .collect(Collectors.toList());               
+        
+        
         Set<KeyItemLocation> knownLocations = Arrays.stream(keyItemPanel.getComponents())
                 .map(c -> (KeyItemPanel) c)
                 .map(KeyItemPanel::getItemLocation)
@@ -649,6 +658,8 @@ public class MaikaTracker extends javax.swing.JFrame {
             knownLocations.add(KeyItemLocation.OGOPOGO);
             knownLocations.add(KeyItemLocation.WYVERN);
         }
+        else if(dLunar.size() < 2)
+            knownLocations.remove(KeyItemLocation.DLUNAR);
         
         if (flagset != null && !flagset.contains("K")) {
             knownLocations.add(KeyItemLocation.FABUL);
