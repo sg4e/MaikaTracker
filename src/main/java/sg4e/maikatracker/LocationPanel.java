@@ -47,6 +47,10 @@ public class LocationPanel extends javax.swing.JPanel {
         setBackground(backgroundColor);
     }
     
+    public void setButtonEnabled(Boolean enabled) {
+        checkedButton.setEnabled(enabled);
+    }
+    
     public void setButtonListener(ActionListener l) {
         checkedButton.addActionListener(l);
     }

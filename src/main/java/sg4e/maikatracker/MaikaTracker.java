@@ -522,6 +522,10 @@ public class MaikaTracker extends javax.swing.JFrame {
         if(!createIfTrue) return;
         
         LocationPanel panel = new LocationPanel(l);
+        
+        if(l.equals(KeyItemLocation.MIST)) {
+            panel.setButtonEnabled(dmistLabel.isActive());
+        }
 
         panel.setButtonListener((ae) -> {
             locationsVisited.add(panel.getKeyItemLocation());
@@ -566,7 +570,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                     createLocationPanel(l, flagset == null || !flagset.contains("Nk"));
                     break;
                 case MIST:
-                    createLocationPanel(l, (flagset == null || flagset.contains("Nk")) && dmistLabel.isActive());
+                    createLocationPanel(l, flagset == null || flagset.contains("Nk"));
                     break;
                 case KOKKOL:
                     createLocationPanel(l, flagset == null || flagset.contains("V1"));
