@@ -76,8 +76,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     private static final Logger LOG = LogManager.getLogger();
     
-    private final TreasureAtlas atlas = new TreasureAtlas();
-    private final Set<KeyItemLocation> locationsVisited = new HashSet<>();
+    private final TreasureAtlas atlas = new TreasureAtlas();    
     private static final String TOWER_OF_ZOT = "Zot";
     private static final String EBLAN_CASTLE = "Eblan Castle";
     private static final String EBLAN_CAVE = "Eblan Cave";
@@ -101,13 +100,18 @@ public class MaikaTracker extends javax.swing.JFrame {
     private final Preferences prefs;
     private static final String RESET_ONLY_ID = "AllowResetOnlyWhenKeyItemSet";
     
+    public final Set<KeyItemLocation> locationsVisited = new HashSet<>();
+    
     public FlagSet flagset = null;
+    
+    public static MaikaTracker tracker;
 
     /**
      * Creates new form MaikaTracker
      */
     public MaikaTracker() {
-        initComponents();
+        tracker = this;
+        initComponents();        
         prefs = Preferences.userRoot().node(this.getClass().getName());
         Map<Battle, Formation> bosses = Battle.getAllBosses();
         List<String> bossNames = bosses.keySet().stream().map(Battle::getBoss).distinct().collect(Collectors.toList());
@@ -430,8 +434,9 @@ public class MaikaTracker extends javax.swing.JFrame {
         //shopPanel2.setVisible(false);
         
         updateKeyItemCountLabel();
-        applyFlagsButtonActionPerformed(null);
+        resetButtonActionPerformed(null);
         updateLogic();
+        mainTabbedPane.setSelectedComponent(resetPane);
         
         setTitle("MaikaTracker");
         pack();
@@ -528,6 +533,12 @@ public class MaikaTracker extends javax.swing.JFrame {
         }
 
         panel.setButtonListener((ae) -> {
+            Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .filter(ki -> ki.getItemLocation() != null)
+                .filter(ki -> ki.getItemLocation().equals(panel.getKeyItemLocation()))
+                .forEach(ki -> ki.setActive(true));
+            
             locationsVisited.add(panel.getKeyItemLocation());
             logicPanel.remove(panel);
             logicPanel.revalidate();
