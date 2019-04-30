@@ -1254,7 +1254,7 @@ public class MaikaTracker extends javax.swing.JFrame {
 
         resetLabel.setText("<html>Are you sure you would like to reset everything?<br> <br> This Action cannot be undone");
 
-        resetButton.setText("Reset");
+        resetButton.setText("Reset & Apply Flags");
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
