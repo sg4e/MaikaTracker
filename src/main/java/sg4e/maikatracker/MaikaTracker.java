@@ -518,9 +518,9 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     public void updateKeyItemLocation(KeyItemMetadata keyItem, String chestId) {
         //first, find the KeyItemPanel
-        getPanelForKeyItem(keyItem).setLocationInChest(chestId);
+        KeyItemPanel panel = getPanelForKeyItem(keyItem);        
         //then, update the chest in the atlas
-        atlas.setChestContents(chestId, keyItem);
+        panel.setLocationInChest(atlas.setChestContents(chestId, keyItem));
     }
     
     public void createLocationPanel(KeyItemLocation l, Boolean createIfTrue) {
@@ -623,8 +623,8 @@ public class MaikaTracker extends javax.swing.JFrame {
         return (MaikaTracker) SwingUtilities.getWindowAncestor(child);
     }
     
-    private KeyItemPanel getPanelForKeyItem(KeyItemMetadata keyItem) {
-        return Arrays.stream(keyItemPanel.getComponents())
+    public KeyItemPanel getPanelForKeyItem(KeyItemMetadata keyItem) {
+        return keyItem == null ? null : Arrays.stream(keyItemPanel.getComponents())
                 .map(c -> (KeyItemPanel) c)
                 .filter(kip -> keyItem.equals(kip.getKeyItem()))
                 .findAny()
@@ -1457,7 +1457,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 669, Short.MAX_VALUE)
+            .addComponent(mainTabbedPane)
             .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(partyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()

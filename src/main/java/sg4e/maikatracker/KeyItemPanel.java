@@ -41,6 +41,7 @@ public class KeyItemPanel extends JPanel {
     private final KeyItemMetadata metadata;
     private final JLabel locationLabel;
     private KeyItemLocation location = null;
+    private ChestLabel chestLabel = null;
     
     private static final String UNKNOWN_LOCATION = "?";
     
@@ -64,7 +65,10 @@ public class KeyItemPanel extends JPanel {
                             tracker.locationsVisited.remove(location);
                     }
                     else if (isInChest()) {
-                        // TODO: Add chest set/clear logic
+                        if (isAcquired())
+                            chestLabel.setChecked();
+                        else
+                            chestLabel.setUnchecked();
                     }
                     tracker.updateLogic();
                 }
@@ -158,19 +162,20 @@ public class KeyItemPanel extends JPanel {
     }
     
     public boolean isKnown() {
-        return location != null || !UNKNOWN_LOCATION.equals(locationLabel.getText());
+        return location != null || chestLabel != null;
     }
     
     public boolean isInChest() {
-        return location == null && !UNKNOWN_LOCATION.equals(locationLabel.getText());
+        return location == null && chestLabel != null;
     }
     
     public KeyItemMetadata getKeyItem() {
         return metadata;
     }
     
-    public void setLocationInChest(String chestId) {
-        locationLabel.setText(chestId);
+    public void setLocationInChest(ChestLabel label) {
+        chestLabel = label;
+        locationLabel.setText(label.getId());
     }
     
     public void reset() {
@@ -181,8 +186,10 @@ public class KeyItemPanel extends JPanel {
         if(resetting) return;
         resetting = true;
         
-        if (location == null && tracker.getAtlas().hasChestId(locationLabel.getText())) {
-            tracker.resetKeyItemLocation(metadata, locationLabel.getText());
+        if (isInChest()) {
+            chestLabel.clearKeyItem();
+            chestLabel.setUnchecked();
+            chestLabel = null;
         }
         
         if (location != null) {

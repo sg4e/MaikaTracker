@@ -44,10 +44,13 @@ public class ChestLabel extends JLabel {
     private static final String TEXT_KNOWN = "✓";
     private static final ImageIcon checked, unchecked;
     
+    private final MaikaTracker tracker;
+    
     private State state;
     private TreasureChest chest;
     private KeyItemMetadata keyItemContents;
     private ImageIcon active, deactive;
+    private KeyItemPanel keyItemPanel;
     
     static {
         String uncheckedUrl = "maps/unchecked.png";
@@ -74,6 +77,7 @@ public class ChestLabel extends JLabel {
     }
     
     public ChestLabel() {
+        tracker = MaikaTracker.tracker;
         setOpaque(false);
         setPreferredSize(new Dimension(TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE));
         setHorizontalAlignment(SwingConstants.CENTER);
@@ -99,8 +103,6 @@ public class ChestLabel extends JLabel {
                     }
                 }
                 else if(SwingUtilities.isRightMouseButton(e)) {
-                    MaikaTracker tracker = MaikaTracker.getTrackerFromChild(ChestLabel.this);
-
                     JPopupMenu menu;
                     if(keyItemContents == null || !tracker.isResetOnly())
                     {
@@ -108,7 +110,6 @@ public class ChestLabel extends JLabel {
                             if(keyItemContents != null)
                                 tracker.resetKeyItemLocation(keyItemContents, chest.getId());
                             tracker.updateKeyItemLocation(ki, chest.getId());
-                            keyItemContents = ki;
                         });
                     }
                     else {
@@ -127,7 +128,7 @@ public class ChestLabel extends JLabel {
         });
     }
     
-    private void setUnchecked() {
+    public void setUnchecked() {
         setBackground(COLOR_UNKNOWN);
         if(deactive == null)
             setText(TEXT_UNKNOWN);
@@ -135,9 +136,11 @@ public class ChestLabel extends JLabel {
             setIcon(deactive);
         setForeground(Color.WHITE);
         state = State.UNCHECKED;
+        if(keyItemPanel != null)
+            keyItemPanel.setActive(false);
     }
     
-    private void setChecked() {
+    public void setChecked() {
         setBackground(COLOR_KNOWN);        
         if(active == null)
             setText(TEXT_KNOWN);
@@ -145,10 +148,17 @@ public class ChestLabel extends JLabel {
             setIcon(active);
         setForeground(Color.BLACK);
         state = State.CHECKED;
+        if(keyItemPanel != null)
+            keyItemPanel.setActive(true);
     }
     
-    public void setKeyItem(KeyItemMetadata ki) {
+    public String getId() {
+        return chest.getId();
+    }
+    
+    public ChestLabel setKeyItem(KeyItemMetadata ki) {
         keyItemContents = ki;
+        keyItemPanel = tracker.getPanelForKeyItem(ki);
         setText(null);
         setToolTipText(ki.getEnum().toString());
         active = new ImageIcon(ki.getColorIcon().getImage().getScaledInstance(
@@ -159,6 +169,7 @@ public class ChestLabel extends JLabel {
             setUnchecked();
         else
             setChecked();
+        return this;
     }
     
     public void clearKeyItem() {
@@ -166,6 +177,10 @@ public class ChestLabel extends JLabel {
         active = checked;
         deactive = unchecked;
         keyItemContents = null;
+        if(keyItemPanel != null) {
+            keyItemPanel.setActive(false);
+            keyItemPanel = null;
+        }
         if(state == State.UNCHECKED)
             setUnchecked();
         else

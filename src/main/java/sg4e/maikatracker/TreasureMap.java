@@ -81,9 +81,9 @@ public class TreasureMap extends JPanel {
         return new ArrayList<>(chests);
     }
     
-    public void setChestContents(String chestId, KeyItemMetadata keyItem) {
+    public ChestLabel setChestContents(String chestId, KeyItemMetadata keyItem) {
         TreasureChest chest = getChest(chestId);
-        cells[chest.getX()][chest.getY()].setKeyItem(keyItem);
+        return cells[chest.getX()][chest.getY()].setKeyItem(keyItem);
     }
     
     public void clearChestContents(String chestId) {
