@@ -76,8 +76,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     private static final Logger LOG = LogManager.getLogger();
     
-    private final TreasureAtlas atlas = new TreasureAtlas();
-    private final Set<KeyItemLocation> locationsVisited = new HashSet<>();
+    private final TreasureAtlas atlas = new TreasureAtlas();    
     private static final String TOWER_OF_ZOT = "Zot";
     private static final String EBLAN_CASTLE = "Eblan Castle";
     private static final String EBLAN_CAVE = "Eblan Cave";
@@ -101,13 +100,18 @@ public class MaikaTracker extends javax.swing.JFrame {
     private final Preferences prefs;
     private static final String RESET_ONLY_ID = "AllowResetOnlyWhenKeyItemSet";
     
+    public final Set<KeyItemLocation> locationsVisited = new HashSet<>();
+    
     public FlagSet flagset = null;
+    
+    public static MaikaTracker tracker;
 
     /**
      * Creates new form MaikaTracker
      */
     public MaikaTracker() {
-        initComponents();
+        tracker = this;
+        initComponents();        
         prefs = Preferences.userRoot().node(this.getClass().getName());
         Map<Battle, Formation> bosses = Battle.getAllBosses();
         List<String> bossNames = bosses.keySet().stream().map(Battle::getBoss).distinct().collect(Collectors.toList());
@@ -430,8 +434,9 @@ public class MaikaTracker extends javax.swing.JFrame {
         //shopPanel2.setVisible(false);
         
         updateKeyItemCountLabel();
-        applyFlagsButtonActionPerformed(null);
+        resetButtonActionPerformed(null);
         updateLogic();
+        mainTabbedPane.setSelectedComponent(resetPane);
         
         setTitle("MaikaTracker");
         pack();
@@ -513,9 +518,9 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     public void updateKeyItemLocation(KeyItemMetadata keyItem, String chestId) {
         //first, find the KeyItemPanel
-        getPanelForKeyItem(keyItem).setLocationInChest(chestId);
+        KeyItemPanel panel = getPanelForKeyItem(keyItem);        
         //then, update the chest in the atlas
-        atlas.setChestContents(chestId, keyItem);
+        panel.setLocationInChest(atlas.setChestContents(chestId, keyItem));
     }
     
     public void createLocationPanel(KeyItemLocation l, Boolean createIfTrue) {
@@ -528,6 +533,12 @@ public class MaikaTracker extends javax.swing.JFrame {
         }
 
         panel.setButtonListener((ae) -> {
+            Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .filter(ki -> ki.getItemLocation() != null)
+                .filter(ki -> ki.getItemLocation().equals(panel.getKeyItemLocation()))
+                .forEach(ki -> ki.setActive(true));
+            
             locationsVisited.add(panel.getKeyItemLocation());
             logicPanel.remove(panel);
             logicPanel.revalidate();
@@ -612,8 +623,8 @@ public class MaikaTracker extends javax.swing.JFrame {
         return (MaikaTracker) SwingUtilities.getWindowAncestor(child);
     }
     
-    private KeyItemPanel getPanelForKeyItem(KeyItemMetadata keyItem) {
-        return Arrays.stream(keyItemPanel.getComponents())
+    public KeyItemPanel getPanelForKeyItem(KeyItemMetadata keyItem) {
+        return keyItem == null ? null : Arrays.stream(keyItemPanel.getComponents())
                 .map(c -> (KeyItemPanel) c)
                 .filter(kip -> keyItem.equals(kip.getKeyItem()))
                 .findAny()
@@ -622,6 +633,15 @@ public class MaikaTracker extends javax.swing.JFrame {
     
     public JPopupMenu getAvailableLocationsMenu(Consumer<KeyItemLocation> actionOnEachItem) {
         JPopupMenu locationMenu = new JPopupMenu("Locations");
+        
+        List<KeyItemLocation> dLunar = Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c)
+                .map(KeyItemPanel::getItemLocation)
+                .filter(Objects::nonNull)
+                .filter(ki -> ki.equals(KeyItemLocation.DLUNAR))
+                .collect(Collectors.toList());               
+        
+        
         Set<KeyItemLocation> knownLocations = Arrays.stream(keyItemPanel.getComponents())
                 .map(c -> (KeyItemPanel) c)
                 .map(KeyItemPanel::getItemLocation)
@@ -649,6 +669,8 @@ public class MaikaTracker extends javax.swing.JFrame {
             knownLocations.add(KeyItemLocation.OGOPOGO);
             knownLocations.add(KeyItemLocation.WYVERN);
         }
+        else if(dLunar.size() < 2)
+            knownLocations.remove(KeyItemLocation.DLUNAR);
         
         if (flagset != null && !flagset.contains("K")) {
             knownLocations.add(KeyItemLocation.FABUL);
@@ -1232,7 +1254,7 @@ public class MaikaTracker extends javax.swing.JFrame {
 
         resetLabel.setText("<html>Are you sure you would like to reset everything?<br> <br> This Action cannot be undone");
 
-        resetButton.setText("Reset");
+        resetButton.setText("Reset & Apply Flags");
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
@@ -1435,7 +1457,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 669, Short.MAX_VALUE)
+            .addComponent(mainTabbedPane)
             .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(partyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()

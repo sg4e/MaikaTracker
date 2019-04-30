@@ -114,12 +114,81 @@ public class ShopPanel extends javax.swing.JPanel {
     }
     
     public static void reset() {
+        final FlagSet flagset = MaikaTracker.tracker.flagset;
+        final Boolean cabinsOnly = flagset != null && flagset.contains("Sc");
+        final Boolean emptyShop = flagset != null && flagset.contains("Sx");
+        final Boolean vanillaShop = flagset != null 
+                && !flagset.contains("S1") && !flagset.contains("S2")
+                && !flagset.contains("S3") && !flagset.contains("S4")
+                && !cabinsOnly && !emptyShop;
+        final Boolean pass = flagset == null || flagset.contains("Ps");
+        final Boolean jItems = flagset == null || flagset.contains("Ji");
         shopPanels.forEach(panel -> {
-            for (JCheckBox box : getCheckBoxes(panel)) {
+            getCheckBoxes(panel).forEach((box) -> {
                 box.setSelected(false);
-                if(!itemLocations.get(box.getText()).isEmpty())
-                    itemLocations.get(box.getText()).clear();
+            });
+            
+            if(vanillaShop) {
+                switch(panel.shopLocation) {
+                    case "Dwarf Castle":
+                    case "Feymarch":
+                    case "Tomara":
+                    case "Mysidia":
+                        panel.cabin.setSelected(true);
+                        panel.cure2.setSelected(true);
+                    case "Agart":
+                    case "Baron":
+                    case "Fabul":
+                    case "Kaipo":
+                    case "Troia [Item]":
+                        panel.cure1.setSelected(true);
+                        panel.life.setSelected(true);
+                        panel.tent.setSelected(true);
+                        panel.ether1.setSelected(!jItems);                    
+                        break;
+                        
+                    case "Eblan Cave":
+                        panel.cure1.setSelected(!jItems);
+                        panel.cure2.setSelected(!jItems);
+                        panel.tent.setSelected(!jItems);
+                        panel.cabin.setSelected(!jItems);
+                        panel.life.setSelected(!jItems);
+                        panel.ether1.setSelected(!jItems);
+                        break;
+                        
+                    case "Silvera":
+                        break;
+                        
+                    case "Troia [Pub]":
+                        panel.pass.setSelected(pass);
+                        break;
+                        
+                    case "Hummingway":
+                        panel.cure2.setSelected(true);
+                        panel.life.setSelected(true);
+                        panel.ether1.setSelected(true);
+                        panel.ether2.setSelected(true);
+                        panel.elixir.setSelected(true);
+                        panel.cabin.setSelected(true);
+                        break;
+                }
             }
+            
+            getCheckBoxes(panel).forEach((box) -> {
+                if(box.isSelected())
+                    itemLocations.get(box.getText()).add(panel.shopLocation);
+                else
+                    itemLocations.get(box.getText()).remove(panel.shopLocation);
+
+                if (knownLocationsPanel != null) {
+                    getCheckBoxes(knownLocationsPanel).stream()
+                        .filter(c -> c.getText().equals(box.getText()))
+                        .collect(Collectors.toList()).forEach((b) -> {
+                            b.setSelected(!itemLocations.get(box.getText()).isEmpty());
+                    });
+                }                    
+            });
+            
         });
         UpdateToolTips();
     }

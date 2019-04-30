@@ -36,16 +36,19 @@ import sg4e.ff4stats.fe.KeyItemLocation;
  * @author sg4e
  */
 public class KeyItemPanel extends JPanel {
-    private final JLabel itemImage;
+    private final MaikaTracker tracker;
+    private final StativeLabel itemImage;
     private final KeyItemMetadata metadata;
     private final JLabel locationLabel;
     private KeyItemLocation location = null;
+    private ChestLabel chestLabel = null;
     
     private static final String UNKNOWN_LOCATION = "?";
     
     private boolean resetting;
     
     public KeyItemPanel(KeyItemMetadata meta) {
+        tracker = MaikaTracker.tracker;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         metadata = meta;
         itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon());
@@ -54,15 +57,25 @@ public class KeyItemPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(SwingUtilities.isLeftMouseButton(e)) {
-                    MaikaTracker.getTrackerFromChild(KeyItemPanel.this).updateKeyItemCountLabel();
-                    MaikaTracker.getTrackerFromChild(KeyItemPanel.this).updateLogic();
+                    tracker.updateKeyItemCountLabel();
+                    if(location != null) {
+                        if (isAcquired())
+                            tracker.locationsVisited.add(location);
+                        else
+                            tracker.locationsVisited.remove(location);
+                    }
+                    else if (isInChest()) {
+                        if (isAcquired())
+                            chestLabel.setChecked();
+                        else
+                            chestLabel.setUnchecked();
+                    }
+                    tracker.updateLogic();
                 }
                 if(SwingUtilities.isRightMouseButton(e)) {
-                    JPopupMenu locationMenu;
-                    MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
+                    JPopupMenu locationMenu;                    
                     if(!isKnown() || !tracker.isResetOnly()) {
-                        locationMenu = ((MaikaTracker)SwingUtilities.getWindowAncestor(KeyItemPanel.this))
-                                .getAvailableLocationsMenu(loc -> setLocation(loc));
+                        locationMenu = tracker.getAvailableLocationsMenu(loc -> setLocation(loc));
                         locationMenu.add(new JSeparator(), 0);
                         JMenuItem custom = new JMenuItem("Chest location");
                         custom.addActionListener((ae) -> {
@@ -114,12 +127,21 @@ public class KeyItemPanel extends JPanel {
         add(locationLabel, BorderLayout.CENTER);
     }
     
+    public void setActive(boolean on) {
+        itemImage.setActive(on);
+    }
+    
     public void setLocation(KeyItemLocation loc) {
         if(isKnown())
             reset();
         location = loc;
         locationLabel.setText(loc.getAbbreviatedLocation());
         locationLabel.setToolTipText(loc.getLocation());
+        if(isAcquired())
+            tracker.locationsVisited.add(loc);
+        else
+            tracker.locationsVisited.remove(loc);
+        tracker.updateLogic();
     }
     
     public void setTextColor(Color color) {
@@ -140,19 +162,20 @@ public class KeyItemPanel extends JPanel {
     }
     
     public boolean isKnown() {
-        return location != null || !UNKNOWN_LOCATION.equals(locationLabel.getText());
+        return location != null || chestLabel != null;
     }
     
     public boolean isInChest() {
-        return location == null && !UNKNOWN_LOCATION.equals(locationLabel.getText());
+        return location == null && chestLabel != null;
     }
     
     public KeyItemMetadata getKeyItem() {
         return metadata;
     }
     
-    public void setLocationInChest(String chestId) {
-        locationLabel.setText(chestId);
+    public void setLocationInChest(ChestLabel label) {
+        chestLabel = label;
+        locationLabel.setText(label.getId());
     }
     
     public void reset() {
@@ -163,9 +186,14 @@ public class KeyItemPanel extends JPanel {
         if(resetting) return;
         resetting = true;
         
-        MaikaTracker tracker = MaikaTracker.getTrackerFromChild(KeyItemPanel.this);
-        if (location == null && tracker.getAtlas().hasChestId(locationLabel.getText())) {
-            tracker.resetKeyItemLocation(metadata, locationLabel.getText());
+        if (isInChest()) {
+            chestLabel.clearKeyItem();
+            chestLabel.setUnchecked();
+            chestLabel = null;
+        }
+        
+        if (location != null) {
+            tracker.locationsVisited.remove(location);
         }
 
         locationLabel.setText(UNKNOWN_LOCATION);
@@ -241,7 +269,7 @@ public class KeyItemPanel extends JPanel {
         }
         else if(tracker.flagset.contains("V1") && metadata.equals(KeyItemMetadata.CRYSTAL))
             setLocation(KeyItemLocation.KOKKOL);
-        
+        tracker.updateLogic();
         
         resetting = false;
     }

@@ -64,9 +64,9 @@ public class TreasureAtlas extends JPanel {
         dungeonToFloors.forEach((mid, map) -> { map.forEach((tid, tmap) -> {tmap.reset();}); });
     }
     
-    public void setChestContents(String chestId, KeyItemMetadata ki) {
+    public ChestLabel setChestContents(String chestId, KeyItemMetadata ki) {
         Page page = chestIdToPage.get(chestId);
-        getTreasureMap(page).setChestContents(chestId, ki);
+        return getTreasureMap(page).setChestContents(chestId, ki);
     }
     
     public void clearChestContents(String chestId) {
