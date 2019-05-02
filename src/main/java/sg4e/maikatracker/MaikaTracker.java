@@ -1008,7 +1008,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         bossPane.setLayout(bossPaneLayout);
         bossPaneLayout.setHorizontalGroup(
             bossPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
             .addGroup(bossPaneLayout.createSequentialGroup()
                 .addComponent(scriptLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1060,7 +1060,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         xpPane.setLayout(xpPaneLayout);
         xpPaneLayout.setHorizontalGroup(
             xpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
             .addGroup(xpPaneLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(addDMachinButton))
@@ -1090,7 +1090,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(agartShopLabel);
-        agartShopLabel.setBounds(50, 10, 49, 22);
+        agartShopLabel.setBounds(50, 10, 57, 22);
 
         baronShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         baronShopLabel.setText("Baron");
@@ -1100,7 +1100,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(baronShopLabel);
-        baronShopLabel.setBounds(50, 30, 54, 22);
+        baronShopLabel.setBounds(50, 30, 60, 22);
 
         eblanCaveShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         eblanCaveShopLabel.setText("Eblan Cave");
@@ -1110,7 +1110,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(eblanCaveShopLabel);
-        eblanCaveShopLabel.setBounds(50, 50, 99, 22);
+        eblanCaveShopLabel.setBounds(50, 50, 111, 22);
 
         fabulShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         fabulShopLabel.setText("Fabul");
@@ -1120,7 +1120,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(fabulShopLabel);
-        fabulShopLabel.setBounds(50, 70, 49, 22);
+        fabulShopLabel.setBounds(50, 70, 56, 22);
 
         kaipoShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         kaipoShopLabel.setText("Kaipo");
@@ -1130,7 +1130,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(kaipoShopLabel);
-        kaipoShopLabel.setBounds(50, 90, 51, 22);
+        kaipoShopLabel.setBounds(50, 90, 57, 22);
 
         mysidiaShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         mysidiaShopLabel.setText("Mysidia");
@@ -1140,7 +1140,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(mysidiaShopLabel);
-        mysidiaShopLabel.setBounds(50, 110, 67, 22);
+        mysidiaShopLabel.setBounds(50, 110, 78, 22);
 
         silveraShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         silveraShopLabel.setText("Silvera");
@@ -1150,7 +1150,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(silveraShopLabel);
-        silveraShopLabel.setBounds(50, 130, 61, 22);
+        silveraShopLabel.setBounds(50, 130, 70, 22);
 
         troiaItemShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         troiaItemShopLabel.setText("Troia [Item]");
@@ -1160,7 +1160,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(troiaItemShopLabel);
-        troiaItemShopLabel.setBounds(50, 150, 111, 22);
+        troiaItemShopLabel.setBounds(50, 150, 120, 22);
 
         troiaPubShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         troiaPubShopLabel.setText("Troia [Pub]");
@@ -1170,7 +1170,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(troiaPubShopLabel);
-        troiaPubShopLabel.setBounds(50, 170, 102, 22);
+        troiaPubShopLabel.setBounds(50, 170, 112, 22);
 
         dwarfCastleShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         dwarfCastleShopLabel.setText("Dwarf Castle");
@@ -1180,7 +1180,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(dwarfCastleShopLabel);
-        dwarfCastleShopLabel.setBounds(50, 210, 116, 22);
+        dwarfCastleShopLabel.setBounds(50, 210, 130, 22);
 
         feymarchShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         feymarchShopLabel.setText("Feymarch");
@@ -1190,7 +1190,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(feymarchShopLabel);
-        feymarchShopLabel.setBounds(50, 230, 89, 22);
+        feymarchShopLabel.setBounds(50, 230, 100, 22);
 
         tomaraShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         tomaraShopLabel.setText("Tomara");
@@ -1200,7 +1200,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(tomaraShopLabel);
-        tomaraShopLabel.setBounds(50, 250, 69, 22);
+        tomaraShopLabel.setBounds(50, 250, 76, 22);
 
         hummingwayShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         hummingwayShopLabel.setText("Hummingway");
@@ -1210,7 +1210,7 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(hummingwayShopLabel);
-        hummingwayShopLabel.setBounds(50, 290, 125, 22);
+        hummingwayShopLabel.setBounds(50, 290, 139, 22);
 
         knownShopLocationsLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         knownShopLocationsLabel.setText("Known Locations");
@@ -1220,12 +1220,12 @@ public class MaikaTracker extends javax.swing.JFrame {
             }
         });
         shopLocationsPanel.add(knownShopLocationsLabel);
-        knownShopLocationsLabel.setBounds(50, 330, 155, 22);
+        knownShopLocationsLabel.setBounds(50, 330, 172, 22);
 
         activeShopPointerLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         activeShopPointerLabel.setText("-->");
         shopLocationsPanel.add(activeShopPointerLabel);
-        activeShopPointerLabel.setBounds(10, 30, 31, 22);
+        activeShopPointerLabel.setBounds(10, 30, 29, 22);
 
         javax.swing.GroupLayout shopPaneLayout = new javax.swing.GroupLayout(shopPane);
         shopPane.setLayout(shopPaneLayout);
@@ -1235,7 +1235,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(shopLocationsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(shopPanelsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                .addComponent(shopPanelsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
                 .addContainerGap())
         );
         shopPaneLayout.setVerticalGroup(
@@ -1338,11 +1338,11 @@ public class MaikaTracker extends javax.swing.JFrame {
         backgroundColorPanelLayout.setHorizontalGroup(
             backgroundColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backgroundColorPanelLayout.createSequentialGroup()
-                .addGap(136, 136, 136)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(textColorLabel)
-                .addGap(39, 39, 39)
+                .addGap(18, 18, 18)
                 .addComponent(tenKeyItemColorLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         backgroundColorPanelLayout.setVerticalGroup(
             backgroundColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1381,15 +1381,15 @@ public class MaikaTracker extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(resetOnly)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(backgroundColorButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textColorButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tenKeyItemColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(resetOnly)
                     .addComponent(backgroundColorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1413,13 +1413,13 @@ public class MaikaTracker extends javax.swing.JFrame {
             resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(resetPaneLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(resetPaneLayout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         resetPaneLayout.setVerticalGroup(
             resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1427,7 +1427,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 113, Short.MAX_VALUE))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(264, 264, 264))
@@ -1457,7 +1457,6 @@ public class MaikaTracker extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane)
             .addComponent(keyItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(partyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -1468,6 +1467,7 @@ public class MaikaTracker extends javax.swing.JFrame {
                         .addComponent(keyItemCountLabel))
                     .addComponent(bossIconPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addComponent(mainTabbedPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
