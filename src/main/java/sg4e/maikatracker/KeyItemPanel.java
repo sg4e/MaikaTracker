@@ -58,6 +58,7 @@ public class KeyItemPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if(SwingUtilities.isLeftMouseButton(e)) {
                     tracker.updateKeyItemCountLabel();
+                    tracker.handleLogic(location, isAcquired());
                     if(location != null) {
                         if (isAcquired())
                             tracker.locationsVisited.add(location);

@@ -543,16 +543,20 @@ public class MaikaTracker extends javax.swing.JFrame {
             logicPanel.remove(panel);
             logicPanel.revalidate();
             logicPanel.repaint();
-            if (panel.getKeyItemLocation().equals(KeyItemLocation.ORDEALS)) {
-                PartyLabel.MtOrdealsComplete = true;
-                getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
-            }
-            if (panel.getKeyItemLocation().equals(KeyItemLocation.DWARF_CASTLE)) {
-                PartyLabel.DwarfCastleComplete = true;
-                getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
-            }
+            handleLogic(panel.getKeyItemLocation(), true);
         });
         logicPanel.add(panel);
+    }
+    
+    public void handleLogic(KeyItemLocation loc, boolean completed) {
+        if (loc.equals(KeyItemLocation.ORDEALS)) {
+            PartyLabel.MtOrdealsComplete = completed;
+            getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
+        }
+        if (loc.equals(KeyItemLocation.DWARF_CASTLE)) {
+            PartyLabel.DwarfCastleComplete = completed;
+            getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
+        }
     }
     
     public void updateLogic() {
