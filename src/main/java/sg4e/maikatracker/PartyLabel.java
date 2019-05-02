@@ -227,6 +227,8 @@ public class PartyLabel extends StativeLabel {
     public void setPartyMember(LevelData member) {
         if (member.equals(LevelData.DARK_KNIGHT_CECIL) && MtOrdealsComplete)
             member = LevelData.PALADIN_CECIL;
+        if (member.equals(LevelData.PALADIN_CECIL) && !MtOrdealsComplete)
+            member = LevelData.DARK_KNIGHT_CECIL;
 
         if(data != member) {
             data = member;
@@ -244,6 +246,8 @@ public class PartyLabel extends StativeLabel {
         }
         else if(member.equals(LevelData.RYDIA) && DwarfCastleComplete)
             setNewIconState(ADULT_RYDIA_ICON, ADULT_RYDIA_ICON);
+        else if (member.equals(LevelData.RYDIA) && !DwarfCastleComplete)
+            setNewIconState(CHARACTER_ICONS.get(member), CHARACTER_ICONS.get(member));
 
     }
     
