@@ -1518,16 +1518,21 @@ public class MaikaTracker extends javax.swing.JFrame {
 
     private void applyFlagsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyFlagsButtonActionPerformed
         flagErrorLabel.setText("");
+        String text = flagsTextField.getText().trim();
         try {
-        if(flagsTextField.getText().startsWith("b"))
-            flagset = FlagSet.fromBinary(flagsTextField.getText().trim());
-        else
-            flagset = FlagSet.fromString(flagsTextField.getText().trim());
+            if(text.startsWith("ff4fe.com") || text.startsWith("http://") || text.startsWith("https://")) { //maybe SSL support one day
+                flagset = FlagSet.fromUrl(text);
+            }
+            else if(text.startsWith("b"))
+                flagset = FlagSet.fromBinary(text);
+            else
+                flagset = FlagSet.fromString(text);
         }
         catch (IllegalArgumentException ex) {
             flagErrorLabel.setText(ex.getMessage());
             flagset = null;
         }
+        flagsTextField.setText(flagset.toString());
         ShopPanel.UpdateFlags(flagset);
         PartyLabel.flagset = flagset;
         updateLogic();
