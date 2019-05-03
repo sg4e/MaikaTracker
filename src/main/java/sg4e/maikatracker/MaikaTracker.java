@@ -549,6 +549,8 @@ public class MaikaTracker extends javax.swing.JFrame {
     }
     
     public void handleLogic(KeyItemLocation loc, boolean completed) {
+        if(loc == null)
+            return;
         if (loc.equals(KeyItemLocation.ORDEALS)) {
             PartyLabel.MtOrdealsComplete = completed;
             getPartyLabels().forEach(member -> member.setPartyMember(member.getData()));
