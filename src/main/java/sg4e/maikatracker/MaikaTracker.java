@@ -1531,12 +1531,12 @@ public class MaikaTracker extends javax.swing.JFrame {
                 flagset = FlagSet.fromBinary(text);
             else
                 flagset = FlagSet.fromString(text);
+            flagsTextField.setText(flagset.toString());
         }
         catch (IllegalArgumentException ex) {
             flagErrorLabel.setText(ex.getMessage());
             flagset = null;
-        }
-        flagsTextField.setText(flagset.toString());
+        }        
         ShopPanel.UpdateFlags(flagset);
         PartyLabel.flagset = flagset;
         updateLogic();
