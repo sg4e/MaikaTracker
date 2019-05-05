@@ -25,19 +25,20 @@ import javax.swing.SwingUtilities;
  */
 public class BossLabel extends StativeLabel {
     
-    private static final List<String> bossNames = new ArrayList<>();
+    private static final List<BossLabel> bossNames = new ArrayList<>();
     
     private final String bossName;
     
     private JPanel holder;
-    private String bossLocation;
+    private BossLabel bossLocation;
+    private BossLabel contains;
     
     //loadBossIcon("2Soldier", "2Soldier", "Baron Soldiers");
     public BossLabel(String imageName, String bossName) {
         super(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-" + imageName + "-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-" + imageName + "-Color.png")));    
         setToolTipText(bossName);
         this.bossName = bossName;
-        bossNames.add(bossName);
+        bossNames.add(this);
         
         addMouseListener(new MouseAdapter() {
             @Override
@@ -64,18 +65,29 @@ public class BossLabel extends StativeLabel {
             holder.setBackground(color);
     }
     
-    private JPopupMenu getBossNameMenu(Consumer<String> actionOnEachItem) {
+    private JPopupMenu getBossNameMenu(Consumer<BossLabel> actionOnEachItem) {
         JPopupMenu bossMenu = new JPopupMenu("Boss Locations");
-        bossNames.forEach(bn -> bossMenu.add(bn).addActionListener((ae) -> actionOnEachItem.accept(bn)));
+        bossNames.forEach(bn -> {
+            if(bn.contains == null)
+                bossMenu.add(bn.bossName).addActionListener((ae) -> actionOnEachItem.accept(bn));
+        });
         return bossMenu;
     }
     
-    private void setBossLocation(String location) {
-        bossLocation = location;
-        if(location == null)
+    private void setBossLocation(BossLabel label) {        
+        if(bossLocation != null) {
+            bossLocation.contains = null;
+            bossLocation = null;
+        }
+        
+        if(label == null) {
             setToolTipText(bossName);
-        else
-            setToolTipText("<html>" + bossName + "<br>Located at " + location + "</html>");
+        }
+        else {
+            setToolTipText("<html>" + bossName + "<br>Located at " + label.bossName + "</html>");
+            label.contains = this;
+            bossLocation = label;
+        }
     }
     
     public JPanel getHolder() {
