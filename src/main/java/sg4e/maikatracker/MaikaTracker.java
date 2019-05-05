@@ -95,7 +95,7 @@ public class MaikaTracker extends javax.swing.JFrame {
     private final JPanel logicPanel;
     private final StativeLabel dmistLabel;
     
-    private static final List<StativeLabel> bossLabels = new ArrayList<>();
+    private static final List<BossLabel> bossLabels = new ArrayList<>();
     
     private final Preferences prefs;
     private static final String RESET_ONLY_ID = "AllowResetOnlyWhenKeyItemSet";
@@ -142,7 +142,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         //add boss icons
         LayoutManager bossIconLayout = new GridLayout(3, 12);
         bossIconPanel.setLayout(bossIconLayout);
-        dmistLabel = loadBossIcon("FFIVFE-Bosses-1MistD-Gray.png", "FFIVFE-Bosses-1MistD-Color.png", "D. Mist");
+        dmistLabel = loadBossIcon("1MistD", "D. Mist");
         dmistLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -151,40 +151,40 @@ public class MaikaTracker extends javax.swing.JFrame {
                 }
             }
         });
-        loadBossIcon("FFIVFE-Bosses-2Soldier-Gray.png", "FFIVFE-Bosses-2Soldier-Color.png", "Baron Soldiers");
-        loadBossIcon("FFIVFE-Bosses-3Octo-Gray.png", "FFIVFE-Bosses-3Octo-Color.png", "Octomam");
-        loadBossIcon("FFIVFE-Bosses-4Antlion-Gray.png", "FFIVFE-Bosses-4Antlion-Color.png", "Antlion");
-        loadBossIcon("FFIVFE-Bosses-5WHag-Gray.png", "FFIVFE-Bosses-5WHag-Color.png", "Waterhag");
-        loadBossIcon("FFIVFE-Bosses-6Mombomb-Gray.png", "FFIVFE-Bosses-6Mombomb-Color.png", "Mombomb");
-        loadBossIcon("FFIVFE-Bosses-7Gauntlet-Gray.png", "FFIVFE-Bosses-7Gauntlet-Color.png", "Fabul Guantlet");
-        loadBossIcon("FFIVFE-Bosses-8Milon-Gray.png", "FFIVFE-Bosses-8Milon-Color.png", "Milon");
-        loadBossIcon("FFIVFE-Bosses-9MilonZ-Gray.png", "FFIVFE-Bosses-9MilonZ-Color.png", "MilonZ");
-        loadBossIcon("FFIVFE-Bosses-10DKCecil-Gray.png", "FFIVFE-Bosses-10DKCecil-Color.png", "Dark Knight Cecil");
-        loadBossIcon("FFIVFE-Bosses-11Guards-Gray.png", "FFIVFE-Bosses-11Guards-Color.png", "Baron Guards");
-        loadBossIcon("FFIVFE-Bosses-12Yang-Gray.png", "FFIVFE-Bosses-12Yang-Color.png", "Karate");
-        loadBossIcon("FFIVFE-Bosses-13Baigan-Gray.png", "FFIVFE-Bosses-13Baigan-Color.png", "Baigan");
-        loadBossIcon("FFIVFE-Bosses-14Kainazzo-Gray.png", "FFIVFE-Bosses-14Kainazzo-Color.png", "Kainazzo");
-        loadBossIcon("FFIVFE-Bosses-15DElf-Gray.png", "FFIVFE-Bosses-15DElf-Color.png", "Dark Elf");
-        loadBossIcon("FFIVFE-Bosses-16MagusSis-Gray.png", "FFIVFE-Bosses-16MagusSis-Color.png", "Magus Sisters");
-        loadBossIcon("FFIVFE-Bosses-17Valvalis-Gray.png", "FFIVFE-Bosses-17Valvalis-Color.png", "Valvalis");
-        loadBossIcon("FFIVFE-Bosses-18Calcabrina-Gray.png", "FFIVFE-Bosses-18Calcabrina-Color.png", "Calcabrina");
-        loadBossIcon("FFIVFE-Bosses-19Golbez-Gray.png", "FFIVFE-Bosses-19Golbez-Color.png", "Golbez");
-        loadBossIcon("FFIVFE-Bosses-20Lugae-Gray.png", "FFIVFE-Bosses-20Lugae-Color.png", "Dr. Lugae");
-        loadBossIcon("FFIVFE-Bosses-21DarkImps-Gray.png", "FFIVFE-Bosses-21DarkImps-Color.png", "Dark Imps");
-        loadBossIcon("FFIVFE-Bosses-21Eblan-Gray.png", "FFIVFE-Bosses-21Eblan-Color.png", "Eblan King & Queen");
-        loadBossIcon("FFIVFE-Bosses-22Rubicante-Gray.png", "FFIVFE-Bosses-22Rubicante-Color.png", "Rubicante");
-        loadBossIcon("FFIVFE-Bosses-23EvilWall-Gray.png", "FFIVFE-Bosses-23EvilWall-Color.png", "Evil Wall");
-        loadBossIcon("FFIVFE-Bosses-24Fiends-Gray.png", "FFIVFE-Bosses-24Fiends-Color.png", "Elements");
-        loadBossIcon("FFIVFE-Bosses-25CPU-Gray.png", "FFIVFE-Bosses-25CPU-Color.png", "CPU");
-        loadBossIcon("FFIVFE-Bosses-26Odin-Gray.png", "FFIVFE-Bosses-26Odin-Color.png", "Odin");
-        loadBossIcon("FFIVFE-Bosses-28Leviath-Gray.png", "FFIVFE-Bosses-28Leviath-Color.png", "Leviatan");
-        loadBossIcon("FFIVFE-Bosses-27Asura-Gray.png", "FFIVFE-Bosses-27Asura-Color.png", "Asura");
-        loadBossIcon("FFIVFE-Bosses-29Bahamut-Gray.png", "FFIVFE-Bosses-29Bahamut-Color.png", "Bahamut");
-        loadBossIcon("FFIVFE-Bosses-30PaleDim-Gray.png", "FFIVFE-Bosses-30PaleDim-Color.png", "Pale Dim");
-        loadBossIcon("FFIVFE-Bosses-31LunarD-Gray.png", "FFIVFE-Bosses-31LunarD-Color.png", "Lunar D.");
-        loadBossIcon("FFIVFE-Bosses-32Plague-Gray.png", "FFIVFE-Bosses-32Plague-Color.png", "Plague");
-        loadBossIcon("FFIVFE-Bosses-33Ogopogo-Gray.png", "FFIVFE-Bosses-33Ogopogo-Color.png", "Ogopogo");
-        loadBossIcon("FFIVFE-Bosses-34Wyvern-Gray.png", "FFIVFE-Bosses-34Wyvern-Color.png", "Wyvern");
+        loadBossIcon("2Soldier", "Baron Soldiers");
+        loadBossIcon("3Octo", "Octomam");
+        loadBossIcon("4Antlion", "Antlion");
+        loadBossIcon("5WHag", "Waterhag");
+        loadBossIcon("6Mombomb", "Mombomb");
+        loadBossIcon("7Gauntlet", "Fabul Guantlet");
+        loadBossIcon("8Milon", "Milon");
+        loadBossIcon("9MilonZ", "MilonZ");
+        loadBossIcon("10DKCecil", "Dark Knight Cecil");
+        loadBossIcon("11Guards", "Baron Guards");
+        loadBossIcon("12Yang", "Karate");
+        loadBossIcon("13Baigan", "Baigan");
+        loadBossIcon("14Kainazzo", "Kainazzo");
+        loadBossIcon("15DElf", "Dark Elf");
+        loadBossIcon("16MagusSis", "Magus Sisters");
+        loadBossIcon("17Valvalis", "Valvalis");
+        loadBossIcon("18Calcabrina", "Calcabrina");
+        loadBossIcon("19Golbez", "Golbez");
+        loadBossIcon("20Lugae", "Dr. Lugae");
+        loadBossIcon("21DarkImps", "Dark Imps");
+        loadBossIcon("21Eblan", "Eblan King & Queen");
+        loadBossIcon("22Rubicante", "Rubicante");
+        loadBossIcon("23EvilWall", "Evil Wall");
+        loadBossIcon("24Fiends", "Elements");
+        loadBossIcon("25CPU", "CPU");
+        loadBossIcon("26Odin", "Odin");
+        loadBossIcon("28Leviath", "Leviatan");
+        loadBossIcon("27Asura", "Asura");
+        loadBossIcon("29Bahamut", "Bahamut");
+        loadBossIcon("30PaleDim", "Pale Dim");
+        loadBossIcon("31LunarD", "Lunar D.");
+        loadBossIcon("32Plague", "Plague");
+        loadBossIcon("33Ogopogo", "Ogopogo");
+        loadBossIcon("34Wyvern", "Wyvern");
         
         //add maps
         final String zot = "zot";
@@ -491,14 +491,11 @@ public class MaikaTracker extends javax.swing.JFrame {
         //shopPanes.add(shopLocation, new ShopPanel(shopLocation));
     }
     
-    public StativeLabel loadBossIcon(String off, String on, String bossName) {
-        JPanel holder = new JPanel(new FlowLayout());
-        JLabel label = new StativeLabel(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/" + off)), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/" + on)));
-        label.setToolTipText(bossName);
-        holder.add(label);
-        bossIconPanel.add(holder);
-        bossLabels.add((StativeLabel)label);
-        return (StativeLabel) label;
+    public StativeLabel loadBossIcon(String imageName, String bossName) {
+        BossLabel label = new BossLabel(imageName, bossName);        
+        bossIconPanel.add(label.getHolder());
+        bossLabels.add(label);
+        return label;
     }
     
     public static InputStream loadResource(String path) {
@@ -826,12 +823,7 @@ public class MaikaTracker extends javax.swing.JFrame {
         mapSelectionPanel.setBackground(backgroundColor);
         bossSelectionPanel.setBackground(backgroundColor);
         LocationPanel.backgroundColor = backgroundColor;
-        bossLabels.stream().map((boss) -> {
-            boss.getParent().setBackground(backgroundColor);
-            return boss;
-        }).forEachOrdered((boss) -> {
-            boss.setBackground(backgroundColor);
-        });
+        bossLabels.forEach(boss -> boss.setBackground(backgroundColor));
         getKeyItemPanels().forEach((panel) -> {
             panel.setBackgroundColor(backgroundColor);
         });
