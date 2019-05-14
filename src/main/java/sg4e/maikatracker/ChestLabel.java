@@ -160,7 +160,7 @@ public class ChestLabel extends JLabel {
         keyItemContents = ki;
         keyItemPanel = tracker.getPanelForKeyItem(ki);
         setText(null);
-        setToolTipText(ki.getEnum().toString());
+        setToolTipText("<html>" + chest.getId() + "<br>" + ki.getEnum().toString() + "</html>");
         active = new ImageIcon(ki.getColorIcon().getImage().getScaledInstance(
                 TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE, java.awt.Image.SCALE_SMOOTH));
         deactive = new ImageIcon(ki.getGrayIcon().getImage().getScaledInstance(
@@ -173,7 +173,7 @@ public class ChestLabel extends JLabel {
     }
     
     public void clearKeyItem() {
-        setToolTipText(null);
+        setToolTipText(chest.getId());
         active = checked;
         deactive = unchecked;
         keyItemContents = null;
