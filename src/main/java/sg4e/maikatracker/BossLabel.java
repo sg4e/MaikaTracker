@@ -65,6 +65,12 @@ public class BossLabel extends StativeLabel {
             holder.setBackground(color);
     }
     
+    @Override
+    public void reset() {
+        super.reset();
+        setBossLocation(null);
+    }
+    
     private JPopupMenu getBossNameMenu(Consumer<BossLabel> actionOnEachItem) {
         JPopupMenu bossMenu = new JPopupMenu("Boss Locations");
         bossNames.forEach(bn -> {
