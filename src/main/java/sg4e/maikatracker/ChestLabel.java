@@ -89,18 +89,13 @@ public class ChestLabel extends JLabel {
     public void activate(TreasureChest chest) {
         this.chest = chest;
         setOpaque(true);
-        setUnchecked();
+        setChecked(false);
         setToolTipText(chest.getId());
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(SwingUtilities.isLeftMouseButton(e)) {
-                    if(state == State.UNCHECKED) {
-                        setChecked();
-                    }
-                    else {
-                        setUnchecked();
-                    }
+                    setChecked(state == State.UNCHECKED);
                 }
                 else if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu menu;
@@ -128,28 +123,21 @@ public class ChestLabel extends JLabel {
         });
     }
     
-    public void setUnchecked() {
-        setBackground(COLOR_UNKNOWN);
-        if(deactive == null)
-            setText(TEXT_UNKNOWN);
-        else
-            setIcon(deactive);
-        setForeground(Color.WHITE);
-        state = State.UNCHECKED;
-        if(keyItemPanel != null)
-            keyItemPanel.setActive(false);
-    }
-    
-    public void setChecked() {
-        setBackground(COLOR_KNOWN);        
-        if(active == null)
-            setText(TEXT_KNOWN);
-        else
-            setIcon(active);
-        setForeground(Color.BLACK);
-        state = State.CHECKED;
-        if(keyItemPanel != null)
-            keyItemPanel.setActive(true);
+    public void setChecked(boolean checked) {
+        setBackground(checked ? COLOR_KNOWN : COLOR_UNKNOWN);
+        if(checked ? active == null : deactive == null) {
+            setText(checked ? TEXT_KNOWN : TEXT_UNKNOWN);
+            setIcon(null);
+        }
+        else {
+            setText(null);
+            setIcon(checked ? active : deactive);
+        }
+        state = checked ? State.CHECKED : State.UNCHECKED;
+        if (keyItemPanel == null)
+            return;
+        keyItemPanel.setActive(checked);
+        MaikaTracker.tracker.updateKeyItemCountLabel();
     }
     
     public String getId() {
@@ -165,10 +153,7 @@ public class ChestLabel extends JLabel {
                 TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE, java.awt.Image.SCALE_SMOOTH));
         deactive = new ImageIcon(ki.getGrayIcon().getImage().getScaledInstance(
                 TreasureChest.PIXELS_PER_SQUARE, TreasureChest.PIXELS_PER_SQUARE, java.awt.Image.SCALE_SMOOTH));
-        if(state == State.UNCHECKED)
-            setUnchecked();
-        else
-            setChecked();
+        setChecked(state == State.CHECKED);
         return this;
     }
     
@@ -181,14 +166,11 @@ public class ChestLabel extends JLabel {
             keyItemPanel.setActive(false);
             keyItemPanel = null;
         }
-        if(state == State.UNCHECKED)
-            setUnchecked();
-        else
-            setChecked();
+        setChecked(state == State.CHECKED);
     }
     
     public void reset() {
-        setUnchecked();
+        setChecked(false);
         clearKeyItem();
     }
     
