@@ -66,10 +66,7 @@ public class KeyItemPanel extends JPanel {
                             tracker.locationsVisited.remove(location);
                     }
                     else if (isInChest()) {
-                        if (isAcquired())
-                            chestLabel.setChecked();
-                        else
-                            chestLabel.setUnchecked();
+                        chestLabel.setChecked(isAcquired());
                     }
                     tracker.updateLogic();
                 }
@@ -188,8 +185,7 @@ public class KeyItemPanel extends JPanel {
         resetting = true;
         
         if (isInChest()) {
-            chestLabel.clearKeyItem();
-            chestLabel.setUnchecked();
+            chestLabel.reset();
             chestLabel = null;
         }
         
