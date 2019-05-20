@@ -16,10 +16,12 @@
  */
 package sg4e.maikatracker;
 
+import com.google.common.base.Objects;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -42,6 +44,7 @@ public class KeyItemPanel extends JPanel {
     private final JLabel locationLabel;
     private KeyItemLocation location = null;
     private ChestLabel chestLabel = null;
+    private ShopPanel shopPanel = null;
     
     private static final String UNKNOWN_LOCATION = "?";
     
@@ -162,11 +165,15 @@ public class KeyItemPanel extends JPanel {
     }
     
     public boolean isKnown() {
-        return location != null || chestLabel != null;
+        return location != null || chestLabel != null || shopPanel != null;
     }
     
     public boolean isInChest() {
         return location == null && chestLabel != null;
+    }
+    
+    public boolean isInShop() {
+        return location == null && shopPanel != null;
     }
     
     public KeyItemMetadata getKeyItem() {
@@ -175,7 +182,24 @@ public class KeyItemPanel extends JPanel {
     
     public void setLocationInChest(ChestLabel label) {
         chestLabel = label;
-        locationLabel.setText(label.getId());
+        locationLabel.setText(label.getId());        
+    }
+    
+    public void setLocationInShop(ShopPanel panel) {
+        if(metadata != KeyItemMetadata.PASS || Objects.equal(shopPanel, panel))
+            return;
+        
+        if(isKnown())
+            reset();
+        
+        if(panel != null && panel.pass.isSelected()) {
+            shopPanel = panel;
+            locationLabel.setText("Shop");
+            locationLabel.setToolTipText(panel.getShopName());
+        }
+        else {
+            shopPanel = null;
+        }
     }
     
     public void reset() {
@@ -189,6 +213,12 @@ public class KeyItemPanel extends JPanel {
         if (isInChest()) {
             chestLabel.reset();
             chestLabel = null;
+        }
+        
+        if (isInShop()) {
+            if(shopPanel.pass.isSelected())
+                shopPanel.pass.doClick();
+            shopPanel = null;
         }
         
         if (location != null) {
