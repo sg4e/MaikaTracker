@@ -204,7 +204,7 @@ public class KeyItemPanel extends JPanel {
             return;
         }
         
-        if (tracker.flagset != null && !tracker.flagset.contains("K")) {
+        if (!tracker.flagsetContains("K")) {
             switch(metadata) {
                 case ADAMANT:
                     setLocation(KeyItemLocation.RAT_TAIL);
@@ -213,7 +213,7 @@ public class KeyItemPanel extends JPanel {
                     setLocation(KeyItemLocation.BARON_INN);
                     break;
                 case CRYSTAL:
-                    setLocation(tracker.flagset.contains("V1") ? KeyItemLocation.KOKKOL : KeyItemLocation.ZEROMUS);
+                    setLocation(tracker.flagsetContains("V1") ? KeyItemLocation.KOKKOL : KeyItemLocation.ZEROMUS);
                     break;
                 case DARKNESS:
                     setLocation(KeyItemLocation.SEALED_CAVE);
@@ -240,7 +240,7 @@ public class KeyItemPanel extends JPanel {
                     setLocation(KeyItemLocation.SHEILA_PANLESS);
                     break;
                 case PASS:
-                    if(tracker.flagset.contains("Pk"))
+                    if(tracker.flagsetContains("Pk"))
                         setLocation(KeyItemLocation.BARON_CASTLE);
                     break;
                 case PINK_TAIL:                    
@@ -260,11 +260,11 @@ public class KeyItemPanel extends JPanel {
                 case TWIN_HARP:
                     if(tracker.flagset == null)
                         break;
-                    setLocation(tracker.flagset.contains("Nk") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
+                    setLocation(tracker.flagsetContains("Nk") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
                     break;
             }
         }
-        else if(tracker.flagset.contains("V1") && metadata.equals(KeyItemMetadata.CRYSTAL))
+        else if(tracker.flagsetContains("V1") && metadata.equals(KeyItemMetadata.CRYSTAL))
             setLocation(KeyItemLocation.KOKKOL);
         tracker.updateLogic();
         

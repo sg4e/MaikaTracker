@@ -56,7 +56,6 @@ public class PartyLabel extends StativeLabel {
     public static boolean DwarfCastleComplete;
     public static FlagSet flagset;
     
-    
     public PartyLabel(PropertyChangeListener onLevelUp) {
         this.pcl = onLevelUp;
         addMouseListener(new MouseAdapter() {
@@ -93,46 +92,46 @@ public class PartyLabel extends StativeLabel {
                         int position = count++;
                         switch(data) {
                             case DARK_KNIGHT_CECIL:
-                                addMember = flagset == null || flagset.contains("-startcecil") || !flagset.contains("-nocecil");
+                                addMember = memberAllowed("cecil");
                                 addMember &= !MtOrdealsComplete;
                                 break;
                             case PALADIN_CECIL:
-                                addMember = flagset == null || flagset.contains("-startcecil") || !flagset.contains("-nocecil");
+                                addMember = memberAllowed("cecil");
                                 addMember &= MtOrdealsComplete;
                                 position = 0;
                                 break;
                             case CID:
-                                addMember = flagset == null || flagset.contains("-startcid") || !flagset.contains("-nocid");
+                                addMember = memberAllowed("cid");
                                 break;                                        
                             case EDGE:
-                                addMember = flagset == null || flagset.contains("-startedge") || !flagset.contains("-noedge");
+                                addMember = memberAllowed("edge");
                                 break;
                             case EDWARD:
-                                addMember = flagset == null || flagset.contains("-startedward") || !flagset.contains("-noedward");
+                                addMember = memberAllowed("edward");
                                 break;
                             case FUSOYA:
-                                addMember = flagset == null || flagset.contains("-startfusoya") || !flagset.contains("-nofusoya");
+                                addMember = memberAllowed("fusoya");
                                 break;
                             case KAIN:
-                                addMember = flagset == null || flagset.contains("-startkain") || !flagset.contains("-nokain");
+                                addMember = memberAllowed("kain");
                                 break;
                             case PALOM:
-                                addMember = flagset == null || flagset.contains("-startpalom") || !flagset.contains("-nopalom");
+                                addMember = memberAllowed("palom");
                                 break;
                             case POROM:
-                                addMember = flagset == null || flagset.contains("-startporom") || !flagset.contains("-noporom");
+                                addMember = memberAllowed("porom");
                                 break;
                             case ROSA:
-                                addMember = flagset == null || flagset.contains("-startrosa") || !flagset.contains("-norosa");
+                                addMember = memberAllowed("rosa");
                                 break;
                             case RYDIA:
-                                addMember = flagset == null || flagset.contains("-startrydia") || !flagset.contains("-norydia");
+                                addMember = memberAllowed("rydia");
                                 break;
                             case TELLAH:
-                                addMember = flagset == null || flagset.contains("-starttellah") || !flagset.contains("-notellah");
+                                addMember = memberAllowed("tellah");
                                 break;
                             case YANG:
-                                addMember = flagset == null || flagset.contains("-startyang") || !flagset.contains("-noyang");
+                                addMember = memberAllowed("yang");
                                 break;
                             default:
                                 addMember = false;
@@ -151,6 +150,10 @@ public class PartyLabel extends StativeLabel {
                 }
             }
         });
+    }
+    
+    private Boolean memberAllowed(String member) {
+        return flagset == null || flagset.contains("-start" + member) || !flagset.contains("-no" + member);
     }
     
     private Boolean isDupeAllowed(LevelData member)
@@ -202,14 +205,7 @@ public class PartyLabel extends StativeLabel {
                 return false;
         }
         
-        if(notAllowed)
-        {
-            for(PartyLabel label : PartyMembers) {
-                if(label.data == member)
-                    return false;
-            }
-        }
-        return true;
+        return !notAllowed || PartyMembers.stream().noneMatch((label) -> (label.data == member));
     }
     
     public LevelData getData() {

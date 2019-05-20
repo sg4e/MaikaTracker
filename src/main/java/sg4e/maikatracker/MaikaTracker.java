@@ -492,7 +492,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         
         setTextColor(false);
         setBackgroundColor(false);
-        ShopPanel.UpdateFlags(flagset);
+        ShopPanel.UpdateFlags();
 
         return shopPanel;
         //shopPanes.add(shopLocation, new ShopPanel(shopLocation));
@@ -578,33 +578,33 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 case ODIN:
                 case SYLPH:
                 case BAHAMUT:
-                    createLocationPanel(l, flagset == null || flagset.contains("Kq"));
+                    createLocationPanel(l, flagsetContains("Kq"));
                     break;
                 case PALE_DIM:
                 case PLAGUE:
                 case DLUNAR:
                 case OGOPOGO:
                 case WYVERN:
-                    createLocationPanel(l, flagset == null || flagset.contains("Km"));
+                    createLocationPanel(l, flagsetContains("Km"));
                     break;
                 case TOROIA:
-                    createLocationPanel(l, flagset == null || !flagset.contains("Nk"));
+                    createLocationPanel(l, flagset == null || !flagsetContains("Nk"));
                     break;
                 case MIST:
-                    createLocationPanel(l, flagset == null || flagset.contains("Nk"));
+                    createLocationPanel(l, flagsetContains("Nk"));
                     break;
                 case KOKKOL:
-                    createLocationPanel(l, flagset == null || flagset.contains("V1"));
+                    createLocationPanel(l, flagsetContains("V1"));
                     break;
                 case ZEROMUS:
                     break;
                     
                 case FABUL:
-                    createLocationPanel(l, flagset == null || flagset.contains("K"));
+                    createLocationPanel(l, flagsetContains("K"));
                     break;
                     
                 case BARON_CASTLE:
-                    createLocationPanel(l, flagset == null || flagset.contains("K") || flagset.contains("Pk"));
+                    createLocationPanel(l, flagsetContainsAny("K", "Pk"));
                     break;
                     
                 default:
@@ -658,13 +658,13 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         
-        if(flagset != null && !flagset.contains("Nk"))
+        if(!flagsetContains("Nk"))
             knownLocations.add(KeyItemLocation.MIST);
         
-        if (flagset != null && flagset.contains("Nk"))
+        if (flagsetContains("Nk"))
             knownLocations.add(KeyItemLocation.TOROIA);
         
-        if(flagset != null && !flagset.contains("Kq")) {
+        if(!flagsetContains("Kq")) {
             knownLocations.add(KeyItemLocation.ASURA);
             knownLocations.add(KeyItemLocation.LEVIATAN);
             knownLocations.add(KeyItemLocation.SYLPH);
@@ -672,7 +672,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
             knownLocations.add(KeyItemLocation.BAHAMUT);
         }
         
-        if (flagset != null && !flagset.contains("Km")) {
+        if (!flagsetContains("Km")) {
             knownLocations.add(KeyItemLocation.PALE_DIM);
             knownLocations.add(KeyItemLocation.PLAGUE);
             knownLocations.add(KeyItemLocation.DLUNAR);
@@ -682,13 +682,13 @@ public final class MaikaTracker extends javax.swing.JFrame {
         else if(dLunar.size() < 2)
             knownLocations.remove(KeyItemLocation.DLUNAR);
         
-        if (flagset != null && !flagset.contains("K")) {
+        if (!flagsetContains("K")) {
             knownLocations.add(KeyItemLocation.FABUL);
-            if(!flagset.contains("Pk"))
+            if(!flagsetContains("Pk"))
                 knownLocations.add(KeyItemLocation.BARON_CASTLE);
         }
         
-        if (flagset != null && !flagset.contains("V1"))
+        if (!flagsetContains("V1"))
             knownLocations.add(KeyItemLocation.KOKKOL);
         
         //Always.  Crystal location set there automatically on K0 seeds.
@@ -726,7 +726,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     public void updateKeyItemCountLabel() {
         keyItemCountLabel.setText("Key Items: " + getKeyItemCount());
-        Boolean keyItemBonusXP = flagset == null || flagset.contains("Xk");
+        Boolean keyItemBonusXP = flagsetContains("Xk");
         keyItemCountLabel.setForeground(getKeyItemCount() >= 10 && keyItemBonusXP ? tenKeyItemColorLabel.getForeground() : textColorLabel.getForeground());
     }
         
@@ -1592,7 +1592,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
             flagErrorLabel.setText(ex.getMessage());
             flagset = null;
         }        
-        ShopPanel.UpdateFlags(flagset);
+        ShopPanel.UpdateFlags();
         PartyLabel.flagset = flagset;
         updateLogic();
         updateKeyItemCountLabel();
