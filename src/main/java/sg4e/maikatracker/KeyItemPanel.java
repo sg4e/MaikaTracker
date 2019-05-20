@@ -78,21 +78,23 @@ public class KeyItemPanel extends JPanel {
                         JMenuItem custom = new JMenuItem("Chest location");
                         custom.addActionListener((ae) -> {
                             String customOption = JOptionPane.showInputDialog("Enter chest location");
-                            String chestId = customOption.toUpperCase();
-                            if(tracker.getAtlas().hasChestId(chestId)) {
-                                final List<KeyItemPanel> panels = tracker.getKeyItemPanels();
-                                panels.forEach(panel -> {
-                                    if(panel.locationLabel.getText().equals(chestId)) {
-                                        panel.reset();
-                                    }
-                                });
-                                if(isKnown())
-                                    reset();
-                                locationLabel.setText(chestId);
-                                tracker.updateKeyItemLocation(metadata, chestId);
-                            }
-                            else {
-                                JOptionPane.showMessageDialog(tracker, "Not a valid chest id", "Invalid id", JOptionPane.ERROR_MESSAGE);
+                            if(customOption != null) {
+                                String chestId = customOption.toUpperCase();
+                                if(tracker.getAtlas().hasChestId(chestId)) {
+                                    final List<KeyItemPanel> panels = tracker.getKeyItemPanels();
+                                    panels.forEach(panel -> {
+                                        if(panel.locationLabel.getText().equals(chestId)) {
+                                            panel.reset();
+                                        }
+                                    });
+                                    if(isKnown())
+                                        reset();
+                                    locationLabel.setText(chestId);
+                                    tracker.updateKeyItemLocation(metadata, chestId);
+                                }
+                                else {
+                                    JOptionPane.showMessageDialog(tracker, "Not a valid chest id", "Invalid id", JOptionPane.ERROR_MESSAGE);
+                                }
                             }
                         });
                         locationMenu.add(custom, 0);
