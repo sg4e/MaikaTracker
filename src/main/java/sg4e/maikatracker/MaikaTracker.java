@@ -720,7 +720,18 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     public JPopupMenu getUnknownKeyItemMenu(Consumer<KeyItemMetadata> actionOnEachItem) {
         JPopupMenu kiMenu = new JPopupMenu("Key Items");
-        getUnknownKeyItems().forEach(ki -> kiMenu.add(ki.getEnum().toString()).addActionListener((ae) -> actionOnEachItem.accept(ki)));
+        for (KeyItemMetadata ki : getUnknownKeyItems()) {
+            boolean include;
+            if(ki.equals(KeyItemMetadata.PASS)) {
+                include = flagsetContainsAll("Pk", "Kt") || flagsetContains("Pt");
+            }
+            else {
+                include = flagsetContains("Kt");
+            }
+            
+            if(include)
+                kiMenu.add(ki.getEnum().toString()).addActionListener((ae) -> actionOnEachItem.accept(ki));
+        }
         return kiMenu;
     }
     
