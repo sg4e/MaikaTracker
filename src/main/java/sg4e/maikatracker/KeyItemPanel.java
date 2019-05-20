@@ -76,7 +76,12 @@ public class KeyItemPanel extends JPanel {
                 if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu;                    
                     if(!isKnown() || !tracker.isResetOnly()) {
-                        locationMenu = tracker.getAvailableLocationsMenu(loc -> setLocation(loc));
+                        boolean allowLocations = metadata.equals(KeyItemMetadata.PASS)
+                                ? tracker.flagsetContainsAll("K", "Pk")
+                                : tracker.flagsetContains("K");
+                        locationMenu = allowLocations
+                                ? tracker.getAvailableLocationsMenu(loc -> setLocation(loc))
+                                : new JPopupMenu();
                         if(tracker.isItemAllowedInChest(metadata)) {
                             locationMenu.add(new JSeparator(), 0);
                             JMenuItem custom = new JMenuItem("Chest location");
