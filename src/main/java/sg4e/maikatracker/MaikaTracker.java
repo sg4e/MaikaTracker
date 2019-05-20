@@ -718,20 +718,17 @@ public final class MaikaTracker extends javax.swing.JFrame {
         return resetOnly.isSelected();
     }
     
+    public boolean isItemAllowedInChest(KeyItemMetadata ki) {
+        return ki.equals(KeyItemMetadata.PASS)
+            ? flagsetContainsAll("Pk", "Kt") || flagsetContains("Pt")
+            : flagsetContains("Kt");        
+    }
+    
     public JPopupMenu getUnknownKeyItemMenu(Consumer<KeyItemMetadata> actionOnEachItem) {
         JPopupMenu kiMenu = new JPopupMenu("Key Items");
-        for (KeyItemMetadata ki : getUnknownKeyItems()) {
-            boolean include;
-            if(ki.equals(KeyItemMetadata.PASS)) {
-                include = flagsetContainsAll("Pk", "Kt") || flagsetContains("Pt");
-            }
-            else {
-                include = flagsetContains("Kt");
-            }
-            
-            if(include)
-                kiMenu.add(ki.getEnum().toString()).addActionListener((ae) -> actionOnEachItem.accept(ki));
-        }
+        getUnknownKeyItems().stream().filter(ki -> isItemAllowedInChest(ki)).forEachOrdered(ki -> 
+            kiMenu.add(ki.getEnum().toString()).addActionListener((ae) -> actionOnEachItem.accept(ki))
+        );
         return kiMenu;
     }
     
