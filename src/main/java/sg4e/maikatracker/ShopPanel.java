@@ -63,38 +63,46 @@ public class ShopPanel extends javax.swing.JPanel {
         }
     }
     
+    public String getShopName() {
+        return shopLocation;
+    }
+    
     private static List<JCheckBox> getCheckBoxes(ShopPanel panel) {
         return Arrays.stream(panel.getComponents()).map(c -> (Component) c)
                         .filter(c -> c instanceof JCheckBox)
                         .map(c -> (JCheckBox) c).collect(Collectors.toList());
     }
     
-    public static void UpdateFlags(FlagSet flagset)
+    public static void UpdateFlags()
     {
-        
+        MaikaTracker tracker = MaikaTracker.tracker;
+        FlagSet flagset = tracker.flagset;
         final Boolean cabinsOnly = flagset != null && flagset.contains("Sc");
         final Boolean emptyShop = flagset != null && flagset.contains("Sx");
-        final Boolean vanillaShop = flagset != null && !flagset.contains("S2")
-                && !flagset.contains("S3") && !flagset.contains("S4")
-                && !cabinsOnly && !emptyShop;
-        final Boolean jItems = flagset == null || flagset.contains("Ji");
-        final Boolean noSirens = flagset != null && flagset.contains("-nosirens");
-        final Boolean wildShops = flagset == null || flagset.contains("S4");
-        final Boolean noApples = flagset != null && flagset.contains("-noapples");
-        final Boolean pass = flagset == null || flagset.contains("Ps");
+        final Boolean vanillaShop = !tracker.flagsetContainsAny("S2", "S3", "S4", "Sc", "Sx");
+        final Boolean jItems = tracker.flagsetContains("Ji") && !vanillaShop;
+        final Boolean sirens = flagset == null || (!tracker.flagsetContains("-nosirens") && jItems);
+        final Boolean rarejItems = tracker.flagsetContainsAny("S3", "S4") && jItems;
+        final Boolean wildShops = tracker.flagsetContains("S4");
+        final Boolean apples = flagset == null || (!tracker.flagsetContains("-noapples") && jItems && wildShops);
+        final Boolean pass = tracker.flagsetContains("Ps");
        
         shopPanels.forEach(panel -> {            
             for (JCheckBox box : getCheckBoxes(panel)) {
                 switch(box.getName())
                 {
                     case "j item":                        
-                        box.setVisible(jItems && !vanillaShop && !cabinsOnly && !emptyShop);
+                        box.setVisible(jItems);
                         break;
                     case "siren":
-                        box.setVisible(jItems && !noSirens && !vanillaShop && !cabinsOnly && !emptyShop);
+                        box.setVisible(sirens);
                         break;
                     case "apples":
-                        box.setVisible(jItems && wildShops && !noApples && !vanillaShop && !cabinsOnly && !emptyShop);
+                        box.setVisible(apples);
+                        break;
+                        
+                    case "rare j item":
+                        box.setVisible(rarejItems);
                         break;
 
                     case "pass":
@@ -114,15 +122,11 @@ public class ShopPanel extends javax.swing.JPanel {
     }
     
     public static void reset() {
-        final FlagSet flagset = MaikaTracker.tracker.flagset;
-        final Boolean cabinsOnly = flagset != null && flagset.contains("Sc");
-        final Boolean emptyShop = flagset != null && flagset.contains("Sx");
-        final Boolean vanillaShop = flagset != null 
-                && !flagset.contains("S1") && !flagset.contains("S2")
-                && !flagset.contains("S3") && !flagset.contains("S4")
-                && !cabinsOnly && !emptyShop;
-        final Boolean pass = flagset == null || flagset.contains("Ps");
-        final Boolean jItems = flagset == null || flagset.contains("Ji");
+        final MaikaTracker tracker = MaikaTracker.tracker;
+        final Boolean vanillaShop = !tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx");
+        final Boolean pass = tracker.flagsetContains("Ps");
+        final Boolean jItems = tracker.flagsetContains("Ji");
+        tracker.getPanelForKeyItem(KeyItemMetadata.PASS).setLocationInShop(null);
         shopPanels.forEach(panel -> {
             getCheckBoxes(panel).forEach((box) -> {
                 box.setSelected(false);
@@ -161,6 +165,7 @@ public class ShopPanel extends javax.swing.JPanel {
                         
                     case "Troia [Pub]":
                         panel.pass.setSelected(pass);
+                        MaikaTracker.tracker.getPanelForKeyItem(KeyItemMetadata.PASS).setLocationInShop(panel);
                         break;
                         
                     case "Hummingway":
@@ -397,7 +402,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         moonveil.setText("Moonveil");
-        moonveil.setName("j item"); // NOI18N
+        moonveil.setName("rare j item"); // NOI18N
         moonveil.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -437,7 +442,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         grimoire.setText("Grimoire");
-        grimoire.setName("j item"); // NOI18N
+        grimoire.setName("rare j item"); // NOI18N
         grimoire.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -445,7 +450,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         gaiadrum.setText("GaiaDrum");
-        gaiadrum.setName("j item"); // NOI18N
+        gaiadrum.setName("rare j item"); // NOI18N
         gaiadrum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -453,7 +458,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         stardust.setText("Stardust");
-        stardust.setName("j item"); // NOI18N
+        stardust.setName("rare j item"); // NOI18N
         stardust.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -633,12 +638,18 @@ public class ShopPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void checkboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxActionPerformed
+        final MaikaTracker tracker = MaikaTracker.tracker;
+        final Boolean vanillaShop = !tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx");
+        
         if(evt.getSource() instanceof JCheckBox) {
             JCheckBox box = (JCheckBox) evt.getSource();
             if(this == knownLocationsPanel) {
                 box.setSelected(!itemLocations.get(box.getText()).isEmpty());
             }
             else {                
+                if(vanillaShop)
+                    box.setSelected(!box.isSelected());         
+                
                 if(box.isSelected())
                     itemLocations.get(box.getText()).add(shopLocation);
                 else
@@ -652,7 +663,12 @@ public class ShopPanel extends javax.swing.JPanel {
                         .collect(Collectors.toList()).forEach((b) -> {
                             b.setSelected(!itemLocations.get(box.getText()).isEmpty());
                 });
-            }
+                
+                if(box.getText().equals("Pass")) {
+                    KeyItemPanel passPanel = MaikaTracker.tracker.getPanelForKeyItem(KeyItemMetadata.PASS);
+                    passPanel.setLocationInShop(box.isSelected() ? this : null);
+                } 
+            }       
         }
         
         UpdateToolTips();
@@ -660,41 +676,41 @@ public class ShopPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox agapple;
-    private javax.swing.JCheckBox auapple;
-    private javax.swing.JCheckBox bacchus;
-    private javax.swing.JCheckBox cabin;
-    private javax.swing.JCheckBox coffin;
-    private javax.swing.JCheckBox cure1;
-    private javax.swing.JCheckBox cure2;
-    private javax.swing.JCheckBox cure3;
-    private javax.swing.JCheckBox elixir;
-    private javax.swing.JCheckBox ether1;
-    private javax.swing.JCheckBox ether2;
-    private javax.swing.JCheckBox exit;
-    private javax.swing.JCheckBox gaiadrum;
-    private javax.swing.JCheckBox grimoire;
-    private javax.swing.JCheckBox hourglass1;
-    private javax.swing.JCheckBox hourglass2;
-    private javax.swing.JCheckBox hourglass3;
-    private javax.swing.JCheckBox illusion;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JCheckBox kamikaze;
-    private javax.swing.JCheckBox life;
-    private javax.swing.JCheckBox moonveil;
-    private javax.swing.JCheckBox mutebell;
-    private javax.swing.JCheckBox pass;
-    private javax.swing.JCheckBox silkweb;
-    private javax.swing.JCheckBox siren;
-    private javax.swing.JCheckBox stardust;
-    private javax.swing.JCheckBox stardust1;
-    private javax.swing.JCheckBox starveil;
-    private javax.swing.JCheckBox tent;
+    public javax.swing.JCheckBox agapple;
+    public javax.swing.JCheckBox auapple;
+    public javax.swing.JCheckBox bacchus;
+    public javax.swing.JCheckBox cabin;
+    public javax.swing.JCheckBox coffin;
+    public javax.swing.JCheckBox cure1;
+    public javax.swing.JCheckBox cure2;
+    public javax.swing.JCheckBox cure3;
+    public javax.swing.JCheckBox elixir;
+    public javax.swing.JCheckBox ether1;
+    public javax.swing.JCheckBox ether2;
+    public javax.swing.JCheckBox exit;
+    public javax.swing.JCheckBox gaiadrum;
+    public javax.swing.JCheckBox grimoire;
+    public javax.swing.JCheckBox hourglass1;
+    public javax.swing.JCheckBox hourglass2;
+    public javax.swing.JCheckBox hourglass3;
+    public javax.swing.JCheckBox illusion;
+    public javax.swing.JLabel jLabel1;
+    public javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabel3;
+    public javax.swing.JLabel jLabel4;
+    public javax.swing.JLabel jLabel5;
+    public javax.swing.JLabel jLabel6;
+    public javax.swing.JLabel jLabel7;
+    public javax.swing.JCheckBox kamikaze;
+    public javax.swing.JCheckBox life;
+    public javax.swing.JCheckBox moonveil;
+    public javax.swing.JCheckBox mutebell;
+    public javax.swing.JCheckBox pass;
+    public javax.swing.JCheckBox silkweb;
+    public javax.swing.JCheckBox siren;
+    public javax.swing.JCheckBox stardust;
+    public javax.swing.JCheckBox stardust1;
+    public javax.swing.JCheckBox starveil;
+    public javax.swing.JCheckBox tent;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,7 +10,7 @@
     <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="1"/>
   </AuxValues>
 
   <Layout>
@@ -330,7 +330,7 @@
     <Component class="javax.swing.JCheckBox" name="moonveil">
       <Properties>
         <Property name="text" type="java.lang.String" value="Moonveil"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="rare j item" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -375,7 +375,7 @@
     <Component class="javax.swing.JCheckBox" name="grimoire">
       <Properties>
         <Property name="text" type="java.lang.String" value="Grimoire"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="rare j item" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -384,7 +384,7 @@
     <Component class="javax.swing.JCheckBox" name="gaiadrum">
       <Properties>
         <Property name="text" type="java.lang.String" value="GaiaDrum"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="rare j item" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -393,7 +393,7 @@
     <Component class="javax.swing.JCheckBox" name="stardust">
       <Properties>
         <Property name="text" type="java.lang.String" value="Stardust"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="rare j item" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>

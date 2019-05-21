@@ -16,10 +16,12 @@
  */
 package sg4e.maikatracker;
 
+import com.google.common.base.Objects;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -42,6 +44,7 @@ public class KeyItemPanel extends JPanel {
     private final JLabel locationLabel;
     private KeyItemLocation location = null;
     private ChestLabel chestLabel = null;
+    private ShopPanel shopPanel = null;
     
     private static final String UNKNOWN_LOCATION = "?";
     
@@ -73,29 +76,38 @@ public class KeyItemPanel extends JPanel {
                 if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu;                    
                     if(!isKnown() || !tracker.isResetOnly()) {
-                        locationMenu = tracker.getAvailableLocationsMenu(loc -> setLocation(loc));
-                        locationMenu.add(new JSeparator(), 0);
-                        JMenuItem custom = new JMenuItem("Chest location");
-                        custom.addActionListener((ae) -> {
-                            String customOption = JOptionPane.showInputDialog("Enter chest location");
-                            String chestId = customOption.toUpperCase();
-                            if(tracker.getAtlas().hasChestId(chestId)) {
-                                final List<KeyItemPanel> panels = tracker.getKeyItemPanels();
-                                panels.forEach(panel -> {
-                                    if(panel.locationLabel.getText().equals(chestId)) {
-                                        panel.reset();
+                        boolean allowLocations = metadata.equals(KeyItemMetadata.PASS)
+                                ? tracker.flagsetContainsAll("K", "Pk")
+                                : tracker.flagsetContains("K");
+                        locationMenu = allowLocations
+                                ? tracker.getAvailableLocationsMenu(loc -> setLocation(loc))
+                                : new JPopupMenu();
+                        if(tracker.isItemAllowedInChest(metadata)) {
+                            locationMenu.add(new JSeparator(), 0);
+                            JMenuItem custom = new JMenuItem("Chest location");
+                            custom.addActionListener((ae) -> {
+                                String customOption = JOptionPane.showInputDialog("Enter chest location");
+                                if(customOption != null) {
+                                    String chestId = customOption.toUpperCase();
+                                    if(tracker.getAtlas().hasChestId(chestId)) {
+                                        final List<KeyItemPanel> panels = tracker.getKeyItemPanels();
+                                        panels.forEach(panel -> {
+                                            if(panel.locationLabel.getText().equals(chestId)) {
+                                                panel.reset();
+                                            }
+                                        });
+                                        if(isKnown())
+                                            reset();
+                                        locationLabel.setText(chestId);
+                                        tracker.updateKeyItemLocation(metadata, chestId);
                                     }
-                                });
-                                if(isKnown())
-                                    reset();
-                                locationLabel.setText(chestId);
-                                tracker.updateKeyItemLocation(metadata, chestId);
-                            }
-                            else {
-                                JOptionPane.showMessageDialog(tracker, "Not a valid chest id", "Invalid id", JOptionPane.ERROR_MESSAGE);
-                            }
-                        });
-                        locationMenu.add(custom, 0);
+                                    else {
+                                        JOptionPane.showMessageDialog(tracker, "Not a valid chest id", "Invalid id", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                }
+                            });
+                            locationMenu.add(custom, 0);
+                        }                        
                     }
                     else {
                         locationMenu = new JPopupMenu();
@@ -160,11 +172,15 @@ public class KeyItemPanel extends JPanel {
     }
     
     public boolean isKnown() {
-        return location != null || chestLabel != null;
+        return location != null || chestLabel != null || shopPanel != null;
     }
     
     public boolean isInChest() {
         return location == null && chestLabel != null;
+    }
+    
+    public boolean isInShop() {
+        return location == null && shopPanel != null;
     }
     
     public KeyItemMetadata getKeyItem() {
@@ -173,7 +189,24 @@ public class KeyItemPanel extends JPanel {
     
     public void setLocationInChest(ChestLabel label) {
         chestLabel = label;
-        locationLabel.setText(label.getId());
+        locationLabel.setText(label.getId());        
+    }
+    
+    public void setLocationInShop(ShopPanel panel) {
+        if(metadata != KeyItemMetadata.PASS || Objects.equal(shopPanel, panel))
+            return;
+        
+        if(isKnown())
+            reset();
+        
+        if(panel != null && panel.pass.isSelected()) {
+            shopPanel = panel;
+            locationLabel.setText("Shop");
+            locationLabel.setToolTipText(panel.getShopName());
+        }
+        else {
+            shopPanel = null;
+        }
     }
     
     public void reset() {
@@ -187,6 +220,12 @@ public class KeyItemPanel extends JPanel {
         if (isInChest()) {
             chestLabel.reset();
             chestLabel = null;
+        }
+        
+        if (isInShop()) {
+            if(shopPanel.pass.isSelected())
+                shopPanel.pass.doClick();
+            shopPanel = null;
         }
         
         if (location != null) {
@@ -204,7 +243,7 @@ public class KeyItemPanel extends JPanel {
             return;
         }
         
-        if (tracker.flagset != null && !tracker.flagset.contains("K")) {
+        if (!tracker.flagsetContains("K")) {
             switch(metadata) {
                 case ADAMANT:
                     setLocation(KeyItemLocation.RAT_TAIL);
@@ -213,7 +252,7 @@ public class KeyItemPanel extends JPanel {
                     setLocation(KeyItemLocation.BARON_INN);
                     break;
                 case CRYSTAL:
-                    setLocation(tracker.flagset.contains("V1") ? KeyItemLocation.KOKKOL : KeyItemLocation.ZEROMUS);
+                    setLocation(tracker.flagsetContains("V1") ? KeyItemLocation.KOKKOL : KeyItemLocation.ZEROMUS);
                     break;
                 case DARKNESS:
                     setLocation(KeyItemLocation.SEALED_CAVE);
@@ -240,7 +279,7 @@ public class KeyItemPanel extends JPanel {
                     setLocation(KeyItemLocation.SHEILA_PANLESS);
                     break;
                 case PASS:
-                    if(tracker.flagset.contains("Pk"))
+                    if(tracker.flagsetContains("Pk"))
                         setLocation(KeyItemLocation.BARON_CASTLE);
                     break;
                 case PINK_TAIL:                    
@@ -260,11 +299,11 @@ public class KeyItemPanel extends JPanel {
                 case TWIN_HARP:
                     if(tracker.flagset == null)
                         break;
-                    setLocation(tracker.flagset.contains("Nk") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
+                    setLocation(tracker.flagsetContains("Nk") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
                     break;
             }
         }
-        else if(tracker.flagset.contains("V1") && metadata.equals(KeyItemMetadata.CRYSTAL))
+        else if(tracker.flagsetContains("V1") && metadata.equals(KeyItemMetadata.CRYSTAL))
             setLocation(KeyItemLocation.KOKKOL);
         tracker.updateLogic();
         

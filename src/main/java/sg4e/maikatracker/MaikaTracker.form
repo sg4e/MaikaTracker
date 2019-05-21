@@ -269,9 +269,19 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane2" pref="664" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
                       <Component id="addDMachinButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="finishGrindButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="xpLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="xpErrorLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -280,8 +290,15 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jScrollPane2" min="-2" pref="130" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="addDMachinButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="375" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="finishGrindButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="addDMachinButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xpLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="xpErrorLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="335" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -316,6 +333,24 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addDMachinButtonActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="finishGrindButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Finish Grind"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="finishGrindButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="xpLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="XP: 0"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="xpErrorLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="jLabel1"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

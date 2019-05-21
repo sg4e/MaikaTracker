@@ -47,7 +47,7 @@ public class BossLabel extends StativeLabel {
                 if(SwingUtilities.isRightMouseButton(e)) {
                     
                     JPopupMenu locationMenu = getBossNameMenu(bn -> {setBossLocation(bn);});
-                    if(bossLocation != null && (MaikaTracker.tracker.flagset == null || MaikaTracker.tracker.flagset.contains("B"))) {
+                    if(bossLocation != null && (MaikaTracker.tracker.flagsetContains("B"))) {
                         locationMenu.add(new JSeparator(), 0);
                         JMenuItem resetMenu = new JMenuItem("Reset");
                         resetMenu.addActionListener((ae) -> setBossLocation(null));
@@ -69,7 +69,7 @@ public class BossLabel extends StativeLabel {
     @Override
     public void reset() {
         super.reset();
-        setBossLocation((MaikaTracker.tracker.flagset == null || MaikaTracker.tracker.flagset.contains("B")) ? null : this);
+        setBossLocation((MaikaTracker.tracker.flagsetContains("B")) ? null : this);
     }
     
     private JPopupMenu getBossNameMenu(Consumer<BossLabel> actionOnEachItem) {

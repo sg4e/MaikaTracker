@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import javax.swing.table.DefaultTableModel;
 import sg4e.ff4stats.party.PartyMember;
 import sg4e.ff4stats.party.Stats;
@@ -67,7 +68,39 @@ public class PartyTableModel extends DefaultTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return canEdit [columnIndex];
+        return canEdit [columnIndex] && rowIndex < members.size();
+    }
+    
+    public void setValueAt(Object aValue, int row, int column, boolean overwriteStartingLevel) {
+        MaikaTracker.tracker.setXpErrorLabel("");
+        if (row < members.size() && overwriteStartingLevel) {
+            switch (column) {
+                case STARTING_LEVEL_COLUMN:
+                    try {
+                        members.get(row).setStartingLevel(aValue == null ? null : (Integer) aValue);
+                    } 
+                    catch (IllegalArgumentException ex) {
+                        aValue = members.get(row).getStartingLevel();
+                        MaikaTracker.tracker.setXpErrorLabel(ex.getMessage());
+                    }
+                    break;
+                case STARTING_XP_COLUMN:
+                    try {
+                        members.get(row).setStartingXp(aValue == null ? null : (Integer) aValue);
+                    } 
+                    catch (IllegalArgumentException ex) {
+                        aValue = members.get(row).getStartingXP();
+                        MaikaTracker.tracker.setXpErrorLabel(ex.getMessage());
+                    }
+                    break;
+            }
+        }
+        super.setValueAt(aValue, row, column);
+    }
+    
+    @Override
+    public void setValueAt(Object aValue, int row, int column) {
+        setValueAt(aValue, row, column, true);
     }
     
     public void setPartyMembers(Collection<PartyMember> party) {
@@ -80,9 +113,7 @@ public class PartyTableModel extends DefaultTableModel {
         //clear table
         for(int i = 0; i < getRowCount(); i++) {
             for(int j = 0; j < getColumnCount(); j++) {
-                if(j == STARTING_LEVEL_COLUMN || j == STARTING_XP_COLUMN)
-                    continue;
-                setValueAt(null, i, j);
+                setValueAt(null, i, j, false);
             }
         }
     }
@@ -94,10 +125,18 @@ public class PartyTableModel extends DefaultTableModel {
             Range<Integer> hpRange = m.getData().getHpRangeAtLevel(m.getLevel());
             Range<Integer> mpRange = m.getData().getMpRangeAtLevel(m.getLevel());
             setValueAt(m.getData().toString(), i, 0);
+            setValueAt(m.getStartingLevel(), i, 1, false);
+            setValueAt(m.getStartingXP(), i, 2, false);
             setValueAt(m.getLevel(), i, 3);
             setValueAt(m.getXp(), i, 4);
-            setValueAt(hpRange.lowerEndpoint() + "-" + hpRange.upperEndpoint(), i, 5);
-            setValueAt(mpRange.lowerEndpoint() + "-" + mpRange.upperEndpoint(), i, 6);
+            if(Objects.equals(hpRange.lowerEndpoint(), hpRange.upperEndpoint()))
+                setValueAt(hpRange.lowerEndpoint(), i, 5);
+            else
+                setValueAt(hpRange.lowerEndpoint() + "-" + hpRange.upperEndpoint(), i, 5);
+            if(Objects.equals(mpRange.lowerEndpoint(), mpRange.upperEndpoint()))
+                setValueAt(mpRange.lowerEndpoint(), i, 6);
+            else
+                setValueAt(mpRange.lowerEndpoint() + "-" + mpRange.upperEndpoint(), i, 6);
             Stats s = m.getStats();
             Stats smax = m.getStatsMax();
             if(smax == null || s.equals(smax)) {
