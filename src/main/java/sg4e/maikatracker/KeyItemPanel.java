@@ -123,7 +123,13 @@ public class KeyItemPanel extends JPanel {
                             JMenuItem goToChest = new JMenuItem("Show chest"/*slmLewd*/);
                             goToChest.addActionListener((ae) -> tracker.getAtlas().showChest(locationLabel.getText()));
                             locationMenu.add(goToChest, 0);
-                        }                        
+                        }
+                        if(isInShop()) {
+                            locationMenu.add(new JSeparator(), 0);
+                            JMenuItem goToShop = new JMenuItem("Show shop");
+                            goToShop.addActionListener((ae) -> shopPanel.showShop());
+                            locationMenu.add(goToShop, 0);                            
+                        }
                     }
                     locationMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
