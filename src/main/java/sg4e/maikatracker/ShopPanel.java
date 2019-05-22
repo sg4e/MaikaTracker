@@ -86,15 +86,14 @@ public class ShopPanel extends javax.swing.JPanel {
     public static void UpdateFlags()
     {
         MaikaTracker tracker = MaikaTracker.tracker;
-        FlagSet flagset = tracker.flagset;
-        final Boolean cabinsOnly = flagset != null && flagset.contains("Sc");
-        final Boolean emptyShop = flagset != null && flagset.contains("Sx");
+        final Boolean cabinsOnly = tracker.flagsetContains(false, "Sc");
+        final Boolean emptyShop = tracker.flagsetContains(false, "Sx");
         final Boolean vanillaShop = !tracker.flagsetContainsAny("S2", "S3", "S4", "Sc", "Sx");
         final Boolean jItems = tracker.flagsetContains("Ji") && !vanillaShop;
-        final Boolean sirens = flagset == null || (!tracker.flagsetContains("-nosirens") && jItems);
+        final Boolean sirens = !tracker.flagsetContains(false, "-nosirens") && jItems;
         final Boolean rarejItems = tracker.flagsetContainsAny("S3", "S4") && jItems;
         final Boolean wildShops = tracker.flagsetContains("S4");
-        final Boolean apples = flagset == null || (!tracker.flagsetContains("-noapples") && jItems && wildShops);
+        final Boolean apples = !tracker.flagsetContains(false, "-noapples") && jItems && wildShops;
         final Boolean pass = tracker.flagsetContains("Ps");
        
         shopPanels.forEach(panel -> {            

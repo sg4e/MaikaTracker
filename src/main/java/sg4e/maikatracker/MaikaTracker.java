@@ -670,7 +670,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         if(!flagsetContains("Nk"))
             knownLocations.add(KeyItemLocation.MIST);
         
-        if (flagsetContains("Nk"))
+        if (flagsetContains(false, "Nk"))
             knownLocations.add(KeyItemLocation.TOROIA);
         
         if(!flagsetContains("Kq")) {
@@ -701,7 +701,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
             knownLocations.add(KeyItemLocation.KOKKOL);
         
         //Always.  Crystal location set there automatically on K0 seeds.
-        knownLocations.add(KeyItemLocation.ZEROMUS);
+        if(flagset != null)
+            knownLocations.add(KeyItemLocation.ZEROMUS);
         
         Arrays.stream(KeyItemLocation.values())
                 .filter(ki -> !knownLocations.contains(ki))
@@ -894,8 +895,16 @@ public final class MaikaTracker extends javax.swing.JFrame {
             label.setPartyMember(LevelData.FUSOYA);
     }
     
+    public boolean flagsetContains(boolean allowNullFlagset, String firstFlag) {
+        return (allowNullFlagset || flagset != null) && flagsetContains(firstFlag);
+    }
+    
     public boolean flagsetContains(String firstFlag) {
         return flagsetContainsAll(firstFlag);
+    }
+    
+    public boolean flagsetContainsAll(boolean allowNullFlagset, String firstFlag, String ...flags) {
+        return (allowNullFlagset || flagset != null) && flagsetContainsAll(firstFlag, flags);
     }
     
     public boolean flagsetContainsAll(String firstFlag, String ...flags) {
@@ -905,6 +914,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
         flagsList.add(firstFlag);
         flagsList.addAll(Arrays.asList(flags));
         return flagsList.stream().allMatch(x -> flagset.contains(x));
+    }
+    
+    public boolean flagsetContainsAny(boolean allowNullFlagset, String firstFlag, String ...flags) {
+        return (allowNullFlagset || flagset != null) && flagsetContainsAny(firstFlag, flags);
     }
     
     public boolean flagsetContainsAny(String firstFlag, String ...flags) {
