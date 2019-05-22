@@ -53,6 +53,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
@@ -652,6 +653,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     public JPopupMenu getAvailableLocationsMenu(Consumer<KeyItemLocation> actionOnEachItem) {
         JPopupMenu locationMenu = new JPopupMenu("Locations");
+        JMenu keyItemsMenu = new JMenu("Vanilla Locations");
+        JMenu summonsMenu = new JMenu("Summon Locations");
+        JMenu lunarMenu = new JMenu("Lunar Locations");
         
         List<KeyItemLocation> dLunar = Arrays.stream(keyItemPanel.getComponents())
                 .map(c -> (KeyItemPanel) c)
@@ -706,7 +710,34 @@ public final class MaikaTracker extends javax.swing.JFrame {
         
         Arrays.stream(KeyItemLocation.values())
                 .filter(ki -> !knownLocations.contains(ki))
-                .forEach(ki -> locationMenu.add(ki.getLocation()).addActionListener((ae) -> actionOnEachItem.accept(ki)));
+                .forEach(ki -> {
+                    //locationMenu.add(ki.getLocation()).addActionListener((ae) -> actionOnEachItem.accept(ki))
+                    switch(ki) {
+                        case ASURA:
+                        case LEVIATAN:
+                        case SYLPH:
+                        case ODIN:
+                        case BAHAMUT:
+                            summonsMenu.add(ki.getLocation()).addActionListener((ae) -> actionOnEachItem.accept(ki));
+                            break;
+                        case PALE_DIM:
+                        case PLAGUE:
+                        case DLUNAR:
+                        case OGOPOGO:
+                        case WYVERN:
+                            lunarMenu.add(ki.getLocation()).addActionListener((ae) -> actionOnEachItem.accept(ki));
+                            break;
+                        default:
+                            keyItemsMenu.add(ki.getLocation()).addActionListener((ae) -> actionOnEachItem.accept(ki));
+                            break;
+                    }
+                });
+        if(keyItemsMenu.getItemCount() > 0)
+            locationMenu.add(keyItemsMenu);
+        if(summonsMenu.getItemCount() > 0)
+            locationMenu.add(summonsMenu);
+        if(lunarMenu.getItemCount() > 0)
+            locationMenu.add(lunarMenu);
         return locationMenu;
     }
     
