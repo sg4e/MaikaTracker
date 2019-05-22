@@ -74,18 +74,23 @@ public class KeyItemPanel extends JPanel {
                     tracker.updateLogic();
                 }
                 if(SwingUtilities.isRightMouseButton(e)) {
-                    JPopupMenu locationMenu;                    
-                    if(!isKnown() || !tracker.isResetOnly()) {
-                        boolean allowLocations = tracker.flagsetContains("K") &&
-                            (!metadata.equals(KeyItemMetadata.PASS) || tracker.flagsetContains("Pk")) &&
-                            (!metadata.equals(KeyItemMetadata.CRYSTAL) || !tracker.flagsetContains(false, "V1"));
-                        locationMenu = allowLocations
-                                ? tracker.getAvailableLocationsMenu(loc -> setLocation(loc))
-                                : new JPopupMenu();
-                        if(tracker.isItemAllowedInChest(metadata)) {
-                            locationMenu.add(new JSeparator(), 0);
-                            JMenuItem custom = new JMenuItem("Chest location");
-                            custom.addActionListener((ae) -> {
+                    JPopupMenu locationMenu = new JPopupMenu("Locations");
+                    if(isKnown()) {                        
+                        if(isInChest())
+                            locationMenu.add("Show chest").addActionListener((ae) -> tracker.getAtlas().showChest(locationLabel.getText()));
+                        if(isInShop())
+                            locationMenu.add("Show shop").addActionListener((ae) -> shopPanel.showShop());                        
+                        if(allowLocation() || allowChest() || allowShop()) {
+                            if(isInChest() || isInShop())
+                                locationMenu.add(new JSeparator());
+                            locationMenu.add("Reset").addActionListener((ae) -> reset());
+                            if(!tracker.isResetOnly())
+                                locationMenu.add(new JSeparator());
+                        }
+                    }
+                    if(!isKnown() || !tracker.isResetOnly()) {                        
+                        if(allowChest()) {                            
+                            locationMenu.add("Chest location").addActionListener((ae) -> {
                                 String customOption = JOptionPane.showInputDialog("Enter chest location");
                                 if(customOption != null) {
                                     String chestId = customOption.toUpperCase();
@@ -106,30 +111,16 @@ public class KeyItemPanel extends JPanel {
                                     }
                                 }
                             });
-                            locationMenu.add(custom, 0);
-                        }                        
-                    }
-                    else {
-                        locationMenu = new JPopupMenu();
-                    }
-                    if(isKnown()) {                        
-                        if(!tracker.isResetOnly())
-                            locationMenu.add(new JSeparator(), 0);
-                        JMenuItem resetMenu = new JMenuItem("Reset");
-                        resetMenu.addActionListener((ae) -> reset());
-                        locationMenu.add(resetMenu, 0);
-                        if(isInChest()) {
-                            locationMenu.add(new JSeparator(), 0);
-                            JMenuItem goToChest = new JMenuItem("Show chest"/*slmLewd*/);
-                            goToChest.addActionListener((ae) -> tracker.getAtlas().showChest(locationLabel.getText()));
-                            locationMenu.add(goToChest, 0);
                         }
-                        if(isInShop()) {
-                            locationMenu.add(new JSeparator(), 0);
-                            JMenuItem goToShop = new JMenuItem("Show shop");
-                            goToShop.addActionListener((ae) -> shopPanel.showShop());
-                            locationMenu.add(goToShop, 0);                            
+                        if(allowShop()) {
+                            ShopPanel.getAvailableShopsMenu(shop -> {
+                                if(!shop.pass.isSelected())
+                                    shop.pass.doClick();
+                                setLocationInShop(shop);
+                            }, locationMenu);
                         }
+                        if(allowLocation())
+                            tracker.getAvailableLocationsMenu(loc -> setLocation(loc), locationMenu);
                     }
                     locationMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -141,6 +132,26 @@ public class KeyItemPanel extends JPanel {
         locationLabel = new JLabel(UNKNOWN_LOCATION, JLabel.CENTER);
         locationLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);        
         add(locationLabel, BorderLayout.CENTER);
+    }
+    
+    public boolean allowLocation() {
+        switch(metadata) {
+            case PASS:
+                return tracker.flagsetContainsAll("K", "Pk");
+            case CRYSTAL:
+                return tracker.flagsetContains("K") && !tracker.flagsetContains(false, "V1");
+            default:
+                return tracker.flagsetContains("K");
+        }
+    }
+    
+    public boolean allowChest() {
+        return tracker.isItemAllowedInChest(metadata);
+    }
+    
+    public boolean allowShop() {
+        return metadata.equals(KeyItemMetadata.PASS) && tracker.flagsetContains("Ps") &&
+                tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx");
     }
     
     public void setActive(boolean on) {

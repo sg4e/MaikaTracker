@@ -14,9 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 import sg4e.ff4stats.fe.FlagSet;
 
 /**
@@ -65,6 +68,13 @@ public class ShopPanel extends javax.swing.JPanel {
                 itemLocations.put(box.getText(), new HashSet<String>());
             }
         }
+    }
+    
+    public static void getAvailableShopsMenu(Consumer<ShopPanel> actionOnEachItem, JPopupMenu locationMenu) {
+        JMenu shopMenu = new JMenu("Shop locations");
+        shopPanels.stream().filter(panel -> !panel.equals(knownLocationsPanel))
+            .forEach(panel -> shopMenu.add(panel.shopLocation).addActionListener((ae) -> actionOnEachItem.accept(panel)));
+        locationMenu.add(shopMenu);
     }
     
     public String getShopName() {
