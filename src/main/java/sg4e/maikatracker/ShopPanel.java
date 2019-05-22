@@ -14,9 +14,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
 import sg4e.ff4stats.fe.FlagSet;
 
 /**
@@ -67,6 +70,13 @@ public class ShopPanel extends javax.swing.JPanel {
         }
     }
     
+    public static void getAvailableShopsMenu(Consumer<ShopPanel> actionOnEachItem, JPopupMenu locationMenu) {
+        JMenu shopMenu = new JMenu("Shop locations");
+        shopPanels.stream().filter(panel -> !panel.equals(knownLocationsPanel))
+            .forEach(panel -> shopMenu.add(panel.shopLocation).addActionListener((ae) -> actionOnEachItem.accept(panel)));
+        locationMenu.add(shopMenu);
+    }
+    
     public String getShopName() {
         return shopLocation;
     }
@@ -86,15 +96,14 @@ public class ShopPanel extends javax.swing.JPanel {
     public static void UpdateFlags()
     {
         MaikaTracker tracker = MaikaTracker.tracker;
-        FlagSet flagset = tracker.flagset;
-        final Boolean cabinsOnly = flagset != null && flagset.contains("Sc");
-        final Boolean emptyShop = flagset != null && flagset.contains("Sx");
+        final Boolean cabinsOnly = tracker.flagsetContains(false, "Sc");
+        final Boolean emptyShop = tracker.flagsetContains(false, "Sx");
         final Boolean vanillaShop = !tracker.flagsetContainsAny("S2", "S3", "S4", "Sc", "Sx");
         final Boolean jItems = tracker.flagsetContains("Ji") && !vanillaShop;
-        final Boolean sirens = flagset == null || (!tracker.flagsetContains("-nosirens") && jItems);
+        final Boolean sirens = !tracker.flagsetContains(false, "-nosirens") && jItems;
         final Boolean rarejItems = tracker.flagsetContainsAny("S3", "S4") && jItems;
         final Boolean wildShops = tracker.flagsetContains("S4");
-        final Boolean apples = flagset == null || (!tracker.flagsetContains("-noapples") && jItems && wildShops);
+        final Boolean apples = !tracker.flagsetContains(false, "-noapples") && jItems && wildShops;
         final Boolean pass = tracker.flagsetContains("Ps");
        
         shopPanels.forEach(panel -> {            
