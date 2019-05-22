@@ -76,9 +76,9 @@ public class KeyItemPanel extends JPanel {
                 if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu;                    
                     if(!isKnown() || !tracker.isResetOnly()) {
-                        boolean allowLocations = metadata.equals(KeyItemMetadata.PASS)
-                                ? tracker.flagsetContainsAll("K", "Pk")
-                                : tracker.flagsetContains("K");
+                        boolean allowLocations = tracker.flagsetContains("K") &&
+                            (!metadata.equals(KeyItemMetadata.PASS) || tracker.flagsetContains("Pk")) &&
+                            (!metadata.equals(KeyItemMetadata.CRYSTAL) || !tracker.flagsetContains(false, "V1"));
                         locationMenu = allowLocations
                                 ? tracker.getAvailableLocationsMenu(loc -> setLocation(loc))
                                 : new JPopupMenu();

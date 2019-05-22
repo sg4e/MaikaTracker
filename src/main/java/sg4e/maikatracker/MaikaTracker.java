@@ -728,9 +728,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
     }
     
     public boolean isItemAllowedInChest(KeyItemMetadata ki) {
-        return ki.equals(KeyItemMetadata.PASS)
-            ? flagsetContainsAll("Pk", "Kt") || flagsetContains("Pt")
-            : flagsetContains("Kt");        
+        return flagsetContains("Kt") &&
+                (!ki.equals(KeyItemMetadata.PASS) || flagsetContainsAny("Pk", "Pt")) &&
+                (!ki.equals(KeyItemMetadata.CRYSTAL) || !flagsetContains(false, "V1"));     
     }
     
     public JPopupMenu getUnknownKeyItemMenu(Consumer<KeyItemMetadata> actionOnEachItem) {
