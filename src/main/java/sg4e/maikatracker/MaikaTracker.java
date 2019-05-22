@@ -417,21 +417,21 @@ public final class MaikaTracker extends javax.swing.JFrame {
         floorComboBox.setSelectedItem(0);
         atlas.showFloor((String) dungeonComboBox.getSelectedItem(), (String) floorComboBox.getSelectedItem());
         
-        initShop(agartShopLabel.getText(), false);
-        initShop(baronShopLabel.getText(), true);
-        initShop(eblanCaveShopLabel.getText(), false);
-        initShop(fabulShopLabel.getText(), false);
-        initShop(kaipoShopLabel.getText(), false);
-        initShop(mysidiaShopLabel.getText(), false);
-        initShop(silveraShopLabel.getText(), false);
-        initShop(troiaItemShopLabel.getText(), false);
-        initShop(troiaPubShopLabel.getText(), false);
-        initShop(dwarfCastleShopLabel.getText(), false);
-        initShop(feymarchShopLabel.getText(), false);
-        initShop(tomaraShopLabel.getText(), false);
-        initShop(hummingwayShopLabel.getText(), false);
+        initShop(agartShopLabel, false);
+        initShop(baronShopLabel, true);
+        initShop(eblanCaveShopLabel, false);
+        initShop(fabulShopLabel, false);
+        initShop(kaipoShopLabel, false);
+        initShop(mysidiaShopLabel, false);
+        initShop(silveraShopLabel, false);
+        initShop(troiaItemShopLabel, false);
+        initShop(troiaPubShopLabel, false);
+        initShop(dwarfCastleShopLabel, false);
+        initShop(feymarchShopLabel, false);
+        initShop(tomaraShopLabel, false);
+        initShop(hummingwayShopLabel, false);
         
-        ShopPanel.knownLocationsPanel = initShop(knownShopLocationsLabel.getText(), false);
+        ShopPanel.knownLocationsPanel = initShop(knownShopLocationsLabel, false);
         
         //shopPanel2.setVisible(false);
         
@@ -479,16 +479,16 @@ public final class MaikaTracker extends javax.swing.JFrame {
         mapPane.add(atlas);
     }
     
-    private ShopPanel initShop(String shopLocation, Boolean visible)
+    private ShopPanel initShop(JLabel shopLocation, Boolean visible)
     {
-        if(shopMap.containsKey(shopLocation)) {
-            return shopMap.get(shopLocation);
+        if(shopMap.containsKey(shopLocation.getText())) {
+            return shopMap.get(shopLocation.getText());
         }
         
         ShopPanel shopPanel = new ShopPanel(shopLocation);
         shopPanelsPanel.add(shopPanel);
         shopPanel.setVisible(visible);
-        shopMap.put(shopLocation, shopPanel);
+        shopMap.put(shopLocation.getText(), shopPanel);
         
         setTextColor(false);
         setBackgroundColor(false);
@@ -496,6 +496,15 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         return shopPanel;
         //shopPanes.add(shopLocation, new ShopPanel(shopLocation));
+    }
+    
+    public void showShopPanel(JLabel label) {
+        mainTabbedPane.setSelectedComponent(shopPane);
+        shopMap.values().forEach(panel -> panel.setVisible(false));
+        shopMap.get(label.getText()).setVisible(true);
+
+        Rectangle bounds = activeShopPointerLabel.getBounds();
+        activeShopPointerLabel.setBounds(bounds.x, label.getBounds().y, bounds.width, bounds.height);
     }
     
     public StativeLabel loadBossIcon(String imageName, String bossName) {
@@ -1625,12 +1634,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private void shopLabelClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_shopLabelClicked
         if(evt.getSource() instanceof JLabel) {
             JLabel label = (JLabel)evt.getSource();
-
-            shopMap.values().forEach(panel -> panel.setVisible(false));
-            shopMap.get(label.getText()).setVisible(true);
-
-            Rectangle bounds = activeShopPointerLabel.getBounds();
-            activeShopPointerLabel.setBounds(bounds.x, label.getBounds().y, bounds.width, bounds.height);
+            showShopPanel(label);
         }
     }//GEN-LAST:event_shopLabelClicked
 

@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import sg4e.ff4stats.fe.FlagSet;
 
 /**
@@ -30,11 +30,13 @@ public class ShopPanel extends javax.swing.JPanel {
     public static ShopPanel knownLocationsPanel = null;
     
     private final String shopLocation;
+    private final JLabel shopLabel;
     
     public ShopPanel() {
         initComponents();
         shopPanels.add(this);
         shopLocation = null;
+        shopLabel = null;
         
         Component[] components = (Component[])getComponents();
         for (Component comp : components) {
@@ -48,11 +50,13 @@ public class ShopPanel extends javax.swing.JPanel {
     
     /**
      * Creates new form ShopPanel
+     * @param location - Specifies the Label whose text will be used for location purposes.
      */
-    public ShopPanel(String location) {
+    public ShopPanel(JLabel location) {
         initComponents();
         shopPanels.add(this);
-        shopLocation = location;
+        shopLocation = location.getText();
+        shopLabel = location;
         
         Component[] components = (Component[])getComponents();
         for (Component comp : components) {
@@ -65,6 +69,12 @@ public class ShopPanel extends javax.swing.JPanel {
     
     public String getShopName() {
         return shopLocation;
+    }
+    
+    public void showShop() {
+        if(shopLabel == null)
+            return;
+        MaikaTracker.tracker.showShopPanel(shopLabel);
     }
     
     private static List<JCheckBox> getCheckBoxes(ShopPanel panel) {
