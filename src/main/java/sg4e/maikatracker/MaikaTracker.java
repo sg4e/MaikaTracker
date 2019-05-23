@@ -223,9 +223,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("E17", 5, 11),
                 new TreasureChest("E18", 6, 11));
         initMap(ebcast, "8", EBLAN_CASTLE, "Basement",
-                new TreasureChest("E19", 11, 2),
-                new TreasureChest("E20", 11, 3),
-                new TreasureChest("E21", 12, 8));
+                new TreasureChest("E20", 11, 2),
+                new TreasureChest("E21", 11, 3),
+                new TreasureChest("E22", 12, 8));
         final String ebcave = "eblan-cave";
         initMap(ebcave, "1", EBLAN_CAVE, "Entrance",
                 new TreasureChest("V1", 4, 18),
