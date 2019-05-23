@@ -57,7 +57,13 @@ public class TreasureAtlas extends JPanel {
         floors.put(floor, map);
         Page page = new Page(dungeon, floor);
         add(map, page.toString());
-        map.getChests().stream().map(TreasureChest::getId).forEach(id -> chestIdToPage.put(id, page));
+        map.getChests().stream().map(TreasureChest::getId).forEach(id -> addChestIdToPage(id, page));
+    }
+    
+    private void addChestIdToPage(String id, Page page) {
+        if(chestIdToPage.containsKey(id))
+            LOG.error("Chest ID \"{}\" used for \"{}\" is already used by \"{}\"", id, chestIdToPage.get(id).toString(), page.toString());
+        chestIdToPage.put(id, page);
     }
     
     public void reset() {
