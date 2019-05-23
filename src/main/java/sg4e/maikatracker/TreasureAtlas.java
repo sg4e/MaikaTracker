@@ -62,7 +62,7 @@ public class TreasureAtlas extends JPanel {
     
     private void addChestIdToPage(String id, Page page) {
         if(chestIdToPage.containsKey(id))
-            throw new IllegalArgumentException("Chest ID already declared.");
+            LOG.error("Chest ID \"{}\" used for \"{}\" is already used by \"{}\"", id, chestIdToPage.get(id).toString(), page.toString());
         chestIdToPage.put(id, page);
     }
     
