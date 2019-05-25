@@ -260,6 +260,11 @@ public class KeyItemPanel extends JPanel {
             return;
         }
         
+        if(!tracker.flagsetContainsAny("Pk", "Ps", "Pt") && metadata.equals(KeyItemMetadata.PASS)) {
+            locationLabel.setText("None");
+            locationLabel.setToolTipText("No Pass in this flagset :(");
+        }            
+        
         if (!tracker.flagsetContains("K")) {
             switch(metadata) {
                 case ADAMANT:
