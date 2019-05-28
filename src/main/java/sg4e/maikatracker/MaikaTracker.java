@@ -1646,7 +1646,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 flagset = FlagSet.fromBinary(text);
             else
                 flagset = FlagSet.fromString(text);
-            flagsTextField.setText(flagset.toString());
+            flagsTextField.setText(flagset.sorted());
         }
         catch (IllegalArgumentException ex) {
             flagErrorLabel.setText(ex.getMessage());
