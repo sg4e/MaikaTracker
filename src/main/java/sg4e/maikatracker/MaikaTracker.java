@@ -1639,13 +1639,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         flagErrorLabel.setText("");
         String text = flagsTextField.getText().trim();
         try {
-            if(text.startsWith("ff4fe.com") || text.startsWith("http://") || text.startsWith("https://")) { //maybe SSL support one day
-                flagset = FlagSet.fromUrl(text);
-            }
-            else if(text.startsWith("b"))
-                flagset = FlagSet.fromBinary(text);
-            else
-                flagset = FlagSet.fromString(text);
+            flagset = FlagSet.from(text);
             flagsTextField.setText(flagset.toString());
         }
         catch (IllegalArgumentException ex) {
