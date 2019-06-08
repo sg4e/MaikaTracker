@@ -1055,22 +1055,22 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         bossTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Enemy", "HP", "Attack", "Min Speed", "Max Speed", "Spell Power"
+                "Enemy", "HP", "XP", "GP", "Attack", "Min Speed", "Max Speed", "Spell Power"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1739,10 +1739,12 @@ public final class MaikaTracker extends javax.swing.JFrame {
             TableModel model = bossTable.getModel();
             model.setValueAt(enemy.getName(), i, 0);
             model.setValueAt(NUMBER_FORMAT.format(enemy.getHp()), i, 1);
-            model.setValueAt(NUMBER_FORMAT.format(enemy.getAttack()), i, 2);
-            model.setValueAt(NUMBER_FORMAT.format(enemy.getMinSpeed()), i, 3);
-            model.setValueAt(NUMBER_FORMAT.format(enemy.getMaxSpeed()), i, 4);
-            model.setValueAt(NUMBER_FORMAT.format(enemy.getSpellPower()), i, 5);
+            model.setValueAt(NUMBER_FORMAT.format(enemy.getExp()), i, 2);
+            model.setValueAt(NUMBER_FORMAT.format(enemy.getGp()), i, 3);
+            model.setValueAt(NUMBER_FORMAT.format(enemy.getAttack()), i, 4);
+            model.setValueAt(NUMBER_FORMAT.format(enemy.getMinSpeed()), i, 5);
+            model.setValueAt(NUMBER_FORMAT.format(enemy.getMaxSpeed()), i, 6);
+            model.setValueAt(NUMBER_FORMAT.format(enemy.getSpellPower()), i, 7);
                         
             StringBuilder enemyScript = new StringBuilder();
             enemy.getScriptValues().forEach(scr -> {

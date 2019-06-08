@@ -164,6 +164,7 @@ public class KeyItemPanel extends JPanel {
         location = loc;
         locationLabel.setText(loc.getAbbreviatedLocation());
         locationLabel.setToolTipText(loc.getLocation());
+        tracker.handleLogic(loc, isAcquired());
         if(isAcquired())
             tracker.locationsVisited.add(loc);
         else
@@ -246,6 +247,7 @@ public class KeyItemPanel extends JPanel {
         }
         
         if (location != null) {
+            tracker.handleLogic(location, false);
             tracker.locationsVisited.remove(location);
         }
 
