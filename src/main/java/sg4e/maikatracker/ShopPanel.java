@@ -131,6 +131,10 @@ public class ShopPanel extends javax.swing.JPanel {
                     case "cabin":
                         box.setVisible(!emptyShop);
                         break;
+                        
+                    case "not_vanilla":
+                        box.setVisible(!vanillaShop);
+                        break;
 
                     case "default":
                         box.setVisible(!emptyShop && !cabinsOnly);
@@ -325,7 +329,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         cure3.setText("Cure 3");
-        cure3.setName("default"); // NOI18N
+        cure3.setName("not_vanilla"); // NOI18N
         cure3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
