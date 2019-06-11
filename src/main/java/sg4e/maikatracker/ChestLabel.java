@@ -138,6 +138,7 @@ public class ChestLabel extends JLabel {
             return;
         keyItemPanel.setActive(checked);
         MaikaTracker.tracker.updateKeyItemCountLabel();
+        MaikaTracker.tracker.updateLogic();
     }
     
     public String getId() {
