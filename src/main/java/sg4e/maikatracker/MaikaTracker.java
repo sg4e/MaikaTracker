@@ -1800,10 +1800,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
             ex.printStackTrace();
         }
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MaikaTracker().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new MaikaTracker().setVisible(true);
+            tracker.flagsTextField.setText(String.join(" ", args));
+            tracker.resetButton.doClick();            
         });
     }
     
