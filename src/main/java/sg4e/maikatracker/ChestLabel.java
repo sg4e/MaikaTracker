@@ -133,6 +133,8 @@ public class ChestLabel extends JLabel {
             setText(null);
             setIcon(checked ? active : deactive);
         }
+        if(state == (checked ? State.CHECKED : State.UNCHECKED)) 
+            return;
         state = checked ? State.CHECKED : State.UNCHECKED;
         if (keyItemPanel == null)
             return;
