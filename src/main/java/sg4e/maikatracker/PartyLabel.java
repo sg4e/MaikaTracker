@@ -236,7 +236,7 @@ public class PartyLabel extends StativeLabel {
             ImageIcon icon = CHARACTER_ICONS.get(member);
             if(member.equals(LevelData.RYDIA) && DwarfCastleComplete)
                 icon = ADULT_RYDIA_ICON;
-            setNewIconState(icon, icon);
+            setNewIconState(icon);
             if(onChangeAction != null)
                 onChangeAction.run();
         }
