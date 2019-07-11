@@ -819,9 +819,11 @@
                       <Group type="102" attributes="0">
                           <Component id="flagErrorLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
+                          <Component id="showBinaryFlagsButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="applyFlagsButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jScrollPane5" max="32767" attributes="0"/>
+                      <Component id="jScrollPane5" pref="632" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -831,7 +833,10 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="flagErrorLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="applyFlagsButton" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="applyFlagsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="showBinaryFlagsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                   </Group>
@@ -869,6 +874,11 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="jLabel5"/>
                   </Properties>
+                </Component>
+                <Component class="javax.swing.JToggleButton" name="showBinaryFlagsButton">
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showBinaryFlagsButtonActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

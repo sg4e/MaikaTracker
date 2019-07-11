@@ -111,6 +111,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     public MaikaTracker() {
         tracker = this;
         initComponents();        
+        showBinaryFlagsButton.setText("Show Binary Flags");
         prefs = Preferences.userRoot().node(this.getClass().getName());
         Map<Battle, Formation> bosses = Battle.getAllBosses();
         List<String> bossNames = bosses.keySet().stream().map(Battle::getBoss).distinct().collect(Collectors.toList());
@@ -1019,6 +1020,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         flagsTextField = new javax.swing.JTextArea();
         applyFlagsButton = new javax.swing.JButton();
         flagErrorLabel = new javax.swing.JLabel();
+        showBinaryFlagsButton = new javax.swing.JToggleButton();
         jPanel5 = new javax.swing.JPanel();
         resetOnly = new javax.swing.JCheckBox();
         backgroundColorPanel = new javax.swing.JPanel();
@@ -1414,6 +1416,12 @@ public final class MaikaTracker extends javax.swing.JFrame {
         flagErrorLabel.setForeground(new java.awt.Color(255, 0, 0));
         flagErrorLabel.setText("jLabel5");
 
+        showBinaryFlagsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showBinaryFlagsButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -1421,8 +1429,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(flagErrorLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(showBinaryFlagsButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(applyFlagsButton))
-            .addComponent(jScrollPane5)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1431,7 +1441,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(flagErrorLabel)
-                    .addComponent(applyFlagsButton)))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(applyFlagsButton)
+                        .addComponent(showBinaryFlagsButton))))
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Other Options"));
@@ -1640,7 +1652,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
         String text = flagsTextField.getText().trim();
         try {
             flagset = FlagSet.from(text);
-            flagsTextField.setText(flagset.toString());
+            if(showBinaryFlagsButton.isSelected())
+                flagsTextField.setText(flagset.getBinary() + "\n" + flagset.toString());
+            else
+                flagsTextField.setText(flagset.toString());
         }
         catch (IllegalArgumentException ex) {
             flagErrorLabel.setText(ex.getMessage());
@@ -1680,6 +1695,19 @@ public final class MaikaTracker extends javax.swing.JFrame {
         grindXP = 0;
         xpLabel.setText("XP: 0");
     }//GEN-LAST:event_finishGrindButtonActionPerformed
+
+    private void showBinaryFlagsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showBinaryFlagsButtonActionPerformed
+        if(flagset != null) {
+            if(showBinaryFlagsButton.isSelected()) {
+                flagsTextField.setText(flagset.getBinary() + "\n" + flagset.toString());
+                showBinaryFlagsButton.setText("Hide Binary Flags");
+            }
+            else {
+                flagsTextField.setText(flagset.toString());
+                showBinaryFlagsButton.setText("Show Binary Flags");
+            }
+        }
+    }//GEN-LAST:event_showBinaryFlagsButtonActionPerformed
 
     private void calculateXp(int xpGained, boolean commit) {
         List<PartyMember> members = getPartyMembers();
@@ -1861,6 +1889,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel shopLocationsPanel;
     private javax.swing.JPanel shopPane;
     private javax.swing.JPanel shopPanelsPanel;
+    private javax.swing.JToggleButton showBinaryFlagsButton;
     private javax.swing.JLabel silveraShopLabel;
     private javax.swing.JButton tenKeyItemColorButton;
     private javax.swing.JLabel tenKeyItemColorLabel;
