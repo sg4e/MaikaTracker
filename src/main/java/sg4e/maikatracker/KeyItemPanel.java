@@ -54,7 +54,7 @@ public class KeyItemPanel extends JPanel {
         tracker = MaikaTracker.tracker;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         metadata = meta;
-        itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon());
+        itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon(), metadata.getCheckedIcon());
         itemImage.setToolTipText(metadata.getEnum().toString());
         itemImage.addMouseListener(new MouseAdapter() {
             @Override

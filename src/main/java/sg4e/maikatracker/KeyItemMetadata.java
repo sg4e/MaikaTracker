@@ -49,7 +49,7 @@ public enum KeyItemMetadata {
     PINK_TAIL(KeyItem.PINK_TAIL, "18");
     
     private final KeyItem ki;
-    private ImageIcon gray, color;
+    private ImageIcon gray, color, checked;
     
     private static final Logger LOG = LogManager.getLogger();
     
@@ -58,15 +58,15 @@ public enum KeyItemMetadata {
         String baseUrl = "key-items/%s/FFIVFE-Icons-" + imageId + ki.toString().replaceAll(" ", "") + "-";
         String grayUrl = String.format(baseUrl, "grayscale") + "Gray.png";
         String colorUrl = String.format(baseUrl, "color") + "Color.png";
+        String checkedUrl = String.format(baseUrl, "checked") + "Check.png";
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        InputStream grayStream = classLoader.getResourceAsStream(grayUrl);
-        InputStream colorStream = classLoader.getResourceAsStream(colorUrl);
         try {
-            gray = new ImageIcon(ImageIO.read(grayStream));
-            color = new ImageIcon(ImageIO.read(colorStream));
+            gray = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(grayUrl)));
+            color = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(colorUrl)));
+            checked = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(checkedUrl)));
         }
-        catch(IOException ex) {
-            LogManager.getLogger().error("Error loading Key Item icons", ex);
+        catch(IOException | IllegalArgumentException ex) {
+            LogManager.getLogger().error("Error loading Key Item icons: " + ki.toString(), ex);
         }
     }
 
@@ -80,5 +80,9 @@ public enum KeyItemMetadata {
 
     public ImageIcon getColorIcon() {
         return color;
+    }
+    
+    public ImageIcon getCheckedIcon() {
+        return checked;
     }
 }
