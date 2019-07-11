@@ -540,7 +540,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         LocationPanel panel = new LocationPanel(l);
         
         if(l.equals(KeyItemLocation.MIST)) {
-            panel.setButtonEnabled(dmistLabel.isActive());
+            panel.setButtonEnabled(dmistLabel.getState() == (dmistLabel.getStates() - 1));
         }
 
         panel.setButtonListener((ae) -> {

@@ -67,8 +67,21 @@ public class StativeLabel extends JLabel {
         setIcon(imageIcons.get(iconIndex));
     }
     
+    public void setState(int state) {
+        iconIndex = state % imageIcons.size();
+        setIcon(imageIcons.get(iconIndex));
+    }
+    
     public boolean isActive() {
         return iconIndex > 0;
+    }
+    
+    public int getState() {
+        return iconIndex;
+    }
+    
+    public int getStates() {
+        return imageIcons.size();
     }
     
     public boolean isCleared() {
