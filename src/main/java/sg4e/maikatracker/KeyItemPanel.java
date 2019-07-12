@@ -54,24 +54,13 @@ public class KeyItemPanel extends JPanel {
         tracker = MaikaTracker.tracker;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         metadata = meta;
-        itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon());
+        itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon(), metadata.getCheckedIcon());
         itemImage.setToolTipText(metadata.getEnum().toString());
         itemImage.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(SwingUtilities.isLeftMouseButton(e)) {
-                    tracker.updateKeyItemCountLabel();
-                    tracker.handleLogic(location, isAcquired());
-                    if(location != null) {
-                        if (isAcquired())
-                            tracker.locationsVisited.add(location);
-                        else
-                            tracker.locationsVisited.remove(location);
-                    }
-                    else if (isInChest()) {
-                        chestLabel.setChecked(isAcquired());
-                    }
-                    tracker.updateLogic();
+                    updateKeyItem();
                 }
                 if(SwingUtilities.isRightMouseButton(e)) {
                     JPopupMenu locationMenu = new JPopupMenu("Locations");
@@ -134,6 +123,21 @@ public class KeyItemPanel extends JPanel {
         add(locationLabel, BorderLayout.CENTER);
     }
     
+    public void updateKeyItem() {
+        tracker.updateKeyItemCountLabel();
+        tracker.handleLogic(location, isAcquired());
+        if(location != null) {
+            if (isAcquired())
+                tracker.locationsVisited.add(location);
+            else
+                tracker.locationsVisited.remove(location);
+        }
+        else if (isInChest()) {
+            chestLabel.setChecked(isAcquired());
+        }
+        tracker.updateLogic();
+    }
+    
     public boolean allowLocation() {
         switch(metadata) {
             case PASS:
@@ -155,7 +159,10 @@ public class KeyItemPanel extends JPanel {
     }
     
     public void setActive(boolean on) {
+        if(on == itemImage.isActive())
+            return;
         itemImage.setActive(on);
+        updateKeyItem();
     }
     
     public void setLocation(KeyItemLocation loc) {

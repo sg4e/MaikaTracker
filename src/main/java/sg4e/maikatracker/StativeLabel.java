@@ -18,6 +18,9 @@ package sg4e.maikatracker;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -28,55 +31,71 @@ import javax.swing.SwingUtilities;
  */
 public class StativeLabel extends JLabel {
     
-    private ImageIcon active, deactive;
+    private List<ImageIcon> imageIcons = new ArrayList<>();
+    private int iconIndex = 0;
     
     public static final ImageIcon UNKNOWN_ICON = new ImageIcon(MaikaTracker.loadImageResource("characters/unknown.png"));
     
-    public StativeLabel() {
-        this(UNKNOWN_ICON, UNKNOWN_ICON);
-    }
-    
-    public StativeLabel(ImageIcon off, ImageIcon on) {
-        setNewIconState(off, on);
+    public StativeLabel(ImageIcon ... icons) {
+        setNewIconState(icons);
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(SwingUtilities.isLeftMouseButton(e)) {
-                    if(getIcon() == deactive) {
-                        setIcon(active);
-                    }
-                    else {
-                        setIcon(deactive);
-                    }
+                    iconIndex++;
+                    if(iconIndex >= imageIcons.size())
+                        iconIndex = 0;
+                    setIcon(imageIcons.get(iconIndex));
                 }
             }
         });
     }
     
     protected void clearLabel() {
-        setIcon(active = deactive = UNKNOWN_ICON);
+        setNewIconState(UNKNOWN_ICON);
     }
     
     public void reset() {
-        setIcon(deactive);
+        iconIndex = 0;
+        setIcon(imageIcons.get(iconIndex));
     }
     
     public void setActive(boolean on) {
-        setIcon(on ? active : deactive);
+        iconIndex = on ? 1 : 0;
+        if(iconIndex >= imageIcons.size())
+            iconIndex = 0;
+        setIcon(imageIcons.get(iconIndex));
+    }
+    
+    public void setState(int state) {
+        iconIndex = state % imageIcons.size();
+        setIcon(imageIcons.get(iconIndex));
     }
     
     public boolean isActive() {
-        return getIcon() == active;
+        return iconIndex > 0;
+    }
+    
+    public int getState() {
+        return iconIndex;
+    }
+    
+    public int getStates() {
+        return imageIcons.size();
     }
     
     public boolean isCleared() {
-        return getIcon() == UNKNOWN_ICON;
+        return getIcon() == UNKNOWN_ICON && imageIcons.size() == 1;
     }
     
-    public void setNewIconState(ImageIcon off, ImageIcon on) {
-        active = on;
-        deactive = off;
-        setIcon(off);
+    public void setNewIconState(ImageIcon ... icons) {
+        imageIcons.clear();
+        if(icons.length > 0)
+            Stream.of(icons).forEach(icon -> {imageIcons.add(icon == null ? UNKNOWN_ICON : icon);});
+        else
+            imageIcons.add(UNKNOWN_ICON);
+        iconIndex = 0;
+        setIcon(imageIcons.get(iconIndex));
     }
     
 }

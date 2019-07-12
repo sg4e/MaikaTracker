@@ -7,8 +7,10 @@ package sg4e.maikatracker;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
+import org.apache.logging.log4j.LogManager;
 import sg4e.ff4stats.fe.FlagSet;
 
 /**
@@ -33,10 +36,40 @@ public class BossLabel extends StativeLabel {
     private JPanel holder;
     private BossLabel bossLocation;
     private BossLabel contains;
+    private static final BufferedImage checkedImage;
+    
+    static {
+        BufferedImage cImage;
+        try {
+            cImage = MaikaTracker.loadImageResource("bosses/checkmark.png");
+        }
+        catch (Exception ex) {
+            LogManager.getLogger().error("Error loading checkmark image.", ex);
+            cImage = null;
+        }
+        checkedImage = cImage;
+    }
     
     //loadBossIcon("2Soldier", "2Soldier", "Baron Soldiers");
     public BossLabel(String imageName, String bossName) {
-        super(new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-" + imageName + "-Gray.png")), new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-" + imageName + "-Color.png")));    
+        super();
+        
+        ImageIcon greyBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-" + imageName + "-Gray.png"));
+        ImageIcon colorBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-" + imageName + "-Color.png"));
+        
+        if(checkedImage != null) {
+            BufferedImage image = new BufferedImage(colorBoss.getIconWidth(), colorBoss.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D cImage = (Graphics2D) image.getGraphics();
+            cImage.drawImage(colorBoss.getImage(), 0, 0, null);
+            cImage.drawImage(checkedImage, 0, 0, null);
+            ImageIcon checkedBoss = new ImageIcon(image);
+            setNewIconState(greyBoss, colorBoss, checkedBoss);
+        }
+        else {
+            setNewIconState(greyBoss, colorBoss);
+        }
+        
+        
         setToolTipText(bossName);
         this.bossName = bossName;
         bossNames.add(this);
