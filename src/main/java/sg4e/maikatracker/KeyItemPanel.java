@@ -24,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -54,7 +55,13 @@ public class KeyItemPanel extends JPanel {
         tracker = MaikaTracker.tracker;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         metadata = meta;
-        itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon(), metadata.getCheckedIcon());
+        ImageIcon checkedIcon = metadata.getCheckedIcon();
+        
+        if(checkedIcon != null)
+            itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon(), metadata.getCheckedIcon());
+        else
+            itemImage = new StativeLabel(metadata.getGrayIcon(), metadata.getColorIcon());
+        
         itemImage.setToolTipText(metadata.getEnum().toString());
         itemImage.addMouseListener(new MouseAdapter() {
             @Override

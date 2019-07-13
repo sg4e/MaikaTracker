@@ -58,12 +58,11 @@ public enum KeyItemMetadata {
         String baseUrl = "key-items/%s/FFIVFE-Icons-" + imageId + ki.toString().replaceAll(" ", "") + "-";
         String grayUrl = String.format(baseUrl, "grayscale") + "Gray.png";
         String colorUrl = String.format(baseUrl, "color") + "Color.png";
-        String checkedUrl = String.format(baseUrl, "checked") + "Check.png";
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         try {
             gray = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(grayUrl)));
             color = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(colorUrl)));
-            checked = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(checkedUrl)));
+            checked = BossLabel.CheckMarkIcon(color);
         }
         catch(IOException | IllegalArgumentException ex) {
             LogManager.getLogger().error("Error loading Key Item icons: " + ki.toString(), ex);

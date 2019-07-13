@@ -50,6 +50,16 @@ public class BossLabel extends StativeLabel {
         checkedImage = cImage;
     }
     
+    public static ImageIcon CheckMarkIcon(ImageIcon colorBoss) {
+        if (checkedImage == null)
+            return null;
+        BufferedImage image = new BufferedImage(colorBoss.getIconWidth(), colorBoss.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D cImage = (Graphics2D) image.getGraphics();
+        cImage.drawImage(colorBoss.getImage(), 0, 0, null);
+        cImage.drawImage(checkedImage, 0, 0, null);
+        return new ImageIcon(image);
+    }
+    
     //loadBossIcon("2Soldier", "2Soldier", "Baron Soldiers");
     public BossLabel(String imageName, String bossName) {
         super();
@@ -58,12 +68,7 @@ public class BossLabel extends StativeLabel {
         ImageIcon colorBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-" + imageName + "-Color.png"));
         
         if(checkedImage != null) {
-            BufferedImage image = new BufferedImage(colorBoss.getIconWidth(), colorBoss.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-            Graphics2D cImage = (Graphics2D) image.getGraphics();
-            cImage.drawImage(colorBoss.getImage(), 0, 0, null);
-            cImage.drawImage(checkedImage, 0, 0, null);
-            ImageIcon checkedBoss = new ImageIcon(image);
-            setNewIconState(greyBoss, colorBoss, checkedBoss);
+            setNewIconState(greyBoss, colorBoss, CheckMarkIcon(colorBoss));
         }
         else {
             setNewIconState(greyBoss, colorBoss);
