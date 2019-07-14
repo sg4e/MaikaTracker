@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -54,9 +55,18 @@ public class BossLabel extends StativeLabel {
         if (checkedImage == null)
             return null;
         BufferedImage image = new BufferedImage(colorBoss.getIconWidth(), colorBoss.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        float[] scales = {.5f, .5f, .5f, 1f};
+        float[] offsets = new float[4];
+        RescaleOp op = new RescaleOp(scales, offsets, null); 
+        
         Graphics2D cImage = (Graphics2D) image.getGraphics();
         cImage.drawImage(colorBoss.getImage(), 0, 0, null);
+        cImage.dispose();
+        image = op.filter(image, null);
+        cImage = (Graphics2D) image.getGraphics();
         cImage.drawImage(checkedImage, 0, 0, null);
+        cImage.dispose();
+        
         return new ImageIcon(image);
     }
     
