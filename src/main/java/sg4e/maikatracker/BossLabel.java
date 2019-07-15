@@ -33,11 +33,14 @@ public class BossLabel extends StativeLabel {
     private static final List<BossLabel> bossNames = new ArrayList<>();
     
     private final String bossName;
+    private final ImageIcon greyBoss;
+    private final ImageIcon colorBoss;
+    private final ImageIcon checkedBoss;
     
     private JPanel holder;
     private BossLabel bossLocation;
     private BossLabel contains;
-    private static final BufferedImage checkedImage;
+    public static final BufferedImage checkedImage;
     
     static {
         BufferedImage cImage;
@@ -74,16 +77,11 @@ public class BossLabel extends StativeLabel {
     public BossLabel(String imageName, String bossName) {
         super();
         
-        ImageIcon greyBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-" + imageName + "-Gray.png"));
-        ImageIcon colorBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-" + imageName + "-Color.png"));
+        greyBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-" + imageName + "-Gray.png"));
+        colorBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-" + imageName + "-Color.png"));
+        checkedBoss = CheckMarkIcon(colorBoss);
         
-        if(checkedImage != null) {
-            setNewIconState(greyBoss, colorBoss, CheckMarkIcon(colorBoss));
-        }
-        else {
-            setNewIconState(greyBoss, colorBoss);
-        }
-        
+        setCheckedBoss(true);
         
         setToolTipText(bossName);
         this.bossName = bossName;
@@ -118,6 +116,13 @@ public class BossLabel extends StativeLabel {
     public void reset() {
         super.reset();
         setBossLocation((MaikaTracker.tracker.flagsetContains("B")) ? null : this);
+    }
+    
+    public final void setCheckedBoss(boolean checked) {
+        if(checked && checkedBoss != null)
+            setNewIconState(greyBoss, colorBoss, checkedBoss);
+        else
+            setNewIconState(greyBoss, colorBoss);
     }
     
     private JPopupMenu getBossNameMenu(Consumer<BossLabel> actionOnEachItem) {

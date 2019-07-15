@@ -130,6 +130,17 @@ public class KeyItemPanel extends JPanel {
         add(locationLabel, BorderLayout.CENTER);
     }
     
+    public void setCheckedKeyItem(boolean checked) {
+        if(metadata.getCheckedIcon() == null)
+            return;
+        boolean on = itemImage.isActive();
+        if(checked)
+            itemImage.setNewIconState(metadata.getGrayIcon(), metadata.getColorIcon(), metadata.getCheckedIcon());
+        else
+            itemImage.setNewIconState(metadata.getGrayIcon(), metadata.getColorIcon());
+        itemImage.setActive(on);
+    }
+    
     public void updateKeyItem() {
         tracker.updateKeyItemCountLabel();
         tracker.handleLogic(location, isAcquired());

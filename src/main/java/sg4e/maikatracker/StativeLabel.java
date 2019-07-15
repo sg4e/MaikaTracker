@@ -31,6 +31,8 @@ import javax.swing.SwingUtilities;
  */
 public class StativeLabel extends JLabel {
     
+    private final MouseAdapter adapter;
+    
     private List<ImageIcon> imageIcons = new ArrayList<>();
     private int iconIndex = 0;
     
@@ -38,7 +40,7 @@ public class StativeLabel extends JLabel {
     
     public StativeLabel(ImageIcon ... icons) {
         setNewIconState(icons);
-        addMouseListener(new MouseAdapter() {
+        adapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(SwingUtilities.isLeftMouseButton(e)) {
@@ -48,7 +50,8 @@ public class StativeLabel extends JLabel {
                     setIcon(imageIcons.get(iconIndex));
                 }
             }
-        });
+        };
+        addMouseListener(adapter);
     }
     
     protected void clearLabel() {
@@ -58,6 +61,10 @@ public class StativeLabel extends JLabel {
     public void reset() {
         iconIndex = 0;
         setIcon(imageIcons.get(iconIndex));
+    }
+    
+    public void removeListener() {
+        removeMouseListener(adapter);
     }
     
     public void setActive(boolean on) {
