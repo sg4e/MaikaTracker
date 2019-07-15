@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
@@ -195,11 +196,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
         loadBossIcon("33Ogopogo", "Ogopogo");
         loadBossIcon("34Wyvern", "Wyvern");
         
-        checkedBossLabel = loadCheckedDemoLabel("21Eblan", 0);
+        checkedBossLabel = loadCheckedDemoLabel(0);
         allowCheckedBosses.setSelected(!prefs.getBoolean(CHECKED_BOSS_ID, allowCheckedBosses.isSelected()));
         allowCheckedBosses.doClick();
         
-        checkedKeyItemLabel = loadCheckedDemoLabel("11TowerKey", 1);
+        checkedKeyItemLabel = loadCheckedDemoLabel(1);
         allowCheckedKeyItems.setSelected(!prefs.getBoolean(CHECKED_KEYITEM_ID, allowCheckedKeyItems.isSelected()));
         allowCheckedKeyItems.doClick();
         
@@ -529,16 +530,40 @@ public final class MaikaTracker extends javax.swing.JFrame {
         return label;
     }
     
-    public DemoLabel loadCheckedDemoLabel(String imageName, int type) {
+    public DemoLabel loadCheckedDemoLabel(int type) {
+        Random rand = new Random();
+        String imageName;
         DemoLabel label;
         int i = 0;
+        
+        String[] keyItemResources = {
+            "1THECrystal", "2Pass", "3Hook", "4DarknessCrystal", "5EarthCrystal",
+            "6TwinHarp", "7Package", "8SandRuby", "9BaronKey", "10MagmaKey",
+            "11TowerKey", "12LucaKey", "13Adamant", "14LegendSword", "15Pan",
+            "16Spoon", "17RatTail", "18PinkTail"
+        };
+        String[] bossResources = {
+            "1MistD", "2Soldier", "3Octo", "4Antlion", "5WHag", "6Mombomb", "7Gauntlet",
+            "8Milon", "9MilonZ", "10DKCecil", "11Guards", "12Yang", "13Baigan",
+            "14Kainazzo", "15DElf", "16MagusSis", "17Valvalis", "18Calcabrina",
+            "19Golbez", "20Lugae", "21DarkImps", "21Eblan", "22Rubicante",
+            "23EvilWall", "24Fiends", "25CPU", "26Odin", "27Asura", "28Leviath",
+            "29Bahamut", "30PaleDim", "31LunarD", "32Plague", "33Ogopogo", "34Wyvern"
+        };
+        
+        if(type == 0)
+            imageName = bossResources[rand.nextInt(bossResources.length)];
+        else
+            imageName = keyItemResources[rand.nextInt(keyItemResources.length)];
+        
         do {
             label = new DemoLabel(imageName, type, i);
             if(type == 0)
                 checkedBossIconPanel.add(label);
             else
                 checkedKeyItemsIconPanel.add(label);
-        } while(++i < 3);        
+        } while(++i < 3);
+        
         return label;
     }
     
