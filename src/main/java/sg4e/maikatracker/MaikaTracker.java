@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
@@ -55,7 +56,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.TableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,6 +94,13 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     private final JPanel logicPanel;
     private final StativeLabel dmistLabel;
+    
+    private final StativeLabel checkedBossLabel;
+    public static final String CHECKED_BOSS_ID = "AllowCheckedBosses";
+    
+    private final StativeLabel checkedKeyItemLabel;
+    private static final String CHECKED_KEYITEM_ID = "AllowCheckedKeyItems";
+    
     
     private static final List<BossLabel> bossLabels = new ArrayList<>();
     
@@ -185,6 +195,14 @@ public final class MaikaTracker extends javax.swing.JFrame {
         loadBossIcon("32Plague", "Plague");
         loadBossIcon("33Ogopogo", "Ogopogo");
         loadBossIcon("34Wyvern", "Wyvern");
+        
+        checkedBossLabel = loadCheckedDemoLabel(0);
+        allowCheckedBosses.setSelected(!prefs.getBoolean(CHECKED_BOSS_ID, allowCheckedBosses.isSelected()));
+        allowCheckedBosses.doClick();
+        
+        checkedKeyItemLabel = loadCheckedDemoLabel(1);
+        allowCheckedKeyItems.setSelected(!prefs.getBoolean(CHECKED_KEYITEM_ID, allowCheckedKeyItems.isSelected()));
+        allowCheckedKeyItems.doClick();
         
         //add maps
         final String zot = "zot";
@@ -512,6 +530,43 @@ public final class MaikaTracker extends javax.swing.JFrame {
         return label;
     }
     
+    public DemoLabel loadCheckedDemoLabel(int type) {
+        Random rand = new Random();
+        String imageName;
+        DemoLabel label;
+        int i = 0;
+        
+        String[] keyItemResources = {
+            "1THECrystal", "2Pass", "3Hook", "4DarknessCrystal", "5EarthCrystal",
+            "6TwinHarp", "7Package", "8SandRuby", "9BaronKey", "10MagmaKey",
+            "11TowerKey", "12LucaKey", "13Adamant", "14LegendSword", "15Pan",
+            "16Spoon", "17RatTail", "18PinkTail"
+        };
+        String[] bossResources = {
+            "1MistD", "2Soldier", "3Octo", "4Antlion", "5WHag", "6Mombomb", "7Gauntlet",
+            "8Milon", "9MilonZ", "10DKCecil", "11Guards", "12Yang", "13Baigan",
+            "14Kainazzo", "15DElf", "16MagusSis", "17Valvalis", "18Calcabrina",
+            "19Golbez", "20Lugae", "21DarkImps", "21Eblan", "22Rubicante",
+            "23EvilWall", "24Fiends", "25CPU", "26Odin", "27Asura", "28Leviath",
+            "29Bahamut", "30PaleDim", "31LunarD", "32Plague", "33Ogopogo", "34Wyvern"
+        };
+        
+        if(type == 0)
+            imageName = bossResources[rand.nextInt(bossResources.length)];
+        else
+            imageName = keyItemResources[rand.nextInt(keyItemResources.length)];
+        
+        do {
+            label = new DemoLabel(imageName, type, i);
+            if(type == 0)
+                checkedBossIconPanel.add(label);
+            else
+                checkedKeyItemsIconPanel.add(label);
+        } while(++i < 3);
+        
+        return label;
+    }
+    
     public static InputStream loadResource(String path) {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         return classLoader.getResourceAsStream(path);
@@ -823,6 +878,15 @@ public final class MaikaTracker extends javax.swing.JFrame {
         prefs.node(prefsNode).putInt("Blue", color.getBlue());
     }
     
+    public void setPanelTextColor(JPanel panel, Color textColor) {
+        Border border = panel.getBorder();
+        if(border instanceof TitledBorder)
+        {
+            TitledBorder tborder = (TitledBorder)border;
+            tborder.setTitleColor(textColor);
+        }
+    }
+    
     public void setTextColor(Boolean showPicker) {
         Color textColor = selectColor(showPicker, "TextColor", "Choose Text Color", textColorLabel, false);
         if(textColor == null)
@@ -856,7 +920,14 @@ public final class MaikaTracker extends javax.swing.JFrame {
         knownShopLocationsLabel.setForeground(textColor);
         xpErrorLabel.setForeground(textColor);
         xpLabel.setForeground(textColor);
-        
+        setPanelTextColor(resetEverythingPanel, textColor);
+        resetLabel.setForeground(textColor);
+        setPanelTextColor(otherOptionsPanel, textColor);
+        resetOnly.setForeground(textColor);
+        setPanelTextColor(flagsPanel, textColor);
+        setPanelTextColor(checkedIconSettingPanel, textColor);
+        allowCheckedBosses.setForeground(textColor);
+        allowCheckedKeyItems.setForeground(textColor);
         updateLogic();
     }
     
@@ -886,6 +957,15 @@ public final class MaikaTracker extends javax.swing.JFrame {
             panel.setBackgroundColor(backgroundColor);
         });
         ShopPanel.setBackgroundColor(backgroundColor);
+        resetEverythingPanel.setBackground(backgroundColor);
+        otherOptionsPanel.setBackground(backgroundColor);
+        resetOnly.setBackground(backgroundColor);
+        flagsPanel.setBackground(backgroundColor);
+        checkedIconSettingPanel.setBackground(backgroundColor);
+        checkedBossIconPanel.setBackground(backgroundColor);
+        checkedKeyItemsIconPanel.setBackground(backgroundColor);
+        allowCheckedBosses.setBackground(backgroundColor);
+        allowCheckedKeyItems.setBackground(backgroundColor);
         updateLogic();
     }
     
@@ -1012,16 +1092,16 @@ public final class MaikaTracker extends javax.swing.JFrame {
         knownShopLocationsLabel = new javax.swing.JLabel();
         activeShopPointerLabel = new javax.swing.JLabel();
         resetPane = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        resetEverythingPanel = new javax.swing.JPanel();
         resetLabel = new javax.swing.JLabel();
         resetButton = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        flagsPanel = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         flagsTextField = new javax.swing.JTextArea();
         applyFlagsButton = new javax.swing.JButton();
         flagErrorLabel = new javax.swing.JLabel();
         showBinaryFlagsButton = new javax.swing.JToggleButton();
-        jPanel5 = new javax.swing.JPanel();
+        otherOptionsPanel = new javax.swing.JPanel();
         resetOnly = new javax.swing.JCheckBox();
         backgroundColorPanel = new javax.swing.JPanel();
         tenKeyItemColorLabel = new javax.swing.JLabel();
@@ -1029,6 +1109,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
         backgroundColorButton = new javax.swing.JButton();
         textColorButton = new javax.swing.JButton();
         tenKeyItemColorButton = new javax.swing.JButton();
+        checkedIconSettingPanel = new javax.swing.JPanel();
+        checkedKeyItemsIconPanel = new javax.swing.JPanel();
+        checkedBossIconPanel = new javax.swing.JPanel();
+        allowCheckedBosses = new javax.swing.JCheckBox();
+        allowCheckedKeyItems = new javax.swing.JCheckBox();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -1369,7 +1454,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         mainTabbedPane.addTab("Shop", shopPane);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Reset Everything"));
+        resetEverythingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Reset Everything"));
 
         resetLabel.setText("<html>Are you sure you would like to reset everything?<br> <br> This Action cannot be undone");
 
@@ -1380,26 +1465,26 @@ public final class MaikaTracker extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout resetEverythingPanelLayout = new javax.swing.GroupLayout(resetEverythingPanel);
+        resetEverythingPanel.setLayout(resetEverythingPanelLayout);
+        resetEverythingPanelLayout.setHorizontalGroup(
+            resetEverythingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resetEverythingPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(resetEverythingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(resetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(resetButton)))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        resetEverythingPanelLayout.setVerticalGroup(
+            resetEverythingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resetEverythingPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(resetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(resetButton))
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Flags"));
+        flagsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Flags"));
 
         flagsTextField.setColumns(20);
         flagsTextField.setRows(5);
@@ -1422,11 +1507,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        javax.swing.GroupLayout flagsPanelLayout = new javax.swing.GroupLayout(flagsPanel);
+        flagsPanel.setLayout(flagsPanelLayout);
+        flagsPanelLayout.setHorizontalGroup(
+            flagsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(flagsPanelLayout.createSequentialGroup()
                 .addComponent(flagErrorLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(showBinaryFlagsButton)
@@ -1434,19 +1519,19 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(applyFlagsButton))
             .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        flagsPanelLayout.setVerticalGroup(
+            flagsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(flagsPanelLayout.createSequentialGroup()
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(flagsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(flagErrorLabel)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addGroup(flagsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(applyFlagsButton)
                         .addComponent(showBinaryFlagsButton))))
         );
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Other Options"));
+        otherOptionsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Other Options"));
 
         resetOnly.setText("Show only Reset when key item set");
         resetOnly.addActionListener(new java.awt.event.ActionListener() {
@@ -1503,15 +1588,15 @@ public final class MaikaTracker extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout otherOptionsPanelLayout = new javax.swing.GroupLayout(otherOptionsPanel);
+        otherOptionsPanel.setLayout(otherOptionsPanelLayout);
+        otherOptionsPanelLayout.setHorizontalGroup(
+            otherOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(otherOptionsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(otherOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(resetOnly)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGroup(otherOptionsPanelLayout.createSequentialGroup()
                         .addComponent(backgroundColorButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textColorButton)
@@ -1520,12 +1605,12 @@ public final class MaikaTracker extends javax.swing.JFrame {
                     .addComponent(backgroundColorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        otherOptionsPanelLayout.setVerticalGroup(
+            otherOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(otherOptionsPanelLayout.createSequentialGroup()
                 .addComponent(resetOnly)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(otherOptionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tenKeyItemColorButton)
                     .addComponent(backgroundColorButton)
                     .addComponent(textColorButton))
@@ -1534,7 +1619,56 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addGap(15, 15, 15))
         );
 
-        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {backgroundColorButton, tenKeyItemColorButton, textColorButton});
+        otherOptionsPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {backgroundColorButton, tenKeyItemColorButton, textColorButton});
+
+        checkedIconSettingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Checked Icon settings"));
+        checkedIconSettingPanel.setToolTipText("");
+
+        checkedKeyItemsIconPanel.setLayout(new java.awt.GridLayout(1, 3, 1, 0));
+
+        checkedBossIconPanel.setLayout(new java.awt.GridLayout(1, 3, 1, 0));
+
+        allowCheckedBosses.setText("Allow Checked Bosses");
+        allowCheckedBosses.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                allowCheckedBossesActionPerformed(evt);
+            }
+        });
+
+        allowCheckedKeyItems.setSelected(true);
+        allowCheckedKeyItems.setText("Allow Checked Key Items");
+        allowCheckedKeyItems.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                allowCheckedKeyItemsActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout checkedIconSettingPanelLayout = new javax.swing.GroupLayout(checkedIconSettingPanel);
+        checkedIconSettingPanel.setLayout(checkedIconSettingPanelLayout);
+        checkedIconSettingPanelLayout.setHorizontalGroup(
+            checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(checkedIconSettingPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(allowCheckedKeyItems)
+                    .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(checkedBossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(allowCheckedBosses))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        checkedIconSettingPanelLayout.setVerticalGroup(
+            checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, checkedIconSettingPanelLayout.createSequentialGroup()
+                .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(allowCheckedKeyItems)
+                    .addComponent(allowCheckedBosses))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkedBossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
 
         javax.swing.GroupLayout resetPaneLayout = new javax.swing.GroupLayout(resetPane);
         resetPane.setLayout(resetPaneLayout);
@@ -1543,11 +1677,14 @@ public final class MaikaTracker extends javax.swing.JFrame {
             .addGroup(resetPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(flagsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(resetPaneLayout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(resetEverythingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(otherOptionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(resetPaneLayout.createSequentialGroup()
+                        .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         resetPaneLayout.setVerticalGroup(
@@ -1555,11 +1692,13 @@ public final class MaikaTracker extends javax.swing.JFrame {
             .addGroup(resetPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(resetEverythingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(otherOptionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(264, 264, 264))
+                .addComponent(flagsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(197, 197, 197))
         );
 
         mainTabbedPane.addTab("Misc.", resetPane);
@@ -1709,6 +1848,27 @@ public final class MaikaTracker extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_showBinaryFlagsButtonActionPerformed
 
+    private void allowCheckedBossesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allowCheckedBossesActionPerformed
+        bossLabels.forEach(label -> {
+            boolean on = label.isActive();
+            label.setCheckedBoss(allowCheckedBosses.isSelected());
+            label.setActive(on);
+        });
+        checkedBossLabel.setVisible(allowCheckedBosses.isSelected() && BossLabel.checkedImage != null);
+        prefs.putBoolean(CHECKED_BOSS_ID, allowCheckedBosses.isSelected());
+        if(BossLabel.checkedImage == null)
+            allowCheckedBosses.setVisible(false);
+    }//GEN-LAST:event_allowCheckedBossesActionPerformed
+
+    private void allowCheckedKeyItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allowCheckedKeyItemsActionPerformed
+        Arrays.stream(keyItemPanel.getComponents())
+                .map(c -> (KeyItemPanel) c).forEach(panel -> panel.setCheckedKeyItem(allowCheckedKeyItems.isSelected()));
+        checkedKeyItemLabel.setVisible(allowCheckedKeyItems.isSelected() && BossLabel.checkedImage != null);
+        prefs.putBoolean(CHECKED_KEYITEM_ID, allowCheckedKeyItems.isSelected());
+        if(BossLabel.checkedImage == null)
+            allowCheckedKeyItems.setVisible(false);
+    }//GEN-LAST:event_allowCheckedKeyItemsActionPerformed
+
     private void calculateXp(int xpGained, boolean commit) {
         List<PartyMember> members = getPartyMembers();
         int kiMultipler = getKeyItemCount() >= 10 && (flagsetContains("Xk")) ? 2 : 1;
@@ -1841,6 +2001,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JLabel activeShopPointerLabel;
     private javax.swing.JButton addDMachinButton;
     private javax.swing.JLabel agartShopLabel;
+    private javax.swing.JCheckBox allowCheckedBosses;
+    private javax.swing.JCheckBox allowCheckedKeyItems;
     private javax.swing.JButton applyFlagsButton;
     private javax.swing.JButton backgroundColorButton;
     private javax.swing.JPanel backgroundColorPanel;
@@ -1851,6 +2013,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel bossPane;
     private javax.swing.JPanel bossSelectionPanel;
     private javax.swing.JTable bossTable;
+    private javax.swing.JPanel checkedBossIconPanel;
+    private javax.swing.JPanel checkedIconSettingPanel;
+    private javax.swing.JPanel checkedKeyItemsIconPanel;
     private javax.swing.JComboBox<String> dungeonComboBox;
     private javax.swing.JLabel dwarfCastleShopLabel;
     private javax.swing.JLabel eblanCaveShopLabel;
@@ -1859,13 +2024,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JLabel feymarchShopLabel;
     private javax.swing.JButton finishGrindButton;
     private javax.swing.JLabel flagErrorLabel;
+    private javax.swing.JPanel flagsPanel;
     private javax.swing.JTextArea flagsTextField;
     private javax.swing.JComboBox<String> floorComboBox;
     private javax.swing.JLabel floorLabel;
     private javax.swing.JLabel hummingwayShopLabel;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1879,9 +2042,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel mapPane;
     private javax.swing.JPanel mapSelectionPanel;
     private javax.swing.JLabel mysidiaShopLabel;
+    private javax.swing.JPanel otherOptionsPanel;
     private javax.swing.JPanel partyPanel;
     private javax.swing.JComboBox<String> positionComboBox;
     private javax.swing.JButton resetButton;
+    private javax.swing.JPanel resetEverythingPanel;
     private javax.swing.JLabel resetLabel;
     private javax.swing.JCheckBox resetOnly;
     private javax.swing.JPanel resetPane;
