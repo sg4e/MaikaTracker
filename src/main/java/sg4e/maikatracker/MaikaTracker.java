@@ -46,6 +46,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
@@ -75,6 +76,24 @@ import sg4e.ff4stats.party.PartyMember;
 public final class MaikaTracker extends javax.swing.JFrame {
     
     private static final Logger LOG = LogManager.getLogger();
+    
+    private final String[] bossResources = {
+        "1MistD", "2Soldier", "3Octo", "4Antlion", "5WHag", "6Mombomb", "7Gauntlet",
+        "8Milon", "9MilonZ", "10DKCecil", "11Guards", "12Yang", "13Baigan",
+        "14Kainazzo", "15DElf", "16MagusSis", "17Valvalis", "18Calcabrina",
+        "19Golbez", "20Lugae", "21DarkImps", "21Eblan", "22Rubicante",
+        "23EvilWall", "24Fiends", "25CPU", "26Odin", "27Asura", "28Leviath",
+        "29Bahamut", "30PaleDim", "31LunarD", "32Plague", "33Ogopogo", "34Wyvern"
+    };
+    
+    private final String[] bossNames = {
+        "D. Mist", "Baron Soldiers", "Octomam", "Antlion", "Waterhag", "Mombomb",
+        "Fabul Guantlet", "Milon", "MilonZ", "Dark Knight Cecil", "Baron Guards",
+        "Karate", "Baigan", "Kainazzo", "Dark Elf", "Magus Sisters", "Valvalis",
+        "Calcabrina", "Golbez", "Dr. Lugae", "Dark Imps", "Eblan King & Queen",
+        "Rubicante", "Evil Wall", "Elements", "CPU", "Odin", "Leviatan", "Asura",
+        "Bahamut", "Pale Dim", "Lunar D.", "Plague", "Ogopogo", "Wyvern"
+    };
     
     private final TreasureAtlas atlas = new TreasureAtlas();    
     private static final String TOWER_OF_ZOT = "Zot";
@@ -152,7 +171,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         //add boss icons
         LayoutManager bossIconLayout = new GridLayout(3, 12);
         bossIconPanel.setLayout(bossIconLayout);
-        dmistLabel = loadBossIcon("1MistD", "D. Mist");
+        dmistLabel = loadBossIcon(0);
         dmistLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -161,40 +180,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 }
             }
         });
-        loadBossIcon("2Soldier", "Baron Soldiers");
-        loadBossIcon("3Octo", "Octomam");
-        loadBossIcon("4Antlion", "Antlion");
-        loadBossIcon("5WHag", "Waterhag");
-        loadBossIcon("6Mombomb", "Mombomb");
-        loadBossIcon("7Gauntlet", "Fabul Guantlet");
-        loadBossIcon("8Milon", "Milon");
-        loadBossIcon("9MilonZ", "MilonZ");
-        loadBossIcon("10DKCecil", "Dark Knight Cecil");
-        loadBossIcon("11Guards", "Baron Guards");
-        loadBossIcon("12Yang", "Karate");
-        loadBossIcon("13Baigan", "Baigan");
-        loadBossIcon("14Kainazzo", "Kainazzo");
-        loadBossIcon("15DElf", "Dark Elf");
-        loadBossIcon("16MagusSis", "Magus Sisters");
-        loadBossIcon("17Valvalis", "Valvalis");
-        loadBossIcon("18Calcabrina", "Calcabrina");
-        loadBossIcon("19Golbez", "Golbez");
-        loadBossIcon("20Lugae", "Dr. Lugae");
-        loadBossIcon("21DarkImps", "Dark Imps");
-        loadBossIcon("21Eblan", "Eblan King & Queen");
-        loadBossIcon("22Rubicante", "Rubicante");
-        loadBossIcon("23EvilWall", "Evil Wall");
-        loadBossIcon("24Fiends", "Elements");
-        loadBossIcon("25CPU", "CPU");
-        loadBossIcon("26Odin", "Odin");
-        loadBossIcon("28Leviath", "Leviatan");
-        loadBossIcon("27Asura", "Asura");
-        loadBossIcon("29Bahamut", "Bahamut");
-        loadBossIcon("30PaleDim", "Pale Dim");
-        loadBossIcon("31LunarD", "Lunar D.");
-        loadBossIcon("32Plague", "Plague");
-        loadBossIcon("33Ogopogo", "Ogopogo");
-        loadBossIcon("34Wyvern", "Wyvern");
+        for(int i = 1; i < bossResources.length; i++)
+            loadBossIcon(i);
         
         checkedBossLabel = loadCheckedDemoLabel(0);
         allowCheckedBosses.setSelected(!prefs.getBoolean(CHECKED_BOSS_ID, allowCheckedBosses.isSelected()));
@@ -449,8 +436,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
         
         ShopPanel.knownLocationsPanel = initShop(knownShopLocationsLabel, false);
         
-        //shopPanel2.setVisible(false);
-        
         updateKeyItemCountLabel();
         resetButtonActionPerformed(null);
         updateLogic();
@@ -523,8 +508,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         activeShopPointerLabel.setBounds(bounds.x, label.getBounds().y, bounds.width, bounds.height);
     }
     
-    public StativeLabel loadBossIcon(String imageName, String bossName) {
-        BossLabel label = new BossLabel(imageName, bossName);        
+    public StativeLabel loadBossIcon(int bossIndex) {
+        BossLabel label = new BossLabel(bossResources[bossIndex], bossNames[bossIndex]);        
         bossIconPanel.add(label.getHolder());
         bossLabels.add(label);
         return label;
@@ -536,25 +521,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
         DemoLabel label;
         int i = 0;
         
-        String[] keyItemResources = {
-            "1THECrystal", "2Pass", "3Hook", "4DarknessCrystal", "5EarthCrystal",
-            "6TwinHarp", "7Package", "8SandRuby", "9BaronKey", "10MagmaKey",
-            "11TowerKey", "12LucaKey", "13Adamant", "14LegendSword", "15Pan",
-            "16Spoon", "17RatTail", "18PinkTail"
-        };
-        String[] bossResources = {
-            "1MistD", "2Soldier", "3Octo", "4Antlion", "5WHag", "6Mombomb", "7Gauntlet",
-            "8Milon", "9MilonZ", "10DKCecil", "11Guards", "12Yang", "13Baigan",
-            "14Kainazzo", "15DElf", "16MagusSis", "17Valvalis", "18Calcabrina",
-            "19Golbez", "20Lugae", "21DarkImps", "21Eblan", "22Rubicante",
-            "23EvilWall", "24Fiends", "25CPU", "26Odin", "27Asura", "28Leviath",
-            "29Bahamut", "30PaleDim", "31LunarD", "32Plague", "33Ogopogo", "34Wyvern"
-        };
-        
         if(type == 0)
             imageName = bossResources[rand.nextInt(bossResources.length)];
         else
-            imageName = keyItemResources[rand.nextInt(keyItemResources.length)];
+            imageName = getKeyItemPanels().get(rand.nextInt(getKeyItemPanels().size()))
+                    .getKeyItem().getImageName();
         
         do {
             label = new DemoLabel(imageName, type, i);
@@ -599,8 +570,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         }
 
         panel.setButtonListener((ae) -> {
-            Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c)
+            getKeyItemPanelsStream()
                 .filter(ki -> ki.getItemLocation() != null)
                 .filter(ki -> ki.getItemLocation().equals(panel.getKeyItemLocation()))
                 .forEach(ki -> ki.setActive(true));
@@ -679,8 +649,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     }
     
     public Set<KeyItemMetadata> getAcquiredKeyItems() {
-        return Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c)
+        return getKeyItemPanelsStream()
                 .filter(KeyItemPanel::isAcquired)
                 .map(KeyItemPanel::getKeyItem)
                 .collect(Collectors.toSet());
@@ -696,8 +665,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     }
     
     public KeyItemPanel getPanelForKeyItem(KeyItemMetadata keyItem) {
-        return keyItem == null ? null : Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c)
+        return keyItem == null ? null : getKeyItemPanelsStream()
                 .filter(kip -> keyItem.equals(kip.getKeyItem()))
                 .findAny()
                 .get();
@@ -708,16 +676,14 @@ public final class MaikaTracker extends javax.swing.JFrame {
         JMenu summonsMenu = new JMenu("Summon location");
         JMenu lunarMenu = new JMenu("Lunar location");
         
-        List<KeyItemLocation> dLunar = Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c)
+        List<KeyItemLocation> dLunar = getKeyItemPanelsStream()
                 .map(KeyItemPanel::getItemLocation)
                 .filter(Objects::nonNull)
                 .filter(ki -> ki.equals(KeyItemLocation.DLUNAR))
                 .collect(Collectors.toList());               
         
         
-        Set<KeyItemLocation> knownLocations = Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c)
+        Set<KeyItemLocation> knownLocations = getKeyItemPanelsStream()
                 .map(KeyItemPanel::getItemLocation)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
@@ -791,15 +757,18 @@ public final class MaikaTracker extends javax.swing.JFrame {
             locationMenu.add(lunarMenu);
     }
     
-    public List<KeyItemPanel> getKeyItemPanels() {
+    public Stream<KeyItemPanel> getKeyItemPanelsStream() {
         return Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c)
+                .map(c -> (KeyItemPanel) c);
+    }
+    
+    public List<KeyItemPanel> getKeyItemPanels() {
+        return getKeyItemPanelsStream()
                 .collect(Collectors.toList());
     }
     
     public List<KeyItemMetadata> getUnknownKeyItems() {
-        return Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c)
+        return getKeyItemPanelsStream()
                 .filter(kip -> !kip.isKnown())
                 .map(KeyItemPanel::getKeyItem)
                 .collect(Collectors.toList());
@@ -835,8 +804,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     }
         
     public int getKeyItemCount() {
-        Set<KeyItemPanel> acquired = Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c)
+        Set<KeyItemPanel> acquired = getKeyItemPanelsStream()
                 .filter(KeyItemPanel::isAcquired).collect(Collectors.toSet());
         int count = acquired.size();
         //pass doesn't count as a key item since 0.3
@@ -1775,8 +1743,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         bossLabels.forEach(boss -> boss.reset());
         atlas.reset();
         getPartyLabels().forEach((member -> member.clearLabel()));
-        Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c).forEach(panel -> panel.reset(true));
+        getKeyItemPanels().forEach(panel -> panel.reset(true));
         locationsVisited.clear();
         updateLogic();
         updateKeyItemCountLabel();
@@ -1861,8 +1828,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_allowCheckedBossesActionPerformed
 
     private void allowCheckedKeyItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allowCheckedKeyItemsActionPerformed
-        Arrays.stream(keyItemPanel.getComponents())
-                .map(c -> (KeyItemPanel) c).forEach(panel -> panel.setCheckedKeyItem(allowCheckedKeyItems.isSelected()));
+        getKeyItemPanels().forEach(panel -> panel.setCheckedKeyItem(allowCheckedKeyItems.isSelected()));
         checkedKeyItemLabel.setVisible(allowCheckedKeyItems.isSelected() && BossLabel.checkedImage != null);
         prefs.putBoolean(CHECKED_KEYITEM_ID, allowCheckedKeyItems.isSelected());
         if(BossLabel.checkedImage == null)

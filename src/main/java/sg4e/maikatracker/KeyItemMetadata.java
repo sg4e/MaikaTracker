@@ -17,7 +17,6 @@
 package sg4e.maikatracker;
 
 import java.io.IOException;
-import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import org.apache.logging.log4j.LogManager;
@@ -50,12 +49,14 @@ public enum KeyItemMetadata {
     
     private final KeyItem ki;
     private ImageIcon gray, color, checked;
+    private String imageName;
     
     private static final Logger LOG = LogManager.getLogger();
     
     private KeyItemMetadata(KeyItem ki, String imageId) {
         this.ki = ki;
-        String baseUrl = "key-items/%s/FFIVFE-Icons-" + imageId + ki.toString().replaceAll(" ", "") + "-";
+        imageName = imageId + ki.toString().replaceAll(" ", "");
+        String baseUrl = "key-items/%s/FFIVFE-Icons-" + imageName + "-";
         String grayUrl = String.format(baseUrl, "grayscale") + "Gray.png";
         String colorUrl = String.format(baseUrl, "color") + "Color.png";
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
@@ -83,5 +84,9 @@ public enum KeyItemMetadata {
     
     public ImageIcon getCheckedIcon() {
         return checked;
+    }
+    
+    public String getImageName() {
+        return imageName;
     }
 }
