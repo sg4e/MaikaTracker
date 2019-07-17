@@ -17,7 +17,6 @@
 package sg4e.maikatracker;
 
 import java.io.IOException;
-import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import org.apache.logging.log4j.LogManager;
@@ -50,19 +49,21 @@ public enum KeyItemMetadata {
     
     private final KeyItem ki;
     private ImageIcon gray, color, checked;
+    private String imageName;
     
     private static final Logger LOG = LogManager.getLogger();
     
     private KeyItemMetadata(KeyItem ki, String imageId) {
         this.ki = ki;
-        String baseUrl = "key-items/%s/FFIVFE-Icons-" + imageId + ki.toString().replaceAll(" ", "") + "-";
+        imageName = imageId + ki.toString().replaceAll(" ", "");
+        String baseUrl = "key-items/%s/FFIVFE-Icons-" + imageName + "-";
         String grayUrl = String.format(baseUrl, "grayscale") + "Gray.png";
         String colorUrl = String.format(baseUrl, "color") + "Color.png";
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         try {
             gray = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(grayUrl)));
             color = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(colorUrl)));
-            checked = BossLabel.CheckMarkIcon(color);
+            checked = BossLabel.CheckMarkIcon(color, 0.25f);
         }
         catch(IOException | IllegalArgumentException ex) {
             LogManager.getLogger().error("Error loading Key Item icons: " + ki.toString(), ex);
@@ -83,5 +84,13 @@ public enum KeyItemMetadata {
     
     public ImageIcon getCheckedIcon() {
         return checked;
+    }
+    
+    public void setDarkness(float darkness) {
+        checked = BossLabel.CheckMarkIcon(color, darkness);
+    }
+    
+    public String getImageName() {
+        return imageName;
     }
 }

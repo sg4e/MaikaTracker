@@ -35,12 +35,13 @@ public class BossLabel extends StativeLabel {
     private final String bossName;
     private final ImageIcon greyBoss;
     private final ImageIcon colorBoss;
-    private final ImageIcon checkedBoss;
+    private ImageIcon checkedBoss;
     
     private JPanel holder;
     private BossLabel bossLocation;
     private BossLabel contains;
     public static final BufferedImage checkedImage;
+    private boolean useCheckedImages;
     
     static {
         BufferedImage cImage;
@@ -54,11 +55,11 @@ public class BossLabel extends StativeLabel {
         checkedImage = cImage;
     }
     
-    public static ImageIcon CheckMarkIcon(ImageIcon colorBoss) {
+    public static ImageIcon CheckMarkIcon(ImageIcon colorBoss, float darkness) {
         if (checkedImage == null)
             return null;
         BufferedImage image = new BufferedImage(colorBoss.getIconWidth(), colorBoss.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-        float[] scales = {.5f, .5f, .5f, 1f};
+        float[] scales = {1 - darkness, 1 - darkness, 1 - darkness, 1f};
         float[] offsets = new float[4];
         RescaleOp op = new RescaleOp(scales, offsets, null); 
         
@@ -79,7 +80,7 @@ public class BossLabel extends StativeLabel {
         
         greyBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-" + imageName + "-Gray.png"));
         colorBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/color/FFIVFE-Bosses-" + imageName + "-Color.png"));
-        checkedBoss = CheckMarkIcon(colorBoss);
+        checkedBoss = CheckMarkIcon(colorBoss, 0.25f);
         
         setCheckedBoss(true);
         
@@ -105,6 +106,13 @@ public class BossLabel extends StativeLabel {
         });
     }
     
+    public void setDarkness(float darkness) {
+        int state = getState();
+        checkedBoss = CheckMarkIcon(colorBoss, darkness);
+        setCheckedBoss(useCheckedImages);
+        setState(state);
+    }
+    
     @Override
     public void setBackground(Color color) {
         super.setBackground(color);
@@ -119,6 +127,7 @@ public class BossLabel extends StativeLabel {
     }
     
     public final void setCheckedBoss(boolean checked) {
+        useCheckedImages = checked;
         if(checked && checkedBoss != null)
             setNewIconState(greyBoss, colorBoss, checkedBoss);
         else
