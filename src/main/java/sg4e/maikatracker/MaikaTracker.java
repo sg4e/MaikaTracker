@@ -420,21 +420,14 @@ public final class MaikaTracker extends javax.swing.JFrame {
         floorComboBox.setSelectedItem(0);
         atlas.showFloor((String) dungeonComboBox.getSelectedItem(), (String) floorComboBox.getSelectedItem());
         
-        initShop(agartShopLabel, false);
-        initShop(baronShopLabel, true);
-        initShop(eblanCaveShopLabel, false);
-        initShop(fabulShopLabel, false);
-        initShop(kaipoShopLabel, false);
-        initShop(mysidiaShopLabel, false);
-        initShop(silveraShopLabel, false);
-        initShop(troiaItemShopLabel, false);
-        initShop(troiaPubShopLabel, false);
-        initShop(dwarfCastleShopLabel, false);
-        initShop(feymarchShopLabel, false);
-        initShop(tomaraShopLabel, false);
-        initShop(hummingwayShopLabel, false);
         
-        ShopPanel.knownLocationsPanel = initShop(knownShopLocationsLabel, false);
+        Arrays.stream(shopLocationsPanel.getComponents())
+                .map(c -> (JLabel) c)
+                .filter(label -> {return label != activeShopPointerLabel && 
+                                        label != knownShopLocationsLabel;})
+                .forEach(label -> initShop(label));
+        
+        ShopPanel.knownLocationsPanel = initShop(knownShopLocationsLabel);
         
         updateKeyItemCountLabel();
         resetButtonActionPerformed(null);
@@ -480,7 +473,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         mapPane.add(atlas);
     }
     
-    private ShopPanel initShop(JLabel shopLocation, Boolean visible)
+    private ShopPanel initShop(JLabel shopLocation)
     {
         if(shopMap.containsKey(shopLocation.getText())) {
             return shopMap.get(shopLocation.getText());
@@ -488,7 +481,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         
         ShopPanel shopPanel = new ShopPanel(shopLocation);
         shopPanelsPanel.add(shopPanel);
-        shopPanel.setVisible(visible);
+        shopPanel.setVisible(shopLocation == baronShopLabel);
         shopMap.put(shopLocation.getText(), shopPanel);
         
         setTextColor(false);
