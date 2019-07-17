@@ -77,7 +77,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     private static final Logger LOG = LogManager.getLogger();
     
-    private final String[] bossResources = {
+    private static final String[] BOSS_RESOURCES = {
         "1MistD", "2Soldier", "3Octo", "4Antlion", "5WHag", "6Mombomb", "7Gauntlet",
         "8Milon", "9MilonZ", "10DKCecil", "11Guards", "12Yang", "13Baigan",
         "14Kainazzo", "15DElf", "16MagusSis", "17Valvalis", "18Calcabrina",
@@ -86,7 +86,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         "29Bahamut", "30PaleDim", "31LunarD", "32Plague", "33Ogopogo", "34Wyvern"
     };
     
-    private final String[] bossNames = {
+    private static final String[] BOSS_NAMES = {
         "D. Mist", "Baron Soldiers", "Octomam", "Antlion", "Waterhag", "Mombomb",
         "Fabul Guantlet", "Milon", "MilonZ", "Dark Knight Cecil", "Baron Guards",
         "Karate", "Baigan", "Kainazzo", "Dark Elf", "Magus Sisters", "Valvalis",
@@ -180,7 +180,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 }
             }
         });
-        for(int i = 1; i < bossResources.length; i++)
+        for(int i = 1; i < BOSS_RESOURCES.length; i++)
             loadBossIcon(i);
         
         checkedBossLabel = loadCheckedDemoLabel(0);
@@ -502,7 +502,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     }
     
     public StativeLabel loadBossIcon(int bossIndex) {
-        BossLabel label = new BossLabel(bossResources[bossIndex], bossNames[bossIndex]);        
+        BossLabel label = new BossLabel(BOSS_RESOURCES[bossIndex], BOSS_NAMES[bossIndex]);        
         bossIconPanel.add(label.getHolder());
         bossLabels.add(label);
         return label;
@@ -515,7 +515,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         int i = 0;
         
         if(type == 0)
-            imageName = bossResources[rand.nextInt(bossResources.length)];
+            imageName = BOSS_RESOURCES[rand.nextInt(BOSS_RESOURCES.length)];
         else
             imageName = getKeyItemPanels().get(rand.nextInt(getKeyItemPanels().size()))
                     .getKeyItem().getImageName();
