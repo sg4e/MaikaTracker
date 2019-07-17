@@ -63,7 +63,7 @@ public enum KeyItemMetadata {
         try {
             gray = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(grayUrl)));
             color = new ImageIcon(ImageIO.read(classLoader.getResourceAsStream(colorUrl)));
-            checked = BossLabel.CheckMarkIcon(color);
+            checked = BossLabel.CheckMarkIcon(color, 0.25f);
         }
         catch(IOException | IllegalArgumentException ex) {
             LogManager.getLogger().error("Error loading Key Item icons: " + ki.toString(), ex);
@@ -84,6 +84,10 @@ public enum KeyItemMetadata {
     
     public ImageIcon getCheckedIcon() {
         return checked;
+    }
+    
+    public void setDarkness(float darkness) {
+        checked = BossLabel.CheckMarkIcon(color, darkness);
     }
     
     public String getImageName() {

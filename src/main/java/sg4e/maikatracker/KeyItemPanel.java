@@ -46,6 +46,7 @@ public class KeyItemPanel extends JPanel {
     private KeyItemLocation location = null;
     private ChestLabel chestLabel = null;
     private ShopPanel shopPanel = null;
+    private boolean useCheckedIcons;
     
     private static final String UNKNOWN_LOCATION = "?";
     
@@ -131,6 +132,7 @@ public class KeyItemPanel extends JPanel {
     }
     
     public void setCheckedKeyItem(boolean checked) {
+        useCheckedIcons = checked;
         if(metadata.getCheckedIcon() == null)
             return;
         boolean on = itemImage.isActive();
@@ -250,6 +252,13 @@ public class KeyItemPanel extends JPanel {
         else {
             shopPanel = null;
         }
+    }
+    
+    public void setDarkness(float darkness) {
+        metadata.setDarkness(darkness);
+        int state = itemImage.getState();
+        setCheckedKeyItem(useCheckedIcons);
+        itemImage.setState(state);
     }
     
     public void reset() {

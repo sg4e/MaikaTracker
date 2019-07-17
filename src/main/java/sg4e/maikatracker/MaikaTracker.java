@@ -114,10 +114,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private final JPanel logicPanel;
     private final StativeLabel dmistLabel;
     
-    private final StativeLabel checkedBossLabel;
+    private final DemoLabel checkedBossLabel;
     public static final String CHECKED_BOSS_ID = "AllowCheckedBosses";
     
-    private final StativeLabel checkedKeyItemLabel;
+    private final DemoLabel checkedKeyItemLabel;
     private static final String CHECKED_KEYITEM_ID = "AllowCheckedKeyItems";
     
     
@@ -125,6 +125,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     private final Preferences prefs;
     private static final String RESET_ONLY_ID = "AllowResetOnlyWhenKeyItemSet";
+    private static final String CHECKED_DARKNESS_ID = "CheckedDarknessPercent";
     
     public final Set<KeyItemLocation> locationsVisited = new HashSet<>();
     
@@ -438,6 +439,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         pack();
         
         resetOnly.setSelected(prefs.getBoolean(RESET_ONLY_ID, resetOnly.isSelected()));
+        checkedDarknessSlider.setValue(prefs.getInt(CHECKED_DARKNESS_ID, checkedDarknessSlider.getValue()));
+        checkedDarknessSliderStateChanged(null);
         setTextColor(false);
         setBackgroundColor(false);
         setTenKeyItemColor(false);
@@ -889,6 +892,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         setPanelTextColor(checkedIconSettingPanel, textColor);
         allowCheckedBosses.setForeground(textColor);
         allowCheckedKeyItems.setForeground(textColor);
+        checkedDarknessSlider.setForeground(textColor);
         updateLogic();
     }
     
@@ -927,6 +931,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         checkedKeyItemsIconPanel.setBackground(backgroundColor);
         allowCheckedBosses.setBackground(backgroundColor);
         allowCheckedKeyItems.setBackground(backgroundColor);
+        checkedDarknessSlider.setBackground(backgroundColor);
         updateLogic();
     }
     
@@ -1075,6 +1080,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         checkedBossIconPanel = new javax.swing.JPanel();
         allowCheckedBosses = new javax.swing.JCheckBox();
         allowCheckedKeyItems = new javax.swing.JCheckBox();
+        checkedDarknessSlider = new javax.swing.JSlider();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -1604,6 +1610,21 @@ public final class MaikaTracker extends javax.swing.JFrame {
             }
         });
 
+        checkedDarknessSlider.setForeground(new java.awt.Color(0, 0, 0));
+        checkedDarknessSlider.setMajorTickSpacing(10);
+        checkedDarknessSlider.setMaximum(90);
+        checkedDarknessSlider.setMinimum(10);
+        checkedDarknessSlider.setMinorTickSpacing(5);
+        checkedDarknessSlider.setPaintLabels(true);
+        checkedDarknessSlider.setPaintTicks(true);
+        checkedDarknessSlider.setSnapToTicks(true);
+        checkedDarknessSlider.setValue(25);
+        checkedDarknessSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                checkedDarknessSliderStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout checkedIconSettingPanelLayout = new javax.swing.GroupLayout(checkedIconSettingPanel);
         checkedIconSettingPanel.setLayout(checkedIconSettingPanelLayout);
         checkedIconSettingPanelLayout.setHorizontalGroup(
@@ -1611,13 +1632,17 @@ public final class MaikaTracker extends javax.swing.JFrame {
             .addGroup(checkedIconSettingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(allowCheckedKeyItems)
-                    .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(checkedBossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(allowCheckedBosses))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(checkedDarknessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(checkedIconSettingPanelLayout.createSequentialGroup()
+                        .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(allowCheckedKeyItems)
+                            .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(checkedBossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(allowCheckedBosses))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         checkedIconSettingPanelLayout.setVerticalGroup(
             checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1628,7 +1653,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(checkedBossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(checkedBossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(checkedDarknessSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout resetPaneLayout = new javax.swing.GroupLayout(resetPane);
@@ -1659,7 +1686,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(flagsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(197, 197, 197))
+                .addGap(169, 169, 169))
         );
 
         mainTabbedPane.addTab("Misc.", resetPane);
@@ -1818,6 +1845,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         prefs.putBoolean(CHECKED_BOSS_ID, allowCheckedBosses.isSelected());
         if(BossLabel.checkedImage == null)
             allowCheckedBosses.setVisible(false);
+        checkedDarknessSlider.setVisible(allowCheckedBosses.isSelected() || allowCheckedKeyItems.isSelected());
     }//GEN-LAST:event_allowCheckedBossesActionPerformed
 
     private void allowCheckedKeyItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allowCheckedKeyItemsActionPerformed
@@ -1826,7 +1854,19 @@ public final class MaikaTracker extends javax.swing.JFrame {
         prefs.putBoolean(CHECKED_KEYITEM_ID, allowCheckedKeyItems.isSelected());
         if(BossLabel.checkedImage == null)
             allowCheckedKeyItems.setVisible(false);
+        checkedDarknessSlider.setVisible(allowCheckedBosses.isSelected() || allowCheckedKeyItems.isSelected());
     }//GEN-LAST:event_allowCheckedKeyItemsActionPerformed
+
+    private void checkedDarknessSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_checkedDarknessSliderStateChanged
+        if(checkedDarknessSlider.getValue() % checkedDarknessSlider.getMinorTickSpacing() == 0) {
+            prefs.putInt(CHECKED_DARKNESS_ID, checkedDarknessSlider.getValue());
+            float darkness = checkedDarknessSlider.getValue() / 100f;
+            checkedKeyItemLabel.setDarkness(darkness);
+            checkedBossLabel.setDarkness(darkness);
+            bossLabels.forEach(label -> label.setDarkness(darkness));
+            getKeyItemPanels().forEach(panel -> panel.setDarkness(darkness));
+        }
+    }//GEN-LAST:event_checkedDarknessSliderStateChanged
 
     private void calculateXp(int xpGained, boolean commit) {
         List<PartyMember> members = getPartyMembers();
@@ -1973,6 +2013,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel bossSelectionPanel;
     private javax.swing.JTable bossTable;
     private javax.swing.JPanel checkedBossIconPanel;
+    private javax.swing.JSlider checkedDarknessSlider;
     private javax.swing.JPanel checkedIconSettingPanel;
     private javax.swing.JPanel checkedKeyItemsIconPanel;
     private javax.swing.JComboBox<String> dungeonComboBox;
