@@ -254,6 +254,40 @@ public class KeyItemPanel extends JPanel {
         }
     }
     
+    public void setLocationString(String location) {
+        
+        if (allowChest() && tracker.getAtlas().hasChestId(location)) {
+            tracker.updateKeyItemLocation(metadata, location);
+        }
+        else {
+            try {
+                KeyItemLocation loc = KeyItemLocation.valueOf(location);
+                setLocation(loc);
+            }
+            catch (IllegalArgumentException ex) {}
+        }
+        updateKeyItem();
+    }
+    
+    public String getLocationString() {
+        if(location != null)
+            return location.name();
+        if(chestLabel != null)
+            return chestLabel.getId();
+        //Shop location handled by the shop savedata.
+        /*if(shopPanel != null)
+            return shopPanel.getShopName();*/   
+        return null;
+    }
+    
+    public int getState() {
+        return itemImage.getState();
+    }
+    
+    public void setState(int state) {
+        itemImage.setState(state);
+    }
+    
     public void setDarkness(float darkness) {
         metadata.setDarkness(darkness);
         int state = itemImage.getState();

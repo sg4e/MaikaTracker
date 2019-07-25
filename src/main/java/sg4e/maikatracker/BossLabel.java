@@ -13,7 +13,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
@@ -31,7 +33,9 @@ import sg4e.ff4stats.fe.FlagSet;
 public class BossLabel extends StativeLabel {
     
     private static final List<BossLabel> bossNames = new ArrayList<>();
+    private static final Map<String, BossLabel> bossMap = new HashMap<>();
     
+    private final String imageName;
     private final String bossName;
     private final ImageIcon greyBoss;
     private final ImageIcon colorBoss;
@@ -85,8 +89,10 @@ public class BossLabel extends StativeLabel {
         setCheckedBoss(true);
         
         setToolTipText(bossName);
+        this.imageName = imageName;
         this.bossName = bossName;
         bossNames.add(this);
+        bossMap.put(imageName.replaceAll("\\d+", ""), this);
         
         addMouseListener(new MouseAdapter() {
             @Override
@@ -143,7 +149,7 @@ public class BossLabel extends StativeLabel {
         return bossMenu;
     }
     
-    private void setBossLocation(BossLabel label) {        
+    public void setBossLocation(BossLabel label) {        
         if(bossLocation != null) {
             bossLocation.contains = null;
             bossLocation = null;
@@ -159,11 +165,23 @@ public class BossLabel extends StativeLabel {
         }
     }
     
+    public BossLabel getBossLocation() {
+        return bossLocation;
+    }
+    
     public JPanel getHolder() {
         if(holder == null) {
             holder = new JPanel(new FlowLayout());
             holder.add(this);
         }
         return holder;
+    }
+    
+    public String name() {
+        return imageName.replaceAll("\\d+", "");
+    }
+    
+    public static BossLabel valueOf(String name) {
+        return bossMap.get(name);
     }
 }

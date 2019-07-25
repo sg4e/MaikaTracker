@@ -75,6 +75,11 @@ public class TreasureAtlas extends JPanel {
         return getTreasureMap(page).setChestContents(chestId, ki);
     }
     
+    public ChestLabel getChestLabel(String chestId) {
+        Page page = chestIdToPage.get(chestId);
+        return getTreasureMap(page).getChestLabel(chestId);
+    }
+    
     public void clearChestContents(String chestId) {
         getTreasureMap(chestIdToPage.get(chestId)).clearChestContents(chestId);
     }
@@ -92,6 +97,18 @@ public class TreasureAtlas extends JPanel {
             Page p = chestIdToPage.get(chestId);
             showFloor(p.getDungeon(), p.getFloor());
         }
+    }
+    
+    public String getOpenedChests() {
+        String checked = "";
+        for(String chestId : chestIdToPage.keySet()) {            
+            if(!getChestLabel(chestId).getChecked()) continue;
+            if(checked.equals(""))
+                checked = chestId;
+            else
+                checked += "," + chestId;
+        }
+        return checked;
     }
     
     public boolean hasChestId(String chestId) {

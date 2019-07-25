@@ -1057,6 +1057,12 @@ public final class MaikaTracker extends javax.swing.JFrame {
         hummingwayShopLabel = new javax.swing.JLabel();
         knownShopLocationsLabel = new javax.swing.JLabel();
         activeShopPointerLabel = new javax.swing.JLabel();
+        saveLoadPane = new javax.swing.JPanel();
+        saveLoadPanel = new javax.swing.JPanel();
+        saveLoadScrollPane = new javax.swing.JScrollPane();
+        saveLoadTextArea = new javax.swing.JTextArea();
+        saveDataButton = new javax.swing.JButton();
+        loadDataButton = new javax.swing.JButton();
         resetPane = new javax.swing.JPanel();
         resetEverythingPanel = new javax.swing.JPanel();
         resetLabel = new javax.swing.JLabel();
@@ -1421,6 +1427,60 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         mainTabbedPane.addTab("Shop", shopPane);
 
+        saveLoadPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save/Load"));
+
+        saveLoadTextArea.setColumns(20);
+        saveLoadTextArea.setLineWrap(true);
+        saveLoadTextArea.setRows(5);
+        saveLoadScrollPane.setViewportView(saveLoadTextArea);
+
+        saveDataButton.setText("Save");
+        saveDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveDataButtonActionPerformed(evt);
+            }
+        });
+
+        loadDataButton.setText("Load");
+        loadDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadDataButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout saveLoadPanelLayout = new javax.swing.GroupLayout(saveLoadPanel);
+        saveLoadPanel.setLayout(saveLoadPanelLayout);
+        saveLoadPanelLayout.setHorizontalGroup(
+            saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(saveLoadScrollPane)
+            .addGroup(saveLoadPanelLayout.createSequentialGroup()
+                .addComponent(saveDataButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(loadDataButton))
+        );
+        saveLoadPanelLayout.setVerticalGroup(
+            saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(saveLoadPanelLayout.createSequentialGroup()
+                .addComponent(saveLoadScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(saveDataButton)
+                    .addComponent(loadDataButton)))
+        );
+
+        javax.swing.GroupLayout saveLoadPaneLayout = new javax.swing.GroupLayout(saveLoadPane);
+        saveLoadPane.setLayout(saveLoadPaneLayout);
+        saveLoadPaneLayout.setHorizontalGroup(
+            saveLoadPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(saveLoadPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        saveLoadPaneLayout.setVerticalGroup(
+            saveLoadPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(saveLoadPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        mainTabbedPane.addTab("Save/Load", saveLoadPane);
+
         resetEverythingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Reset Everything"));
 
         resetLabel.setText("<html>Are you sure you would like to reset everything?<br> <br> This Action cannot be undone");
@@ -1654,7 +1714,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(checkedBossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(checkedDarknessSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1868,6 +1928,168 @@ public final class MaikaTracker extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_checkedDarknessSliderStateChanged
 
+    private final int SAVED_FLAGS = 0;
+    private final int SAVED_KEY_ITEMS = 1;
+    private final int SAVED_LOCATIONS = 2;
+    private final int SAVED_BOSSES = 3;
+    private final int SAVED_CHARACTERS = 4;
+    private final int SAVED_TREASURES = 5;
+    private final int SAVED_SHOPS = 6;
+    
+    private void saveDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDataButtonActionPerformed
+        
+        //SAVED_FLAGS
+        String flags;
+        if(flagset == null)
+            flags = "--NULL--";
+        else if (!flagset.hasSeed())
+            flags = flagset.toString();
+        else
+            flags = flagset.getBinary();
+        
+        //SAVED_KEY_ITEMS
+        String keyItemState = "";
+        for(KeyItemPanel panel : getKeyItemPanels()) {
+            int state = panel.getState();
+            String loc = panel.getLocationString();
+            if(state == 0 && (loc == null || !flagsetContains("K"))) 
+                continue;
+            if(keyItemState.equals(""))
+                keyItemState = panel.getKeyItem().name() + "=" + state;
+            else
+                keyItemState += "," + panel.getKeyItem().name() + "=" + state;
+            if(loc != null && flagsetContains("K"))
+                keyItemState += "=" + loc;
+        }
+        flags += ":\n" + keyItemState;
+        
+        //SAVED_LOCATIONS
+        keyItemState = "";
+        if(flagsetContains("K")) {
+            for(KeyItemLocation loc : locationsVisited) {
+                if(keyItemState.equals(""))
+                    keyItemState = loc.name();
+                else
+                    keyItemState += "," + loc.name();
+            }
+        }
+        flags += ":\n" + keyItemState;
+        
+        //SAVED_BOSSES
+        keyItemState = "";
+        for(BossLabel label : bossLabels) {
+            int state = label.getState();
+            String loc = label.getBossLocation() == null ? null : label.getBossLocation().name();
+            if(state == 0 && (loc == null || !flagsetContains("B")))
+                continue;
+            if(keyItemState.equals(""))
+                keyItemState = label.name() + "=" + state;
+            else
+                keyItemState += "," + label.name() + "=" + state;
+            if (loc != null && flagsetContains("B"))
+                keyItemState += "=" + loc;
+        }
+        flags += ":\n" + keyItemState;
+        
+        //SAVED_CHARACTERS
+        keyItemState = "";
+        for(PartyLabel label : PartyLabel.PartyMembers) {
+            if(keyItemState.equals(""))
+                keyItemState =  label.getData() == null ? "null" : label.getData().name();
+            else
+                keyItemState += "," + (label.getData() == null ? "null" : label.getData().name());
+        }
+        flags += ":\n" + keyItemState;
+        
+        //SAVED_TREASURES
+        flags += ":\n" + getAtlas().getOpenedChests();
+        
+        //SAVED_SHOPS
+        flags += ":\n" + ShopPanel.getCheckedItems();
+        
+        saveLoadTextArea.setText(flags);
+    }//GEN-LAST:event_saveDataButtonActionPerformed
+
+    private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
+        String[] data = saveLoadTextArea.getText().replaceAll("\\s+", "").split(":", -1);
+        flagsTextField.setText(saveLoadTextArea.getText().split(":")[0]);
+        resetButton.doClick();
+        
+        if(data.length > SAVED_KEY_ITEMS) {
+            for(String keyItem : data[SAVED_KEY_ITEMS].split(",")) {
+                String keyItemSplit[] = keyItem.split("=");
+                if(keyItemSplit.length < 2) continue;
+                try {
+                    KeyItemMetadata ki = KeyItemMetadata.valueOf(keyItemSplit[0]);
+                    KeyItemPanel panel = getPanelForKeyItem(ki);
+                    int state = Integer.parseInt(keyItemSplit[1]);
+                    if(state > 1 && !allowCheckedKeyItems.isSelected())
+                        state = 1;
+                    panel.setState(state);
+                    if(keyItemSplit.length == 3)
+                        panel.setLocationString(keyItemSplit[2]);
+                    else
+                        panel.setLocationString(panel.getLocationString());
+                }
+                catch (NumberFormatException ex) {}
+                catch (IllegalArgumentException | NullPointerException ex) {}
+            }
+        }
+        
+        if(data.length > SAVED_LOCATIONS) {
+            for(String loc : data[SAVED_LOCATIONS].split(",")) {
+                try {
+                    KeyItemLocation kiLoc = KeyItemLocation.valueOf(loc);
+                    locationsVisited.add(kiLoc);
+                    handleLogic(kiLoc, true);
+                }
+                catch (IllegalArgumentException ex) {}
+            }
+        }
+        updateLogic();
+        
+        if(data.length > SAVED_BOSSES) {
+            for(String boss : data[SAVED_BOSSES].split(",")) {
+                String bossSplit[] = boss.split("=");
+                if(bossSplit.length < 2) continue;
+                try {
+                    BossLabel label = BossLabel.valueOf(bossSplit[0]);
+                    if(label == null) continue;
+                    int state = Integer.parseInt(bossSplit[1]);
+                    if(state > 1 && !allowCheckedBosses.isSelected())
+                        state = 1;
+                    label.setState(state);
+                    if(bossSplit.length < 3) continue;
+                    label.setBossLocation(BossLabel.valueOf(bossSplit[2]));
+                }
+                catch (NumberFormatException | NullPointerException ex) {}
+            }
+        }
+        if(data.length > SAVED_CHARACTERS) {
+            String[] characters = data[SAVED_CHARACTERS].split(",");
+            for (int i = 0; i < 5; i++) {
+                try {
+                    LevelData levelData = LevelData.valueOf(characters[i]);
+                    PartyLabel.PartyMembers.get(i).setPartyMember(levelData);
+                }
+                catch (IllegalArgumentException | ArrayIndexOutOfBoundsException ex) {}
+            }
+        }
+        
+        if(data.length > SAVED_TREASURES) {
+            String[] treasures = data[SAVED_TREASURES].split(",");
+            for(String treasure : treasures) {
+                if(getAtlas().hasChestId(treasure)) {
+                    getAtlas().getChestLabel(treasure).setChecked(true);
+                }
+            }
+        }
+        
+        if(data.length > SAVED_SHOPS) {
+            ShopPanel.setCheckedItems(data[SAVED_SHOPS]);
+        }
+    }//GEN-LAST:event_loadDataButtonActionPerformed
+
     private void calculateXp(int xpGained, boolean commit) {
         List<PartyMember> members = getPartyMembers();
         int kiMultipler = getKeyItemCount() >= 10 && (flagsetContains("Xk")) ? 2 : 1;
@@ -2037,6 +2259,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JLabel keyItemCountLabel;
     private javax.swing.JPanel keyItemPanel;
     private javax.swing.JLabel knownShopLocationsLabel;
+    private javax.swing.JButton loadDataButton;
     private javax.swing.JPanel logicTabPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JPanel mapPane;
@@ -2050,6 +2273,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JLabel resetLabel;
     private javax.swing.JCheckBox resetOnly;
     private javax.swing.JPanel resetPane;
+    private javax.swing.JButton saveDataButton;
+    private javax.swing.JPanel saveLoadPane;
+    private javax.swing.JPanel saveLoadPanel;
+    private javax.swing.JScrollPane saveLoadScrollPane;
+    private javax.swing.JTextArea saveLoadTextArea;
     private javax.swing.JLabel scriptLabel;
     private javax.swing.JPanel shopLocationsPanel;
     private javax.swing.JPanel shopPane;
