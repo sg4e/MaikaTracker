@@ -91,7 +91,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         "Fabul Guantlet", "Milon", "MilonZ", "Dark Knight Cecil", "Baron Guards",
         "Karate", "Baigan", "Kainazzo", "Dark Elf", "Magus Sisters", "Valvalis",
         "Calcabrina", "Golbez", "Dr. Lugae", "Dark Imps", "Eblan King & Queen",
-        "Rubicante", "Evil Wall", "Elements", "CPU", "Odin", "Leviatan", "Asura",
+        "Rubicante", "Evil Wall", "Elements", "CPU", "Odin", "Asura", "Leviatan",
         "Bahamut", "Pale Dim", "Lunar D.", "Plague", "Ogopogo", "Wyvern"
     };
     
