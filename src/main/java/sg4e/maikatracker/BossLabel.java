@@ -168,10 +168,14 @@ public class BossLabel extends StativeLabel {
         String toolTip = "<html>" + bossName;
         if(contains != null || bossLocation != null)
             toolTip += "<ul>";
-        if(contains != null)
+        if(contains != null && !contains.equals(this))
             toolTip += "<li>Location contains " + contains.bossName + "</li>";
         if(bossLocation != null) {
-            toolTip += "<li>" + (bossLocation.equals(this) ? "Vanilla location" : "Located at " + bossLocation.bossName) + "</li>";
+            toolTip += "<li>";
+            toolTip += bossLocation.equals(this) 
+                    ? "Vanilla location" 
+                    : "Located at " + bossLocation.bossName;
+            toolTip += "</li>";
         }
         if(contains != null || bossLocation != null)
             toolTip += "</ul>";
