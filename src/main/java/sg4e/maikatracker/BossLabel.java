@@ -152,17 +152,30 @@ public class BossLabel extends StativeLabel {
     public void setBossLocation(BossLabel label) {        
         if(bossLocation != null) {
             bossLocation.contains = null;
+            bossLocation.updateToolTip();
             bossLocation = null;
         }
         
-        if(label == null) {
-            setToolTipText(bossName);
-        }
-        else {
-            setToolTipText("<html>" + bossName + "<br>Located at " + label.bossName + "</html>");
+        if(label != null) {
             label.contains = this;
-            bossLocation = label;
+            label.updateToolTip();
         }
+        bossLocation = label;
+        updateToolTip();
+    }
+    
+    public void updateToolTip() {
+        String toolTip = "<html>" + bossName;
+        if(contains != null || bossLocation != null)
+            toolTip += "<ul>";
+        if(contains != null)
+            toolTip += "<li>Location contains " + contains.bossName + "</li>";
+        if(bossLocation != null) {
+            toolTip += "<li>" + (bossLocation.equals(this) ? "Vanilla location" : "Located at " + bossLocation.bossName) + "</li>";
+        }
+        if(contains != null || bossLocation != null)
+            toolTip += "</ul>";
+        setToolTipText(toolTip + "</html>");
     }
     
     public BossLabel getBossLocation() {
