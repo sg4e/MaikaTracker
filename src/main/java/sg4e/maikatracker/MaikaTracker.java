@@ -29,6 +29,8 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.NumberFormat;
@@ -50,6 +52,7 @@ import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -60,6 +63,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -132,6 +136,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private int grindXP = 0;
     
     public FlagSet flagset = null;
+    
+    private final JFileChooser fileChooser = new JFileChooser();
     
     public static MaikaTracker tracker;
 
@@ -445,6 +451,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         setBackgroundColor(false);
         setTenKeyItemColor(false);
         xpErrorLabel.setText("");
+        fileChooser.addChoosableFileFilter(new TextFiles());
+        fileChooser.setAcceptAllFileFilterUsed(true);
     }
     
     public void setXpErrorLabel(String text) {
@@ -893,6 +901,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         allowCheckedBosses.setForeground(textColor);
         allowCheckedKeyItems.setForeground(textColor);
         checkedDarknessSlider.setForeground(textColor);
+        setPanelTextColor(saveLoadPanel, textColor);
         updateLogic();
     }
     
@@ -932,6 +941,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         allowCheckedBosses.setBackground(backgroundColor);
         allowCheckedKeyItems.setBackground(backgroundColor);
         checkedDarknessSlider.setBackground(backgroundColor);
+        saveLoadPanel.setBackground(backgroundColor);
         updateLogic();
     }
     
@@ -1057,12 +1067,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
         hummingwayShopLabel = new javax.swing.JLabel();
         knownShopLocationsLabel = new javax.swing.JLabel();
         activeShopPointerLabel = new javax.swing.JLabel();
-        saveLoadPane = new javax.swing.JPanel();
-        saveLoadPanel = new javax.swing.JPanel();
-        saveLoadScrollPane = new javax.swing.JScrollPane();
-        saveLoadTextArea = new javax.swing.JTextArea();
-        saveDataButton = new javax.swing.JButton();
-        loadDataButton = new javax.swing.JButton();
         resetPane = new javax.swing.JPanel();
         resetEverythingPanel = new javax.swing.JPanel();
         resetLabel = new javax.swing.JLabel();
@@ -1087,6 +1091,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
         allowCheckedBosses = new javax.swing.JCheckBox();
         allowCheckedKeyItems = new javax.swing.JCheckBox();
         checkedDarknessSlider = new javax.swing.JSlider();
+        saveLoadPanel = new javax.swing.JPanel();
+        saveDataButton = new javax.swing.JButton();
+        loadDataButton = new javax.swing.JButton();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -1427,60 +1434,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         mainTabbedPane.addTab("Shop", shopPane);
 
-        saveLoadPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save/Load"));
-
-        saveLoadTextArea.setColumns(20);
-        saveLoadTextArea.setLineWrap(true);
-        saveLoadTextArea.setRows(5);
-        saveLoadScrollPane.setViewportView(saveLoadTextArea);
-
-        saveDataButton.setText("Save");
-        saveDataButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveDataButtonActionPerformed(evt);
-            }
-        });
-
-        loadDataButton.setText("Load");
-        loadDataButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadDataButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout saveLoadPanelLayout = new javax.swing.GroupLayout(saveLoadPanel);
-        saveLoadPanel.setLayout(saveLoadPanelLayout);
-        saveLoadPanelLayout.setHorizontalGroup(
-            saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(saveLoadScrollPane)
-            .addGroup(saveLoadPanelLayout.createSequentialGroup()
-                .addComponent(saveDataButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(loadDataButton))
-        );
-        saveLoadPanelLayout.setVerticalGroup(
-            saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(saveLoadPanelLayout.createSequentialGroup()
-                .addComponent(saveLoadScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(saveDataButton)
-                    .addComponent(loadDataButton)))
-        );
-
-        javax.swing.GroupLayout saveLoadPaneLayout = new javax.swing.GroupLayout(saveLoadPane);
-        saveLoadPane.setLayout(saveLoadPaneLayout);
-        saveLoadPaneLayout.setHorizontalGroup(
-            saveLoadPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(saveLoadPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        saveLoadPaneLayout.setVerticalGroup(
-            saveLoadPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(saveLoadPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        mainTabbedPane.addTab("Save/Load", saveLoadPane);
-
         resetEverythingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Reset Everything"));
 
         resetLabel.setText("<html>Are you sure you would like to reset everything?<br> <br> This Action cannot be undone");
@@ -1718,6 +1671,38 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(checkedDarknessSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        saveLoadPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save/Load"));
+
+        saveDataButton.setText("Save");
+        saveDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveDataButtonActionPerformed(evt);
+            }
+        });
+
+        loadDataButton.setText("Load");
+        loadDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadDataButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout saveLoadPanelLayout = new javax.swing.GroupLayout(saveLoadPanel);
+        saveLoadPanel.setLayout(saveLoadPanelLayout);
+        saveLoadPanelLayout.setHorizontalGroup(
+            saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(saveLoadPanelLayout.createSequentialGroup()
+                .addComponent(saveDataButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(loadDataButton))
+        );
+        saveLoadPanelLayout.setVerticalGroup(
+            saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(saveDataButton)
+                .addComponent(loadDataButton))
+        );
+
         javax.swing.GroupLayout resetPaneLayout = new javax.swing.GroupLayout(resetPane);
         resetPane.setLayout(resetPaneLayout);
         resetPaneLayout.setHorizontalGroup(
@@ -1732,6 +1717,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
                         .addComponent(otherOptionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(resetPaneLayout.createSequentialGroup()
                         .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -1745,7 +1732,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(flagsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(169, 169, 169))
         );
 
@@ -2007,12 +1996,35 @@ public final class MaikaTracker extends javax.swing.JFrame {
         //SAVED_SHOPS
         flags += ":\n" + ShopPanel.getCheckedItems();
         
-        saveLoadTextArea.setText(flags);
+        if(flagset != null)
+            fileChooser.setSelectedFile(new File(flagset.getBinary() + ".txt"));
+        int fileDialogResult = fileChooser.showSaveDialog(this);
+        if(fileDialogResult != JFileChooser.APPROVE_OPTION) return;
+        File f = fileChooser.getSelectedFile();
+        FileFilter filter = fileChooser.getFileFilter();
+        if(filter instanceof TextFiles)
+            f = ((TextFiles)filter).getFile(f);
+        
+        try (FileWriter outputStream = new FileWriter(f.getPath())) {
+            outputStream.write(flags);
+        }
+        catch (IOException ex) {
+            return;
+        }
     }//GEN-LAST:event_saveDataButtonActionPerformed
-
+    
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
-        String[] data = saveLoadTextArea.getText().replaceAll("\\s+", "").split(":", -1);
-        flagsTextField.setText(saveLoadTextArea.getText().split(":")[0]);
+        String text;
+        if(fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
+        try {
+            text = TextFiles.readFile(fileChooser.getSelectedFile());
+        } 
+        catch (IOException ex) {
+            return;
+        }
+        
+        String[] data = text.replaceAll("\\s+", "").split(":", -1);
+        flagsTextField.setText(text.split(":")[0]);
         resetButton.doClick();
         
         if(data.length > SAVED_KEY_ITEMS) {
@@ -2274,10 +2286,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JCheckBox resetOnly;
     private javax.swing.JPanel resetPane;
     private javax.swing.JButton saveDataButton;
-    private javax.swing.JPanel saveLoadPane;
     private javax.swing.JPanel saveLoadPanel;
-    private javax.swing.JScrollPane saveLoadScrollPane;
-    private javax.swing.JTextArea saveLoadTextArea;
     private javax.swing.JLabel scriptLabel;
     private javax.swing.JPanel shopLocationsPanel;
     private javax.swing.JPanel shopPane;
