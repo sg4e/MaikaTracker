@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.JPanel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,6 +76,11 @@ public class TreasureAtlas extends JPanel {
         return getTreasureMap(page).setChestContents(chestId, ki);
     }
     
+    public ChestLabel getChestLabel(String chestId) {
+        Page page = chestIdToPage.get(chestId);
+        return getTreasureMap(page).getChestLabel(chestId);
+    }
+    
     public void clearChestContents(String chestId) {
         getTreasureMap(chestIdToPage.get(chestId)).clearChestContents(chestId);
     }
@@ -92,6 +98,12 @@ public class TreasureAtlas extends JPanel {
             Page p = chestIdToPage.get(chestId);
             showFloor(p.getDungeon(), p.getFloor());
         }
+    }
+    
+    public List<String> getOpenedChests() {
+        return chestIdToPage.keySet().stream()
+                .filter(chestId -> getChestLabel(chestId).getChecked())
+                .collect(Collectors.toList());
     }
     
     public boolean hasChestId(String chestId) {

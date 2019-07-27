@@ -21,6 +21,9 @@ import sg4e.ff4stats.Battle;
 import sg4e.ff4stats.Formation;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
@@ -29,6 +32,8 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.NumberFormat;
@@ -50,6 +55,7 @@ import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
@@ -60,6 +66,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,7 +98,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         "Fabul Guantlet", "Milon", "MilonZ", "Dark Knight Cecil", "Baron Guards",
         "Karate", "Baigan", "Kainazzo", "Dark Elf", "Magus Sisters", "Valvalis",
         "Calcabrina", "Golbez", "Dr. Lugae", "Dark Imps", "Eblan King & Queen",
-        "Rubicante", "Evil Wall", "Elements", "CPU", "Odin", "Leviatan", "Asura",
+        "Rubicante", "Evil Wall", "Elements", "CPU", "Odin", "Asura", "Leviatan",
         "Bahamut", "Pale Dim", "Lunar D.", "Plague", "Ogopogo", "Wyvern"
     };
     
@@ -127,11 +134,15 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private static final String RESET_ONLY_ID = "AllowResetOnlyWhenKeyItemSet";
     private static final String CHECKED_DARKNESS_ID = "CheckedDarknessPercent";
     
+    private static final String SAVE_DIRECTORY_ID = "StateFileSaveDirectory";
+    
     public final Set<KeyItemLocation> locationsVisited = new HashSet<>();
     
     private int grindXP = 0;
     
     public FlagSet flagset = null;
+    
+    private final JFileChooser fileChooser = new JFileChooser();
     
     public static MaikaTracker tracker;
 
@@ -445,6 +456,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         setBackgroundColor(false);
         setTenKeyItemColor(false);
         xpErrorLabel.setText("");
+        fileChooser.addChoosableFileFilter(new TextFiles());
+        fileChooser.setAcceptAllFileFilterUsed(true);
     }
     
     public void setXpErrorLabel(String text) {
@@ -893,6 +906,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         allowCheckedBosses.setForeground(textColor);
         allowCheckedKeyItems.setForeground(textColor);
         checkedDarknessSlider.setForeground(textColor);
+        setPanelTextColor(saveLoadPanel, textColor);
         updateLogic();
     }
     
@@ -932,6 +946,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         allowCheckedBosses.setBackground(backgroundColor);
         allowCheckedKeyItems.setBackground(backgroundColor);
         checkedDarknessSlider.setBackground(backgroundColor);
+        saveLoadPanel.setBackground(backgroundColor);
         updateLogic();
     }
     
@@ -1081,6 +1096,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
         allowCheckedBosses = new javax.swing.JCheckBox();
         allowCheckedKeyItems = new javax.swing.JCheckBox();
         checkedDarknessSlider = new javax.swing.JSlider();
+        saveLoadPanel = new javax.swing.JPanel();
+        saveDataButton = new javax.swing.JButton();
+        loadDataButton = new javax.swing.JButton();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -1654,8 +1672,40 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(checkedBossIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(checkedDarknessSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        saveLoadPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Save/Load"));
+
+        saveDataButton.setText("Save");
+        saveDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveDataButtonActionPerformed(evt);
+            }
+        });
+
+        loadDataButton.setText("Load");
+        loadDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadDataButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout saveLoadPanelLayout = new javax.swing.GroupLayout(saveLoadPanel);
+        saveLoadPanel.setLayout(saveLoadPanelLayout);
+        saveLoadPanelLayout.setHorizontalGroup(
+            saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(saveLoadPanelLayout.createSequentialGroup()
+                .addComponent(saveDataButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(loadDataButton))
+        );
+        saveLoadPanelLayout.setVerticalGroup(
+            saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(saveLoadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(saveDataButton)
+                .addComponent(loadDataButton))
         );
 
         javax.swing.GroupLayout resetPaneLayout = new javax.swing.GroupLayout(resetPane);
@@ -1672,6 +1722,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
                         .addComponent(otherOptionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(resetPaneLayout.createSequentialGroup()
                         .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -1685,7 +1737,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(flagsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(169, 169, 169))
         );
 
@@ -1867,6 +1921,125 @@ public final class MaikaTracker extends javax.swing.JFrame {
             getKeyItemPanels().forEach(panel -> panel.setDarkness(darkness));
         }
     }//GEN-LAST:event_checkedDarknessSliderStateChanged
+    
+    private void saveDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDataButtonActionPerformed
+        
+        ObjectMapper mapper = new ObjectMapper();
+        TrackerState trackerState = new TrackerState();
+        if(flagset != null) {
+            trackerState.binary_flags = flagset.getBinary().split("\\.")[0];
+            trackerState.text_flags = flagset.toString();
+            trackerState.seed = flagset.getSeed();
+        }        
+        getKeyItemPanels().forEach((panel) -> trackerState.addKeyItem(panel));
+        bossLabels.forEach((label) -> trackerState.addBoss(label, !allowCheckedBosses.isSelected()));
+        locationsVisited.forEach((location) -> trackerState.locationsVisited.add(location.name()));
+        PartyLabel.PartyMembers.forEach((label) -> {
+            LevelData data = label.getData();
+            if(data == null)
+                trackerState.characters.add(null);
+            else
+                trackerState.characters.add(data.name());
+        });
+        
+        fileChooser.setCurrentDirectory(new File(prefs.get(SAVE_DIRECTORY_ID, "")));
+        if(flagset != null)
+            fileChooser.setSelectedFile(new File("FF4FE." + flagset.getBinary() + ".json"));
+        else
+            fileChooser.setSelectedFile(new File(""));
+        int fileDialogResult = fileChooser.showSaveDialog(this);
+        if(fileDialogResult != JFileChooser.APPROVE_OPTION) return;
+        File f = fileChooser.getSelectedFile();
+        FileFilter filter = fileChooser.getFileFilter();
+        if(filter instanceof TextFiles)
+            f = ((TextFiles)filter).getFile(f);
+        
+        try (FileWriter outputStream = new FileWriter(f.getPath())) {
+            DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+            DefaultPrettyPrinter.Indenter indenter = 
+                new DefaultIndenter("    ", DefaultIndenter.SYS_LF);
+            pp.indentArraysWith(indenter);
+            pp.indentObjectsWith(indenter);
+            mapper.writer(pp).writeValue(outputStream, trackerState);
+            prefs.put(SAVE_DIRECTORY_ID, f.getParent());
+        }
+        catch (IOException ex) {
+            LOG.error("Error writing State: ", ex);
+        }
+        
+        
+    }//GEN-LAST:event_saveDataButtonActionPerformed
+    
+    private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
+        ObjectMapper mapper = new ObjectMapper();
+        TrackerState trackerState;
+        fileChooser.setCurrentDirectory(new File(prefs.get(SAVE_DIRECTORY_ID, "")));
+        if(fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
+        
+        try {
+            File file = fileChooser.getSelectedFile();
+            trackerState = mapper.readValue(file, TrackerState.class);
+            prefs.put(SAVE_DIRECTORY_ID, file.getParent());
+        } catch (Exception ex) {
+            LOG.error("Error loading state:", ex);
+            return;
+        }
+        
+        if(trackerState.text_flags == null && trackerState.binary_flags == null)
+            flagsTextField.setText("--NULL--");
+        else if (trackerState.binary_flags != null && trackerState.seed != null)
+            flagsTextField.setText(trackerState.binary_flags + "." + trackerState.seed);
+        else if (trackerState.binary_flags != null)
+            flagsTextField.setText(trackerState.binary_flags);
+        else
+            flagsTextField.setText(trackerState.text_flags);
+        resetButton.doClick();
+        
+        trackerState.keyItems.forEach((kis) -> {
+            try {
+                KeyItemMetadata ki = KeyItemMetadata.valueOf(kis.name);
+                KeyItemPanel panel = getPanelForKeyItem(ki);
+                int state = kis.collected ? 1 : 0;
+                state += (kis.used && allowCheckedKeyItems.isSelected()) ? 1 : 0;
+                panel.setState(state);
+                panel.setLocationString(kis.location);
+            } catch (Exception ex) {}
+        });
+        
+        trackerState.locationsVisited.forEach((loc) -> {
+            try {
+                KeyItemLocation kiLoc = KeyItemLocation.valueOf(loc);
+                locationsVisited.add(kiLoc);
+                handleLogic(kiLoc, true);
+            } catch (Exception ex) {}
+        });
+        updateLogic();
+        
+        trackerState.bosses.forEach((bs) -> {
+            try {
+                BossLabel label = BossLabel.valueOf(bs.name);
+                if(label == null) return;
+                int state = bs.seen ? 1 : 0;
+                state += (bs.defeated && allowCheckedBosses.isSelected()) ? 1 : 0;
+                label.setState(state);
+                label.setBossLocation(BossLabel.valueOf(bs.location));
+            } catch (Exception ex) {}
+        });
+        
+        for(int i = 0; i < 5; i++) {
+            try {
+                LevelData levelData = LevelData.valueOf(trackerState.characters.get(i));
+                PartyLabel.PartyMembers.get(i).setPartyMember(levelData);
+            } catch (Exception ex) {}
+        }
+        
+        trackerState.openedChests.stream()
+                .filter((treasure) -> (getAtlas().hasChestId(treasure)))
+                .forEachOrdered((treasure) -> getAtlas()
+                        .getChestLabel(treasure).setChecked(true));
+        
+        ShopPanel.setCheckedItems(trackerState.shopItems);
+    }//GEN-LAST:event_loadDataButtonActionPerformed
 
     private void calculateXp(int xpGained, boolean commit) {
         List<PartyMember> members = getPartyMembers();
@@ -2037,6 +2210,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JLabel keyItemCountLabel;
     private javax.swing.JPanel keyItemPanel;
     private javax.swing.JLabel knownShopLocationsLabel;
+    private javax.swing.JButton loadDataButton;
     private javax.swing.JPanel logicTabPanel;
     private javax.swing.JTabbedPane mainTabbedPane;
     private javax.swing.JPanel mapPane;
@@ -2050,6 +2224,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JLabel resetLabel;
     private javax.swing.JCheckBox resetOnly;
     private javax.swing.JPanel resetPane;
+    private javax.swing.JButton saveDataButton;
+    private javax.swing.JPanel saveLoadPanel;
     private javax.swing.JLabel scriptLabel;
     private javax.swing.JPanel shopLocationsPanel;
     private javax.swing.JPanel shopPane;

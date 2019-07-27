@@ -30,6 +30,8 @@ public class ShopPanel extends javax.swing.JPanel {
 
     private static final List<ShopPanel> shopPanels = new ArrayList<ShopPanel>();
     private static final Map<String,Set<String>> itemLocations = new HashMap<String, Set<String>>();
+    private static final Map<String,ShopPanel> shopLocations = new HashMap<>();
+    private final Map<String, JCheckBox> itemCheckBoxes = new HashMap<>();
     public static ShopPanel knownLocationsPanel = null;
     
     private final String shopLocation;
@@ -46,6 +48,7 @@ public class ShopPanel extends javax.swing.JPanel {
             if (comp instanceof JCheckBox) {
                 JCheckBox box = (JCheckBox) comp;
                 itemLocations.put(box.getText(), new HashSet<String>());
+                itemCheckBoxes.put(box.getText().replace(" ",""), box);
             }
         }
         knownLocationsPanel = this;
@@ -66,8 +69,10 @@ public class ShopPanel extends javax.swing.JPanel {
             if (comp instanceof JCheckBox) {
                 JCheckBox box = (JCheckBox) comp;
                 itemLocations.put(box.getText(), new HashSet<String>());
+                itemCheckBoxes.put(box.getText().replace(" ",""), box);
             }
         }
+        shopLocations.put(shopLocation.replace(" ", ""), this);
     }
     
     public static void getAvailableShopsMenu(Consumer<ShopPanel> actionOnEachItem, JPopupMenu locationMenu) {
@@ -202,22 +207,89 @@ public class ShopPanel extends javax.swing.JPanel {
                 }
             }
             
-            getCheckBoxes(panel).forEach((box) -> {
-                if(box.isSelected())
-                    itemLocations.get(box.getText()).add(panel.shopLocation);
-                else
-                    itemLocations.get(box.getText()).remove(panel.shopLocation);
-
-                if (knownLocationsPanel != null) {
-                    getCheckBoxes(knownLocationsPanel).stream()
-                        .filter(c -> c.getText().equals(box.getText()))
-                        .collect(Collectors.toList()).forEach((b) -> {
-                            b.setSelected(!itemLocations.get(box.getText()).isEmpty());
-                    });
-                }                    
-            });
+            panel.updateCheckBoxes();
             
         });
+        UpdateToolTips();
+    }
+    
+    public static ShopPanel valueOf(String location) {
+        return shopLocations.get(location);
+    }
+    
+    private void updateCheckBoxes() {
+        getCheckBoxes(this).forEach((box) -> {
+            if(box.isSelected())
+                itemLocations.get(box.getText()).add(shopLocation);
+            else
+                itemLocations.get(box.getText()).remove(shopLocation);
+
+            if (knownLocationsPanel != null) {
+                getCheckBoxes(knownLocationsPanel).stream()
+                    .filter(c -> c.getText().equals(box.getText()))
+                    .collect(Collectors.toList()).forEach((b) -> {
+                        b.setSelected(!itemLocations.get(box.getText()).isEmpty());
+                });
+            }                    
+        });
+    }
+    
+    public String name() {
+        return shopLocation.replace(" ", "");
+    }
+    
+    public static Map<String, List<String>> getCheckedItemsMap() {
+        Map<String, List<String>> map = new HashMap<>();
+        shopPanels.stream()
+                .filter((panel) -> !(panel.equals(knownLocationsPanel)))
+                .forEachOrdered((panel) -> {
+                    List<String> list = new ArrayList<>();
+                    getCheckBoxes(panel).stream()
+                            .filter((box) -> box.isSelected())
+                            .forEachOrdered((box) -> {list.add(box.getText().replaceAll("\\s+", ""));});
+                    map.put(panel.name(), list);
+                });
+        return map;
+    }
+    
+    public static String getCheckedItems() {
+        String shop = "";
+        for(ShopPanel panel : shopPanels) {
+            if(panel.equals(knownLocationsPanel)) continue;
+            
+            String checked = panel.name() + "=";
+            for(JCheckBox box : getCheckBoxes(panel)) {
+                if(!box.isSelected()) continue;
+                if(checked.equals(panel.name() + "="))
+                    checked += box.getText().replace(" ", "");
+                else
+                    checked += ";" + box.getText().replace(" ", "");
+            }
+            if(checked.equals(panel.name() + "=")) continue;
+            
+            if(shop.equals(""))
+                shop = checked;
+            else
+                shop += "," + checked;
+        }
+        return shop;
+    }
+    
+    public static void setCheckedItems(Map<String, List<String>> shops) {
+        for (Map.Entry<String, List<String>> shopItems : shops.entrySet()) {
+            ShopPanel shop = valueOf(shopItems.getKey());
+            if(shop == null || shop.equals(knownLocationsPanel)) continue;
+            shopItems.getValue().stream()
+                    .map((item) -> shop.itemCheckBoxes.get(item))
+                    .filter((box) -> !(box == null)).map((box) -> {
+                        box.setSelected(true);
+                        return box;
+                    }).filter((box) -> (box.getText().equals("Pass")))
+                    .forEachOrdered((_item) -> MaikaTracker.tracker
+                            .getPanelForKeyItem(KeyItemMetadata.PASS)
+                            .setLocationInShop(shop));
+            shop.updateCheckBoxes();
+        }
         UpdateToolTips();
     }
     

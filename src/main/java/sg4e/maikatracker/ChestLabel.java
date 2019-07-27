@@ -143,6 +143,10 @@ public class ChestLabel extends JLabel {
         MaikaTracker.tracker.updateLogic();
     }
     
+    public boolean getChecked() {
+        return state == State.CHECKED;
+    }
+    
     public String getId() {
         return chest.getId();
     }
