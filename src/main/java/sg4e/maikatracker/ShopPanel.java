@@ -238,6 +238,20 @@ public class ShopPanel extends javax.swing.JPanel {
         return shopLocation.replace(" ", "");
     }
     
+    public static Map<String, List<String>> getCheckedItemsMap() {
+        Map<String, List<String>> map = new HashMap<>();
+        shopPanels.stream()
+                .filter((panel) -> !(panel.equals(knownLocationsPanel)))
+                .forEachOrdered((panel) -> {
+                    List<String> list = new ArrayList<>();
+                    getCheckBoxes(panel).stream()
+                            .filter((box) -> box.isSelected())
+                            .forEachOrdered((box) -> {list.add(box.getText().replaceAll("\\s+", ""));});
+                    map.put(panel.name(), list);
+                });
+        return map;
+    }
+    
     public static String getCheckedItems() {
         String shop = "";
         for(ShopPanel panel : shopPanels) {
@@ -261,21 +275,22 @@ public class ShopPanel extends javax.swing.JPanel {
         return shop;
     }
     
-    public static void setCheckedItems(String shops) {
-        for(String shopItems : shops.split(",")) {
-            String data[] = shopItems.split("=");
-            if(data.length != 2) continue;
-            ShopPanel shop = valueOf(data[0]);
+    public static void setCheckedItems(Map<String, List<String>> shops) {
+        for (Map.Entry<String, List<String>> shopItems : shops.entrySet()) {
+            ShopPanel shop = valueOf(shopItems.getKey());
             if(shop == null || shop.equals(knownLocationsPanel)) continue;
-            for(String item : data[1].split(";")) {
-                JCheckBox box = shop.itemCheckBoxes.get(item);
-                if(box == null) continue;
-                box.setSelected(true);
-                if(box.getText().equals("Pass"))
-                    MaikaTracker.tracker.getPanelForKeyItem(KeyItemMetadata.PASS).setLocationInShop(shop);
-            }
+            shopItems.getValue().stream()
+                    .map((item) -> shop.itemCheckBoxes.get(item))
+                    .filter((box) -> !(box == null)).map((box) -> {
+                        box.setSelected(true);
+                        return box;
+                    }).filter((box) -> (box.getText().equals("Pass")))
+                    .forEachOrdered((_item) -> MaikaTracker.tracker
+                            .getPanelForKeyItem(KeyItemMetadata.PASS)
+                            .setLocationInShop(shop));
             shop.updateCheckBoxes();
         }
+        UpdateToolTips();
     }
     
     public static void setTextColor(Color color) {

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.JPanel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -99,16 +100,10 @@ public class TreasureAtlas extends JPanel {
         }
     }
     
-    public String getOpenedChests() {
-        String checked = "";
-        for(String chestId : chestIdToPage.keySet()) {            
-            if(!getChestLabel(chestId).getChecked()) continue;
-            if(checked.equals(""))
-                checked = chestId;
-            else
-                checked += "," + chestId;
-        }
-        return checked;
+    public List<String> getOpenedChests() {
+        return chestIdToPage.keySet().stream()
+                .filter(chestId -> getChestLabel(chestId).getChecked())
+                .collect(Collectors.toList());
     }
     
     public boolean hasChestId(String chestId) {

@@ -21,6 +21,8 @@ import sg4e.ff4stats.Battle;
 import sg4e.ff4stats.Formation;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
@@ -1916,85 +1918,26 @@ public final class MaikaTracker extends javax.swing.JFrame {
             getKeyItemPanels().forEach(panel -> panel.setDarkness(darkness));
         }
     }//GEN-LAST:event_checkedDarknessSliderStateChanged
-
-    private final int SAVED_FLAGS = 0;
-    private final int SAVED_KEY_ITEMS = 1;
-    private final int SAVED_LOCATIONS = 2;
-    private final int SAVED_BOSSES = 3;
-    private final int SAVED_CHARACTERS = 4;
-    private final int SAVED_TREASURES = 5;
-    private final int SAVED_SHOPS = 6;
     
     private void saveDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDataButtonActionPerformed
         
-        //SAVED_FLAGS
-        String flags;
-        if(flagset == null)
-            flags = "--NULL--";
-        else if (!flagset.hasSeed())
-            flags = flagset.toString();
-        else
-            flags = flagset.getBinary();
-        
-        //SAVED_KEY_ITEMS
-        String keyItemState = "";
-        for(KeyItemPanel panel : getKeyItemPanels()) {
-            int state = panel.getState();
-            String loc = panel.getLocationString();
-            if(state == 0 && (loc == null || !flagsetContains("K"))) 
-                continue;
-            if(keyItemState.equals(""))
-                keyItemState = panel.getKeyItem().name() + "=" + state;
+        ObjectMapper mapper = new ObjectMapper();
+        TrackerState trackerState = new TrackerState();
+        if(flagset != null) {
+            trackerState.binary_flags = flagset.getBinary().split("\\.")[0];
+            trackerState.text_flags = flagset.toString();
+            trackerState.seed = flagset.getSeed();
+        }        
+        getKeyItemPanels().forEach((panel) -> trackerState.addKeyItem(panel));
+        bossLabels.forEach((label) -> trackerState.addBoss(label, !allowCheckedBosses.isSelected()));
+        locationsVisited.forEach((location) -> trackerState.locationsVisited.add(location.name()));
+        PartyLabel.PartyMembers.forEach((label) -> {
+            LevelData data = label.getData();
+            if(data == null)
+                trackerState.characters.add(null);
             else
-                keyItemState += "," + panel.getKeyItem().name() + "=" + state;
-            if(loc != null && flagsetContains("K"))
-                keyItemState += "=" + loc;
-        }
-        flags += ":\n" + keyItemState;
-        
-        //SAVED_LOCATIONS
-        keyItemState = "";
-        if(flagsetContains("K")) {
-            for(KeyItemLocation loc : locationsVisited) {
-                if(keyItemState.equals(""))
-                    keyItemState = loc.name();
-                else
-                    keyItemState += "," + loc.name();
-            }
-        }
-        flags += ":\n" + keyItemState;
-        
-        //SAVED_BOSSES
-        keyItemState = "";
-        for(BossLabel label : bossLabels) {
-            int state = label.getState();
-            String loc = label.getBossLocation() == null ? null : label.getBossLocation().name();
-            if(state == 0 && (loc == null || !flagsetContains("B")))
-                continue;
-            if(keyItemState.equals(""))
-                keyItemState = label.name() + "=" + state;
-            else
-                keyItemState += "," + label.name() + "=" + state;
-            if (loc != null && flagsetContains("B"))
-                keyItemState += "=" + loc;
-        }
-        flags += ":\n" + keyItemState;
-        
-        //SAVED_CHARACTERS
-        keyItemState = "";
-        for(PartyLabel label : PartyLabel.PartyMembers) {
-            if(keyItemState.equals(""))
-                keyItemState =  label.getData() == null ? "null" : label.getData().name();
-            else
-                keyItemState += "," + (label.getData() == null ? "null" : label.getData().name());
-        }
-        flags += ":\n" + keyItemState;
-        
-        //SAVED_TREASURES
-        flags += ":\n" + getAtlas().getOpenedChests();
-        
-        //SAVED_SHOPS
-        flags += ":\n" + ShopPanel.getCheckedItems();
+                trackerState.characters.add(data.name());
+        });
         
         if(flagset != null)
             fileChooser.setSelectedFile(new File(flagset.getBinary() + ".txt"));
@@ -2006,100 +1949,81 @@ public final class MaikaTracker extends javax.swing.JFrame {
             f = ((TextFiles)filter).getFile(f);
         
         try (FileWriter outputStream = new FileWriter(f.getPath())) {
-            outputStream.write(flags);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, trackerState);
         }
         catch (IOException ex) {
-            return;
+            LOG.error("Error writing State: ", ex);
         }
+        
+        
     }//GEN-LAST:event_saveDataButtonActionPerformed
     
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
-        String text;
+        ObjectMapper mapper = new ObjectMapper();
+        TrackerState trackerState;
         if(fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
+        
         try {
-            text = TextFiles.readFile(fileChooser.getSelectedFile());
-        } 
-        catch (IOException ex) {
+            trackerState = mapper.readValue(fileChooser.getSelectedFile(), TrackerState.class);
+        } catch (Exception ex) {
+            LOG.error("Error loading state:", ex);
             return;
         }
         
-        String[] data = text.replaceAll("\\s+", "").split(":", -1);
-        flagsTextField.setText(text.split(":")[0]);
+        if(trackerState.text_flags == null && trackerState.binary_flags == null)
+            flagsTextField.setText("--NULL--");
+        else if (trackerState.binary_flags != null && trackerState.seed != null)
+            flagsTextField.setText(trackerState.binary_flags + "." + trackerState.seed);
+        else if (trackerState.binary_flags != null)
+            flagsTextField.setText(trackerState.binary_flags);
+        else
+            flagsTextField.setText(trackerState.text_flags);
         resetButton.doClick();
         
-        if(data.length > SAVED_KEY_ITEMS) {
-            for(String keyItem : data[SAVED_KEY_ITEMS].split(",")) {
-                String keyItemSplit[] = keyItem.split("=");
-                if(keyItemSplit.length < 2) continue;
-                try {
-                    KeyItemMetadata ki = KeyItemMetadata.valueOf(keyItemSplit[0]);
-                    KeyItemPanel panel = getPanelForKeyItem(ki);
-                    int state = Integer.parseInt(keyItemSplit[1]);
-                    if(state > 1 && !allowCheckedKeyItems.isSelected())
-                        state = 1;
-                    panel.setState(state);
-                    if(keyItemSplit.length == 3)
-                        panel.setLocationString(keyItemSplit[2]);
-                    else
-                        panel.setLocationString(panel.getLocationString());
-                }
-                catch (NumberFormatException ex) {}
-                catch (IllegalArgumentException | NullPointerException ex) {}
-            }
-        }
+        trackerState.keyItems.forEach((kis) -> {
+            try {
+                KeyItemMetadata ki = KeyItemMetadata.valueOf(kis.name);
+                KeyItemPanel panel = getPanelForKeyItem(ki);
+                int state = kis.collected ? 1 : 0;
+                state += (kis.used && allowCheckedKeyItems.isSelected()) ? 1 : 0;
+                panel.setState(state);
+                panel.setLocationString(kis.location);
+            } catch (Exception ex) {}
+        });
         
-        if(data.length > SAVED_LOCATIONS) {
-            for(String loc : data[SAVED_LOCATIONS].split(",")) {
-                try {
-                    KeyItemLocation kiLoc = KeyItemLocation.valueOf(loc);
-                    locationsVisited.add(kiLoc);
-                    handleLogic(kiLoc, true);
-                }
-                catch (IllegalArgumentException ex) {}
-            }
-        }
+        trackerState.locationsVisited.forEach((loc) -> {
+            try {
+                KeyItemLocation kiLoc = KeyItemLocation.valueOf(loc);
+                locationsVisited.add(kiLoc);
+                handleLogic(kiLoc, true);
+            } catch (Exception ex) {}
+        });
         updateLogic();
         
-        if(data.length > SAVED_BOSSES) {
-            for(String boss : data[SAVED_BOSSES].split(",")) {
-                String bossSplit[] = boss.split("=");
-                if(bossSplit.length < 2) continue;
-                try {
-                    BossLabel label = BossLabel.valueOf(bossSplit[0]);
-                    if(label == null) continue;
-                    int state = Integer.parseInt(bossSplit[1]);
-                    if(state > 1 && !allowCheckedBosses.isSelected())
-                        state = 1;
-                    label.setState(state);
-                    if(bossSplit.length < 3) continue;
-                    label.setBossLocation(BossLabel.valueOf(bossSplit[2]));
-                }
-                catch (NumberFormatException | NullPointerException ex) {}
-            }
-        }
-        if(data.length > SAVED_CHARACTERS) {
-            String[] characters = data[SAVED_CHARACTERS].split(",");
-            for (int i = 0; i < 5; i++) {
-                try {
-                    LevelData levelData = LevelData.valueOf(characters[i]);
-                    PartyLabel.PartyMembers.get(i).setPartyMember(levelData);
-                }
-                catch (IllegalArgumentException | ArrayIndexOutOfBoundsException ex) {}
-            }
+        trackerState.bosses.forEach((bs) -> {
+            try {
+                BossLabel label = BossLabel.valueOf(bs.name);
+                if(label == null) return;
+                int state = bs.seen ? 1 : 0;
+                state += (bs.defeated && allowCheckedBosses.isSelected()) ? 1 : 0;
+                label.setState(state);
+                label.setBossLocation(BossLabel.valueOf(bs.location));
+            } catch (Exception ex) {}
+        });
+        
+        for(int i = 0; i < 5; i++) {
+            try {
+                LevelData levelData = LevelData.valueOf(trackerState.characters.get(i));
+                PartyLabel.PartyMembers.get(i).setPartyMember(levelData);
+            } catch (Exception ex) {}
         }
         
-        if(data.length > SAVED_TREASURES) {
-            String[] treasures = data[SAVED_TREASURES].split(",");
-            for(String treasure : treasures) {
-                if(getAtlas().hasChestId(treasure)) {
-                    getAtlas().getChestLabel(treasure).setChecked(true);
-                }
-            }
-        }
+        trackerState.openedChests.stream()
+                .filter((treasure) -> (getAtlas().hasChestId(treasure)))
+                .forEachOrdered((treasure) -> getAtlas()
+                        .getChestLabel(treasure).setChecked(true));
         
-        if(data.length > SAVED_SHOPS) {
-            ShopPanel.setCheckedItems(data[SAVED_SHOPS]);
-        }
+        ShopPanel.setCheckedItems(trackerState.shopItems);
     }//GEN-LAST:event_loadDataButtonActionPerformed
 
     private void calculateXp(int xpGained, boolean commit) {
