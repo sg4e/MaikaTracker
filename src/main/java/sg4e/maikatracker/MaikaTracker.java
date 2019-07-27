@@ -21,7 +21,8 @@ import sg4e.ff4stats.Battle;
 import sg4e.ff4stats.Formation;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.awt.Component;
@@ -1949,7 +1950,12 @@ public final class MaikaTracker extends javax.swing.JFrame {
             f = ((TextFiles)filter).getFile(f);
         
         try (FileWriter outputStream = new FileWriter(f.getPath())) {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(outputStream, trackerState);
+            DefaultPrettyPrinter pp = new DefaultPrettyPrinter();
+            DefaultPrettyPrinter.Indenter indenter = 
+                new DefaultIndenter("    ", DefaultIndenter.SYS_LF);
+            pp.indentArraysWith(indenter);
+            pp.indentObjectsWith(indenter);
+            mapper.writer(pp).writeValue(outputStream, trackerState);
         }
         catch (IOException ex) {
             LOG.error("Error writing State: ", ex);
