@@ -1941,7 +1941,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
         });
         
         if(flagset != null)
-            fileChooser.setSelectedFile(new File(flagset.getBinary() + ".txt"));
+            fileChooser.setSelectedFile(new File("FF4FE." + flagset.getBinary() + ".json"));
+        else
+            fileChooser.setSelectedFile(new File(""));
         int fileDialogResult = fileChooser.showSaveDialog(this);
         if(fileDialogResult != JFileChooser.APPROVE_OPTION) return;
         File f = fileChooser.getSelectedFile();
@@ -1970,7 +1972,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         if(fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
         
         try {
-            trackerState = mapper.readValue(fileChooser.getSelectedFile(), TrackerState.class);
+            File file = fileChooser.getSelectedFile();
+            trackerState = mapper.readValue(file, TrackerState.class);
         } catch (Exception ex) {
             LOG.error("Error loading state:", ex);
             return;

@@ -5,10 +5,7 @@
  */
 package sg4e.maikatracker;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import javax.swing.filechooser.*;
 
 /**
@@ -24,14 +21,13 @@ public class TextFiles extends FileFilter {
         String extension = getExtension(f);
         
         return extension != null && 
-              (extension.equals("txt") /*|| 
-               extension.equals("json")*/);
+              extension.equals("json");
     }
     
     public File getFile(File f) {
         if(accept(f))
             return f;
-        return new File(f.getPath() + ".txt");
+        return new File(f.getPath() + ".json");
     }
     
     public static String getExtension(File f) {
@@ -47,24 +43,6 @@ public class TextFiles extends FileFilter {
 
     @Override
     public String getDescription() {
-        return "Text Files (*.txt)" /*, *.json)"*/;
-    }
-    
-    public static String readFile(File f) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader (f.getPath()));
-        String         line = null;
-        StringBuilder  stringBuilder = new StringBuilder();
-        String         ls = System.getProperty("line.separator");
-
-        try {
-            while((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
-                stringBuilder.append(ls);
-            }
-
-            return stringBuilder.toString();
-        } finally {
-            reader.close();
-        }
+        return "FF4FE State Files (*.json)";
     }
 }
