@@ -134,6 +134,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private static final String RESET_ONLY_ID = "AllowResetOnlyWhenKeyItemSet";
     private static final String CHECKED_DARKNESS_ID = "CheckedDarknessPercent";
     
+    private static final String SAVE_DIRECTORY_ID = "StateFileSaveDirectory";
+    
     public final Set<KeyItemLocation> locationsVisited = new HashSet<>();
     
     private int grindXP = 0;
@@ -1940,6 +1942,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 trackerState.characters.add(data.name());
         });
         
+        fileChooser.setCurrentDirectory(new File(prefs.get(SAVE_DIRECTORY_ID, "")));
         if(flagset != null)
             fileChooser.setSelectedFile(new File("FF4FE." + flagset.getBinary() + ".json"));
         else
@@ -1958,6 +1961,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
             pp.indentArraysWith(indenter);
             pp.indentObjectsWith(indenter);
             mapper.writer(pp).writeValue(outputStream, trackerState);
+            prefs.put(SAVE_DIRECTORY_ID, f.getParent());
         }
         catch (IOException ex) {
             LOG.error("Error writing State: ", ex);
@@ -1969,11 +1973,13 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
         ObjectMapper mapper = new ObjectMapper();
         TrackerState trackerState;
+        fileChooser.setCurrentDirectory(new File(prefs.get(SAVE_DIRECTORY_ID, "")));
         if(fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
         
         try {
             File file = fileChooser.getSelectedFile();
             trackerState = mapper.readValue(file, TrackerState.class);
+            prefs.put(SAVE_DIRECTORY_ID, file.getParent());
         } catch (Exception ex) {
             LOG.error("Error loading state:", ex);
             return;
