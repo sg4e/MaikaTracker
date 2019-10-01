@@ -2052,6 +2052,23 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
     
     private void parseSpoilerLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parseSpoilerLogButtonActionPerformed
+        List<String> spoilerLogLines = new ArrayList<>();
+        fileChooser.setFileFilter(textFiles);
+        fileChooser.setCurrentDirectory(new File(prefs.get(SPOILERLOG_DIRECTORY_ID, "")));
+        if(fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
+        try {
+            BufferedReader br = Files.newBufferedReader(fileChooser.getSelectedFile().toPath());
+            Stream <String> lines = br.lines().map(str -> str);
+            lines.forEach(spoilerLogLines::add);
+            lines.close();
+            prefs.put(SPOILERLOG_DIRECTORY_ID, fileChooser.getSelectedFile().getParent());
+        }
+        catch (Exception ex) {
+            return;
+        }
+                
+        if (!spoilerLogLines.get(0).equals("Final Fantasy IV: Free Enterprise Spoiler Log"))
+            return;
     }//GEN-LAST:event_parseSpoilerLogButtonActionPerformed
 
     private void calculateXp(int xpGained, boolean commit) {
