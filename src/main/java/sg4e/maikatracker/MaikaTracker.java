@@ -2041,6 +2041,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
         ShopPanel.setCheckedItems(trackerState.shopItems);
     }//GEN-LAST:event_loadDataButtonActionPerformed
 
+    
+    private void parseSpoilerLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parseSpoilerLogButtonActionPerformed
+    }//GEN-LAST:event_parseSpoilerLogButtonActionPerformed
+
     private void calculateXp(int xpGained, boolean commit) {
         List<PartyMember> members = getPartyMembers();
         int kiMultipler = getKeyItemCount() >= 10 && (flagsetContains("Xk")) ? 2 : 1;
@@ -2217,6 +2221,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JPanel mapSelectionPanel;
     private javax.swing.JLabel mysidiaShopLabel;
     private javax.swing.JPanel otherOptionsPanel;
+    private javax.swing.JButton parseSpoilerLogButton;
     private javax.swing.JPanel partyPanel;
     private javax.swing.JComboBox<String> positionComboBox;
     private javax.swing.JButton resetButton;
