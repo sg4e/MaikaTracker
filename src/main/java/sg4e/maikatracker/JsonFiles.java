@@ -12,7 +12,7 @@ import javax.swing.filechooser.*;
  *
  * @author CaitSith2
  */
-public class TextFiles extends FileFilter {    
+public class JsonFiles extends FileFilter {    
     @Override
     public boolean accept(File f) {
         if (f.isDirectory()) {
@@ -21,13 +21,13 @@ public class TextFiles extends FileFilter {
         String extension = getExtension(f);
         
         return extension != null && 
-              extension.equals("txt");
+              extension.equals("json");
     }
     
     public File getFile(File f) {
         if(accept(f))
             return f;
-        return new File(f.getPath() + ".txt");
+        return new File(f.getPath() + ".json");
     }
     
     public static String getExtension(File f) {
@@ -43,6 +43,6 @@ public class TextFiles extends FileFilter {
 
     @Override
     public String getDescription() {
-        return "FF4FE Spoiler Logs (*.txt)";
+        return "FF4FE State Files (*.json)";
     }
 }

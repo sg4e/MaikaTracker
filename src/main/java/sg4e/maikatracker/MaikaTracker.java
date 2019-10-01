@@ -135,12 +135,16 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private static final String CHECKED_DARKNESS_ID = "CheckedDarknessPercent";
     
     private static final String SAVE_DIRECTORY_ID = "StateFileSaveDirectory";
+    private static final String SPOILERLOG_DIRECTORY_ID = "SpoilerLogDirectory";
     
     public final Set<KeyItemLocation> locationsVisited = new HashSet<>();
     
     private int grindXP = 0;
     
     public FlagSet flagset = null;
+    
+    private static JsonFiles jsonFiles = new JsonFiles();
+    private static TextFiles textFiles = new TextFiles();
     
     private final JFileChooser fileChooser = new JFileChooser();
     
@@ -456,7 +460,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         setBackgroundColor(false);
         setTenKeyItemColor(false);
         xpErrorLabel.setText("");
-        fileChooser.addChoosableFileFilter(new TextFiles());
+        fileChooser.addChoosableFileFilter(jsonFiles);
+        fileChooser.addChoosableFileFilter(textFiles);
         fileChooser.setAcceptAllFileFilterUsed(true);
     }
     
@@ -1947,11 +1952,14 @@ public final class MaikaTracker extends javax.swing.JFrame {
             fileChooser.setSelectedFile(new File("FF4FE." + flagset.getBinary() + ".json"));
         else
             fileChooser.setSelectedFile(new File(""));
+        fileChooser.setFileFilter(jsonFiles);
         int fileDialogResult = fileChooser.showSaveDialog(this);
         if(fileDialogResult != JFileChooser.APPROVE_OPTION) return;
         File f = fileChooser.getSelectedFile();
         FileFilter filter = fileChooser.getFileFilter();
-        if(filter instanceof TextFiles)
+        if(filter instanceof JsonFiles)
+            f = ((JsonFiles)filter).getFile(f);
+        else if (filter instanceof TextFiles)
             f = ((TextFiles)filter).getFile(f);
         
         try (FileWriter outputStream = new FileWriter(f.getPath())) {
@@ -1973,6 +1981,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
         ObjectMapper mapper = new ObjectMapper();
         TrackerState trackerState;
+        fileChooser.setFileFilter(jsonFiles);
         fileChooser.setCurrentDirectory(new File(prefs.get(SAVE_DIRECTORY_ID, "")));
         if(fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) return;
         
