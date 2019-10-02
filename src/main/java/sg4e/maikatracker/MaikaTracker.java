@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -685,6 +686,17 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .filter(kip -> keyItem.equals(kip.getKeyItem()))
                 .findAny()
                 .get();
+    }
+    
+    public KeyItemPanel getPanelForKeyItem(String keyItem) {
+        
+        if(keyItem == null)
+            return null;
+        Optional<KeyItemPanel> map = getKeyItemPanelsStream()
+                .filter(kip -> keyItem.equals(kip.getKeyItem().getSpoiler()))
+                .findAny()
+                .map(kip -> kip);
+        return map.isPresent() ? map.get() : null;
     }
     
     public void getAvailableLocationsMenu(Consumer<KeyItemLocation> actionOnEachItem, JPopupMenu locationMenu) {
@@ -2071,6 +2083,109 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 
         if (!spoilerLogLines.get(0).equals("Final Fantasy IV: Free Enterprise Spoiler Log"))
             return;
+        
+        flagsTextField.setText(fileChooser.getSelectedFile().toString());
+        resetButton.doClick();
+        
+        int logOffset = 0;
+        while(!spoilerLogLines.get(logOffset++).equals("Key Item Slots")) {}
+        while(!spoilerLogLines.get(++logOffset).equals("")) {
+            String location = spoilerLogLines.get(logOffset).substring(0, 41).trim();
+            String item = spoilerLogLines.get(logOffset).substring(41).trim();
+            if(!item.startsWith("[KEY] ") && !item.equals("Pass"))
+                continue;
+            KeyItemPanel kip = getPanelForKeyItem(item);
+            if(kip == null) 
+                continue;
+            
+            switch(location) {
+                case "Start":
+                    kip.setLocation(KeyItemLocation.START);
+                    break;
+                case "Antlion":
+                    kip.setLocation(KeyItemLocation.ANTLION);
+                    break;
+                case "Fabul":
+                    kip.setLocation(KeyItemLocation.FABUL);
+                    break;
+                case "Mt.Ordeals":
+                    kip.setLocation(KeyItemLocation.ORDEALS);
+                    break;
+                case "Baron Inn":
+                    kip.setLocation(KeyItemLocation.BARON_INN);
+                    break;
+                case "Baron Castle":
+                    kip.setLocation(KeyItemLocation.BARON_CASTLE);
+                    break;
+                case "Cave Magnes":
+                    kip.setLocation(KeyItemLocation.DARK_ELF);
+                    break;
+                case "Tower of Zot":
+                    kip.setLocation(KeyItemLocation.ZOT);
+                    break;
+                case "Tower of Bab-il":
+                    kip.setLocation(KeyItemLocation.TOP_BABIL);
+                    break;
+                case "Super Cannon":
+                    kip.setLocation(KeyItemLocation.LOW_BABIL);
+                    break;
+                case "Dwarf Castle":
+                    kip.setLocation(KeyItemLocation.DWARF_CASTLE);
+                    break;
+                case "Sealed Cave":
+                    kip.setLocation(KeyItemLocation.SEALED_CAVE);
+                    break;
+                case "Land of Monsters":
+                    kip.setLocation(KeyItemLocation.SUMMONED_MONSTERS_CHEST);
+                    break;
+                case "Adamant Grotto":
+                    kip.setLocation(KeyItemLocation.RAT_TAIL);
+                    break;
+                case "Yang's Wife":
+                    kip.setLocation(KeyItemLocation.SHEILA_PANLESS);
+                    break;
+                case "Return the Pan":
+                    kip.setLocation(KeyItemLocation.SHEILA_PAN);
+                    break;
+                case "Asura":
+                    kip.setLocation(KeyItemLocation.ASURA);
+                    break;
+                case "Leviatan":
+                    kip.setLocation(KeyItemLocation.LEVIATAN);
+                    break;
+                case "Odin":
+                    kip.setLocation(KeyItemLocation.ODIN);
+                    break;
+                case "Sylvan Cave":
+                    kip.setLocation(KeyItemLocation.SYLPH);
+                    break;
+                case "Bahamut":
+                    kip.setLocation(KeyItemLocation.BAHAMUT);
+                    break;
+                case "Pale Dim":
+                    kip.setLocation(KeyItemLocation.PALE_DIM);
+                    break;
+                case "Wyvern":
+                    kip.setLocation(KeyItemLocation.WYVERN);
+                    break;
+                case "Plague":
+                    kip.setLocation(KeyItemLocation.PLAGUE);
+                    break;
+                case "D.Lunar Left":
+                case "D.Lunar Right":
+                    kip.setLocation(KeyItemLocation.DLUNAR);
+                    break;
+                case "Ogopogo":
+                    kip.setLocation(KeyItemLocation.OGOPOGO);
+                    break;
+                case "Rydia's Mom?":
+                    kip.setLocation(KeyItemLocation.MIST);
+                    break;
+                case "Kokkol":
+                    kip.setLocation(KeyItemLocation.KOKKOL);
+                    break;
+            }
+        }
     }//GEN-LAST:event_parseSpoilerLogButtonActionPerformed
 
     private void calculateXp(int xpGained, boolean commit) {
