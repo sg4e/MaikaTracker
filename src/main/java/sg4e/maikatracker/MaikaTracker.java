@@ -1183,7 +1183,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
         saveLoadPanel = new javax.swing.JPanel();
         saveDataButton = new javax.swing.JButton();
         loadDataButton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
         parseSpoilerLogButton = new javax.swing.JButton();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
@@ -1808,13 +1807,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(loadDataButton))
         );
 
-        jButton1.setText("Show Icons Panel");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         parseSpoilerLogButton.setText("Parse Spoiler Log");
         parseSpoilerLogButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1839,7 +1831,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1)
                             .addComponent(parseSpoilerLogButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -1859,9 +1850,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                     .addGroup(resetPaneLayout.createSequentialGroup()
                         .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(parseSpoilerLogButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(parseSpoilerLogButton)))
                 .addGap(169, 169, 169))
         );
 
@@ -2169,10 +2158,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
         
         ShopPanel.setCheckedItems(trackerState.shopItems);
     }//GEN-LAST:event_loadDataButtonActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        TrackerIcons.main(new String[0]);
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private static final Pattern CHEST_BATTLE_PATTERN = Pattern.compile(
             "^\\s+(?<X>\\d+)" + 
@@ -2730,7 +2715,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> floorComboBox;
     private javax.swing.JLabel floorLabel;
     private javax.swing.JLabel hummingwayShopLabel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
