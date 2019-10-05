@@ -421,7 +421,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
         initMap(lunar, "b4passage", LUNAR_SUBTERRANE, "B4 Passage", "Lunar Subterrane B4 Passage", 
                 new TreasureChest("L10", 5, 23),
                 new TreasureChest("L11", 14, 2));
-                new TreasureChest("L13", 9, 7),
         initMap(lunar, "b5", LUNAR_SUBTERRANE, "B5", "Lunar Subterrane B5", 
                 new TreasureChest("L14", 13, 11),
                 new TreasureChest("L15", 11, 26),
