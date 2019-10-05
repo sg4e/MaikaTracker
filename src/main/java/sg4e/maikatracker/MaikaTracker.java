@@ -53,6 +53,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.imageio.ImageIO;
@@ -103,6 +105,24 @@ public final class MaikaTracker extends javax.swing.JFrame {
         "Calcabrina", "Golbez", "Dr. Lugae", "Dark Imps", "Eblan King & Queen",
         "Rubicante", "Evil Wall", "Elements", "CPU", "Odin", "Asura", "Leviatan",
         "Bahamut", "Pale Dim", "Lunar D.", "Plague", "Ogopogo", "Wyvern"
+    };
+    
+    private static final String[] SPOILER_BOSS_LOCATIONS = {
+        "D.Mist", "Officer/Soldiers", "Octomamm", "Antlion", "Waterhag", "MomBomb", 
+        "Fabul", "Milon", "Milon Z.", "D.Knight", "Baron Guards", 
+        "Karate", "Baigan", "Kainazzo", "Dark Elf", "Magus Sisters", "Valvalis", 
+        "Calbrena", "Golbez", "Dr. Lugae", "Dark Imps", "K.Eblan/Q.Eblan", 
+        "Rubicant", "EvilWall", "Elements", "CPU", "Odin", "Asura", "Leviatan", 
+        "Bahamut", "Pale Dim", "D.Lunars", "Plague", "Ogopogo", "Wyvern"
+    };
+    
+    private static final String[] SPOILER_BOSS_FORMATIONS = {
+        "D.Mist x1", "Officer x1, Soldier x3", "Octomamm x1", "Antlion x1", "WaterHag x1", "MomBomb x1, Bomb x3, GrayBomb x3",
+        "Fabul Gauntlet", "Milon x1, Ghast x4", "Milon Z. x1", "D.Knight x1", "Guard x2",
+        "Karate x1", "Baigan x1, RightArm x1, Left Arm x1", "Kainazzo x1", "Dark Elf x1, Dark Elf x1", "Sandy x1, Cindy x1, Mindy x1", "Valvalis x1",
+        "Cal x3, Brena x3, Calbrena x1", "Golbez x1, Shadow x1", "Dr.Lugae", "Dark Imp x3", "K.Eblan x1, Q.Eblan x1",
+        "Rubicant x1", "EvilWall x1", "Elements x1, Elements x1", "CPU x1, Attacker x1, Defender x1", "Odin x1", "Asura x1", "Leviatan x1",
+        "Bahamut x1", "Pale Dim x1", "D. Lunar x2", "Plague x1", "Ogopogo x1", "Wyvern x1"
     };
     
     private final TreasureAtlas atlas = new TreasureAtlas();    
@@ -212,54 +232,54 @@ public final class MaikaTracker extends javax.swing.JFrame {
         
         //add maps
         final String zot = "zot";
-        initMap(zot, "1", TOWER_OF_ZOT, "1F",
+        initMap(zot, "1", TOWER_OF_ZOT, "1F", "Tower of Zot 1F", 
                 new TreasureChest("Z1", 4, 3));
-        initMap(zot, "2", TOWER_OF_ZOT, "2F",
+        initMap(zot, "2", TOWER_OF_ZOT, "2F", "Tower of Zot 2F", 
                 new TreasureChest("Z2", 15, 7));
-        initMap(zot, "5", TOWER_OF_ZOT, "5F",
+        initMap(zot, "5", TOWER_OF_ZOT, "5F", "Tower of Zot 5F", 
                 new TreasureChest("Z3", 9, 11),
                 new TreasureChest("Z4", 23, 10),
                 new TreasureChest("Z5", 10, 11),
                 new TreasureChest("Z6", 14, 19));
         final String ebcast = "eblan-castle";
-        initMap(ebcast, "1", EBLAN_CASTLE, "Left 1F",
+        initMap(ebcast, "1", EBLAN_CASTLE, "Left 1F", "Eblan Left Tower 1F", 
                 new TreasureChest("E1", 5, 11),
                 new TreasureChest("E6", 5, 1));
-        initMap(ebcast, "2", EBLAN_CASTLE, "Left 2F",
+        initMap(ebcast, "2", EBLAN_CASTLE, "Left 2F", "Eblan Left Tower 2F", 
                 new TreasureChest("E2", 8, 8),
                 new TreasureChest("E3", 5, 10),
                 new TreasureChest("E4", 5, 11),
                 new TreasureChest("E5", 4, 4));
-        initMap(ebcast, "3", EBLAN_CASTLE, "Center Foyer",
+        initMap(ebcast, "3", EBLAN_CASTLE, "Center Foyer", "Eblan 1F", 
                 new TreasureChest("E7", 4, 13));
-        initMap(ebcast, "4", EBLAN_CASTLE, "Center Hall",
+        initMap(ebcast, "4", EBLAN_CASTLE, "Center Hall", "Eblan 2F", 
                 new TreasureChest("E8", 3, 4),
                 new TreasureChest("E9", 4, 4),
                 new TreasureChest("E10", 3, 14),
                 new TreasureChest("E11", 4, 15),
                 new TreasureChest("E12", 4, 14));
-        initMap(ebcast, "6", EBLAN_CASTLE, "Right 1F",
+        initMap(ebcast, "6", EBLAN_CASTLE, "Right 1F", "Eblan Right Tower 1F", 
                 new TreasureChest("E13", 5, 2),
                 new TreasureChest("E19", 5, 12));
-        initMap(ebcast, "7", EBLAN_CASTLE, "Right 2F",
+        initMap(ebcast, "7", EBLAN_CASTLE, "Right 2F", "Eblan Right Tower 2F", 
                 new TreasureChest("E14", 5, 1),
                 new TreasureChest("E15", 6, 1),
                 new TreasureChest("E16", 3, 6),
                 new TreasureChest("E17", 5, 11),
                 new TreasureChest("E18", 6, 11));
-        initMap(ebcast, "8", EBLAN_CASTLE, "Basement",
+        initMap(ebcast, "8", EBLAN_CASTLE, "Basement", "Eblan Basement", 
                 new TreasureChest("E20", 11, 2),
                 new TreasureChest("E21", 11, 3),
                 new TreasureChest("E22", 12, 8));
         final String ebcave = "eblan-cave";
-        initMap(ebcave, "1", EBLAN_CAVE, "Entrance",
+        initMap(ebcave, "1", EBLAN_CAVE, "Entrance", "Cave Eblana B1F", 
                 new TreasureChest("V1", 4, 18),
                 new TreasureChest("V2", 3, 22),
                 new TreasureChest("V3", 25, 26));
-        initMap(ebcave, "infirmary", EBLAN_CAVE, "Infirmary",
+        initMap(ebcave, "infirmary", EBLAN_CAVE, "Infirmary", "Cave Eblana B2F Infirmary", 
                 new TreasureChest("V4", 7, 14),
                 new TreasureChest("V5", 5, 2));
-        initMap(ebcave, "p1", EBLAN_CAVE, "Pass 1",
+        initMap(ebcave, "p1", EBLAN_CAVE, "Pass 1", "Pass to Bab-il (south)", 
                 new TreasureChest("V6", 28, 8),
                 new TreasureChest("V7", 10, 4),
                 new TreasureChest("V8", 26, 10),
@@ -272,56 +292,56 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("V17", 27, 27),
                 new TreasureChest("V18", 27, 28),
                 new TreasureChest("V19", 27, 29));
-        initMap(ebcave, "p2", EBLAN_CAVE, "Pass 2",
+        initMap(ebcave, "p2", EBLAN_CAVE, "Pass 2", "Pass to Bab-il (north)", 
                 new TreasureChest("V9", 8, 14),
                 new TreasureChest("V10", 22, 18),
                 new TreasureChest("V20", 16, 18),
                 new TreasureChest("V21", 23, 29),
                 new TreasureChest("V22", 9, 17));
         final String upperBabil = "upper-babil";
-        initMap(upperBabil, "1f", UPPER_BABIL, "1F",
+        initMap(upperBabil, "1f", UPPER_BABIL, "1F", "Tower of Bab-il 1F (Upper)", 
                 new TreasureChest("U1", 4, 18),
                 new TreasureChest("U2", 12, 26));
-        initMap(upperBabil, "b1f", UPPER_BABIL, "B1F",
+        initMap(upperBabil, "b1f", UPPER_BABIL, "B1F", "Tower of Bab-il B2F", 
                 new TreasureChest("U3", 20, 14));
-        initMap(upperBabil, "b2f", UPPER_BABIL, "B2F",
+        initMap(upperBabil, "b2f", UPPER_BABIL, "B2F", "Tower of Bab-il B3F", 
                 new TreasureChest("U4", 21, 20));
-        initMap(upperBabil, "b3f", UPPER_BABIL, "B3F",
+        initMap(upperBabil, "b3f", UPPER_BABIL, "B3F", "Tower of Bab-il B4F", 
                 new TreasureChest("U5", 18, 12));
-        initMap(upperBabil, "b4f", UPPER_BABIL, "B4F",
+        initMap(upperBabil, "b4f", UPPER_BABIL, "B4F", "Tower of Bab-il B5F", 
                 new TreasureChest("U6", 15, 5));
         final String lowerBabil = "lower-babil";
-        initMap(lowerBabil, "1f", LOWER_BABIL, "1F",
+        initMap(lowerBabil, "1f", LOWER_BABIL, "1F", "Tower of Bab-il 1F (Lower)", 
                 new TreasureChest("B1", 10, 5),
                 new TreasureChest("B2", 20, 6),
                 new TreasureChest("B3", 12, 26));
-        initMap(lowerBabil, "2f", LOWER_BABIL, "2F",
+        initMap(lowerBabil, "2f", LOWER_BABIL, "2F", "Tower of Bab-il 2F", 
                 new TreasureChest("B4", 7, 8),
                 new TreasureChest("B5", 22, 15),
                 new TreasureChest("B6", 16, 23));
-        initMap(lowerBabil, "3f", LOWER_BABIL, "3F",
+        initMap(lowerBabil, "3f", LOWER_BABIL, "3F", "Tower of Bab-il 3F", 
                 new TreasureChest("B9", 19, 26),
                 new TreasureChest("B10", 11, 13),
                 new TreasureChest("B11", 25, 15));
-        initMap(lowerBabil, "4f", LOWER_BABIL, "4F",
+        initMap(lowerBabil, "4f", LOWER_BABIL, "4F", "Tower of Bab-il 4F", 
                 new TreasureChest("B7", 19, 16),
                 new TreasureChest("B8", 23, 29),
                 new TreasureChest("B12", 17, 26),
                 new TreasureChest("B13", 8, 27));
-        initMap(lowerBabil, "5f", LOWER_BABIL, "5F",
+        initMap(lowerBabil, "5f", LOWER_BABIL, "5F", "Tower of Bab-il 5F", 
                 new TreasureChest("B14", 12, 6),
                 new TreasureChest("B15", 22, 29));
-        initMap(lowerBabil, "7f", LOWER_BABIL, "7F",
+        initMap(lowerBabil, "7f", LOWER_BABIL, "7F", "Tower of Bab-il 7F", 
                 new TreasureChest("B16", 24, 16));
         final String sm = "sm";
-        initMap(sm, "1", LAND_OF_SUMMONED_MONSTERS, "B1F",
+        initMap(sm, "1", LAND_OF_SUMMONED_MONSTERS, "B1F", "Land of Monsters B1F", 
                 new TreasureChest("M1", 6, 26),
                 new TreasureChest("M2", 6, 8),
                 new TreasureChest("M3", 21, 25));
-        initMap(sm, "2", LAND_OF_SUMMONED_MONSTERS, "B2F",
+        initMap(sm, "2", LAND_OF_SUMMONED_MONSTERS, "B2F", "Land of Monsters B2F", 
                 new TreasureChest("M4", 25, 24),
                 new TreasureChest("M5", 5, 9));
-        initMap(sm, "3", LAND_OF_SUMMONED_MONSTERS, "B3F",
+        initMap(sm, "3", LAND_OF_SUMMONED_MONSTERS, "B3F", "Land of Monsters B3F", 
                 new TreasureChest("M6", 21, 3),
                 new TreasureChest("M7", 21, 4),
                 new TreasureChest("M8", 21, 5),
@@ -329,7 +349,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("M10", 21, 25),
                 new TreasureChest("M11", 6, 18));
         final String sylph = "sylph";
-        initMap(sylph, "s1", SYLPH_CAVE, "B1",
+        initMap(sylph, "s1", SYLPH_CAVE, "B1", "Sylvan Cave B1F", 
                 new TreasureChest("S1", 5, 28),
                 new TreasureChest("S2", 6, 28),
                 new TreasureChest("S3", 5, 29),
@@ -340,7 +360,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("S8", 4, 7),
                 new TreasureChest("S9", 5, 10),
                 new TreasureChest("S10", 6, 10));
-        initMap(sylph, "s2", SYLPH_CAVE, "B2",
+        initMap(sylph, "s2", SYLPH_CAVE, "B2", "Sylvan Cave B2F", 
                 new TreasureChest("S11", 6, 11),
                 new TreasureChest("S18", 13, 23+2),
                 new TreasureChest("S19", 15, 23+2),
@@ -351,15 +371,15 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("S24", 28, 25),
                 new TreasureChest("S25", 27, 23),
                 new TreasureChest("S26", 29, 23));
-        initMap(sylph, "s3", SYLPH_CAVE, "B3",
+        initMap(sylph, "s3", SYLPH_CAVE, "B3", "Sylvan Cave B3F", 
                 new TreasureChest("S12", 9, 1),
                 new TreasureChest("S15", 4, 10),
                 new TreasureChest("S16", 5, 11),
                 new TreasureChest("S17", 4, 11));
-        initMap(sylph, "house", SYLPH_CAVE, "House",
+        initMap(sylph, "house", SYLPH_CAVE, "House", "Sylvan House", 
                 new TreasureChest("S13", 3, 13),
                 new TreasureChest("S14", 5, 13));
-        initMap(sylph, "treasure", SYLPH_CAVE, "Treasure Room",
+        initMap(sylph, "treasure", SYLPH_CAVE, "Treasure Room", "Sylvan Cave Treasure Room", 
                 new TreasureChest("S27", 5, 7),
                 new TreasureChest("S28", 5+2, 7),
                 new TreasureChest("S29", 5, 7+2),
@@ -367,41 +387,42 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("S31", 5, 7+4),
                 new TreasureChest("S32", 5+2, 7+4));
         final String giant = "Giant";
-        initMap(giant, "2", GIANT_OF_BABIL, "Chest",
+        initMap(giant, "2", GIANT_OF_BABIL, "Chest", "Giant of Bab-il Chest", 
                 new TreasureChest("G1", 8, 9),
                 new TreasureChest("G2", 19, 11),
                 new TreasureChest("G3", 20, 21),
                 new TreasureChest("G4", 6, 27),
                 new TreasureChest("G5", 18, 14));
-        initMap(giant, "3", GIANT_OF_BABIL, "Stomach",
+        initMap(giant, "3", GIANT_OF_BABIL, "Stomach", "Giant of Bab-il Stomach", 
                 new TreasureChest("G6", 9, 19),
                 new TreasureChest("G7", 6, 26));
-        initMap(giant, "4", GIANT_OF_BABIL, "Passage",
+        initMap(giant, "4", GIANT_OF_BABIL, "Passage", "Giant of Bab-il Passage", 
                 new TreasureChest("G8", 21, 14));
-        initMap(giant, "GrindFightManip", GIANT_OF_BABIL, "D-Machine Grind");
+        initMap(giant, "GrindFightManip", GIANT_OF_BABIL, "D-Machine Grind", "D-Machine Grind");
         final String lunar = "lunar";
-        initMap(lunar, "path", LUNAR_PATH, "1F",
+        initMap(lunar, "path", LUNAR_PATH, "1F", "Lunar Path (west)", 
                 new TreasureChest("P1", 22, 26),
                 new TreasureChest("P2", 6, 28),
                 new TreasureChest("P3", 7, 29));
-        initMap(lunar, "b1", LUNAR_SUBTERRANE, "B1", new TreasureChest("L1", 24, 6));
-        initMap(lunar, "b2", LUNAR_SUBTERRANE, "B2",
+        initMap(lunar, "b1", LUNAR_SUBTERRANE, "B1", "Lunar Subterrane B1", 
+                new TreasureChest("L1", 24, 6));
+        initMap(lunar, "b2", LUNAR_SUBTERRANE, "B2", "Lunar Subterrane B2", 
                 new TreasureChest("L2", 12, 26),
                 new TreasureChest("L3", 23, 25), 
                 new TreasureChest("L4", 4, 10));
-        initMap(lunar, "b3", LUNAR_SUBTERRANE, "B3",
+        initMap(lunar, "b3", LUNAR_SUBTERRANE, "B3", "Lunar Subterrane B3", 
                 new TreasureChest("L5", 16, 25),
                 new TreasureChest("L6", 24, 23),
                 new TreasureChest("L7", 28, 14));
-        initMap(lunar, "b4", LUNAR_SUBTERRANE, "B4",
+        initMap(lunar, "b4", LUNAR_SUBTERRANE, "B4", "Lunar Subterrane B4", 
                 new TreasureChest("L8", 7, 28),
                 new TreasureChest("L9", 13, 8),
                 new TreasureChest("L12", 24, 6));
-        initMap(lunar, "b4passage", LUNAR_SUBTERRANE, "B4 Passage",
+        initMap(lunar, "b4passage", LUNAR_SUBTERRANE, "B4 Passage", "Lunar Subterrane B4 Passage", 
                 new TreasureChest("L10", 5, 23),
                 new TreasureChest("L11", 14, 2));
-        initMap(lunar, "b5", LUNAR_SUBTERRANE, "B5",
                 new TreasureChest("L13", 9, 7),
+        initMap(lunar, "b5", LUNAR_SUBTERRANE, "B5", "Lunar Subterrane B5", 
                 new TreasureChest("L14", 13, 11),
                 new TreasureChest("L15", 11, 26),
                 new TreasureChest("L16", 16, 27),
@@ -409,21 +430,21 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 new TreasureChest("L18", 20, 5),
                 new TreasureChest("L19", 27, 23),
                 new TreasureChest("L24", 15, 1));
-        initMap(lunar, "b6", LUNAR_SUBTERRANE, "B6",
+        initMap(lunar, "b6", LUNAR_SUBTERRANE, "B6", "Lunar Subterrane B6", 
                 new TreasureChest("L20", 5, 15),
                 new TreasureChest("L21", 5, 25),
                 new TreasureChest("L22", 17, 18),
                 new TreasureChest("L23", 27, 6),
                 new TreasureChest("L25", 21, 22));
-        initMap(lunar, "dlunar", LUNAR_SUBTERRANE, "D Lunar",
+        initMap(lunar, "dlunar", LUNAR_SUBTERRANE, "D Lunar", "Lunar Subterrane B7 Treasure Room B", 
                 new TreasureChest("L26", 5, 2),
                 new TreasureChest("L27", 5, 4));
-        initMap(lunar, "c1", LUNAR_CORE, "B1",
+        initMap(lunar, "c1", LUNAR_CORE, "B1", "Lunar Core B1", 
                 new TreasureChest("C1", 11, 7));
-        initMap(lunar, "c2", LUNAR_CORE, "B2",
+        initMap(lunar, "c2", LUNAR_CORE, "B2", "Lunar Core B2", 
                 new TreasureChest("C2", 10, 21),
                 new TreasureChest("C3", 24, 13));
-        initMap(lunar, "c3", LUNAR_CORE, "B3",
+        initMap(lunar, "c3", LUNAR_CORE, "B3", "Lunar Core B3", 
                 new TreasureChest("C4", 14, 24),
                 new TreasureChest("C5", 15, 7));
         dungeonComboBox.setModel(new DefaultComboBoxModel<>(atlas.getAllDungeons().toArray(new String[0])));
@@ -490,10 +511,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
         atlas.showFloor(dungeon, floor);
     }
     
-    private void initMap(String directory, String filename, String dungeonName, String floorName, TreasureChest... chests) {
+    private void initMap(String directory, String filename, String dungeonName, String floorName, String spoilerMap, TreasureChest... chests) {
         String fileUrl = new StringBuilder("maps/").append(directory).append("/").append(filename).append(".png").toString();
         BufferedImage image = loadImageResource(fileUrl);
-        atlas.add(new TreasureMap(dungeonName, floorName, image, chests));
+        atlas.add(new TreasureMap(dungeonName, floorName, image, spoilerMap, chests));
         mapPane.add(atlas);
     }
     
@@ -507,6 +528,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         shopPanelsPanel.add(shopPanel);
         shopPanel.setVisible(shopLocation == baronShopLabel);
         shopMap.put(shopLocation.getText(), shopPanel);
+        if(shopLocation.getName() != null)
+            shopMap.put(shopLocation.getName(), shopPanel);
         
         setTextColor(false);
         setBackgroundColor(false);
@@ -526,7 +549,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     }
     
     public StativeLabel loadBossIcon(int bossIndex) {
-        BossLabel label = new BossLabel(BOSS_RESOURCES[bossIndex], BOSS_NAMES[bossIndex]);        
+        BossLabel label = new BossLabel(BOSS_RESOURCES[bossIndex], BOSS_NAMES[bossIndex], SPOILER_BOSS_LOCATIONS[bossIndex], SPOILER_BOSS_FORMATIONS[bossIndex]);        
         bossIconPanel.add(label.getHolder());
         bossLabels.add(label);
         return label;
@@ -977,6 +1000,48 @@ public final class MaikaTracker extends javax.swing.JFrame {
         updateKeyItemCountLabel();        
     }
     
+    public void SetStartingMember(int index, String member) {
+        PartyLabel label = PartyLabel.PartyMembers.get(index);
+        switch(member) {
+            case "Cecil":
+                label.setPartyMember(LevelData.DARK_KNIGHT_CECIL);
+                break;
+            case "Kain":
+                label.setPartyMember(LevelData.KAIN);
+                break;
+            case "Rydia":
+                label.setPartyMember(LevelData.RYDIA);
+                break;
+            case "FuSoYa":
+                label.setPartyMember(LevelData.FUSOYA);
+                break;
+            case "Tellah":
+                label.setPartyMember(LevelData.TELLAH);
+                break;
+            case "Cid":
+                label.setPartyMember(LevelData.CID);
+                break;
+            case "Palom":
+                label.setPartyMember(LevelData.PALOM);
+                break;
+            case "Rosa":
+                label.setPartyMember(LevelData.ROSA);
+                break;
+            case "Porom":
+                label.setPartyMember(LevelData.POROM);
+                break;
+            case "Yang":
+                label.setPartyMember(LevelData.YANG);
+                break;
+            case "Edge":
+                label.setPartyMember(LevelData.EDGE);
+                break;
+            case "Edward":
+                label.setPartyMember(LevelData.EDWARD);
+                break;
+        }
+    }
+    
     public void SetStartingMember() {
         if(flagset == null) return;
         PartyLabel label = PartyLabel.PartyMembers.get(0);
@@ -1118,6 +1183,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         saveLoadPanel = new javax.swing.JPanel();
         saveDataButton = new javax.swing.JButton();
         loadDataButton = new javax.swing.JButton();
+        parseSpoilerLogButton = new javax.swing.JButton();
         keyItemPanel = new javax.swing.JPanel();
         partyPanel = new javax.swing.JPanel();
         keyItemCountLabel = new javax.swing.JLabel();
@@ -1292,6 +1358,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         agartShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         agartShopLabel.setText("Agart");
+        agartShopLabel.setName("Agart Item Stop"); // NOI18N
         agartShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1302,6 +1369,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         baronShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         baronShopLabel.setText("Baron");
+        baronShopLabel.setName("Baron Item Shop"); // NOI18N
         baronShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1312,6 +1380,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         eblanCaveShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         eblanCaveShopLabel.setText("Eblan Cave");
+        eblanCaveShopLabel.setName("Cave Eblana Item Shop"); // NOI18N
         eblanCaveShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1322,6 +1391,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         fabulShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         fabulShopLabel.setText("Fabul");
+        fabulShopLabel.setName("Fabul Item Shop"); // NOI18N
         fabulShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1332,6 +1402,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         kaipoShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         kaipoShopLabel.setText("Kaipo");
+        kaipoShopLabel.setName("Kaipo Item Shop"); // NOI18N
         kaipoShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1342,6 +1413,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         mysidiaShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         mysidiaShopLabel.setText("Mysidia");
+        mysidiaShopLabel.setName("Mysidia Item Shop"); // NOI18N
         mysidiaShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1352,6 +1424,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         silveraShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         silveraShopLabel.setText("Silvera");
+        silveraShopLabel.setName("Silvera Item Shop"); // NOI18N
         silveraShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1362,6 +1435,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         troiaItemShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         troiaItemShopLabel.setText("Troia [Item]");
+        troiaItemShopLabel.setName("Toroia Item Shop"); // NOI18N
         troiaItemShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1372,6 +1446,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         troiaPubShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         troiaPubShopLabel.setText("Troia [Pub]");
+        troiaPubShopLabel.setName("Toroia Pass Shop"); // NOI18N
         troiaPubShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1382,6 +1457,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         dwarfCastleShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         dwarfCastleShopLabel.setText("Dwarf Castle");
+        dwarfCastleShopLabel.setName("Castle of Dwarves Item Shop"); // NOI18N
         dwarfCastleShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1392,6 +1468,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         feymarchShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         feymarchShopLabel.setText("Feymarch");
+        feymarchShopLabel.setName("Town of Monsters Item Shop"); // NOI18N
         feymarchShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1402,6 +1479,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         tomaraShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         tomaraShopLabel.setText("Tomara");
+        tomaraShopLabel.setName("Tomra Item Shop"); // NOI18N
         tomaraShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1412,6 +1490,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
         hummingwayShopLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         hummingwayShopLabel.setText("Hummingway");
+        hummingwayShopLabel.setName("Hummingway Shop"); // NOI18N
         hummingwayShopLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 shopLabelClicked(evt);
@@ -1727,6 +1806,13 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addComponent(loadDataButton))
         );
 
+        parseSpoilerLogButton.setText("Parse Spoiler Log");
+        parseSpoilerLogButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                parseSpoilerLogButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout resetPaneLayout = new javax.swing.GroupLayout(resetPane);
         resetPane.setLayout(resetPaneLayout);
         resetPaneLayout.setHorizontalGroup(
@@ -1742,7 +1828,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
                     .addGroup(resetPaneLayout.createSequentialGroup()
                         .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(parseSpoilerLogButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -1758,7 +1846,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(resetPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(checkedIconSettingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(resetPaneLayout.createSequentialGroup()
+                        .addComponent(saveLoadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(parseSpoilerLogButton)
                 .addGap(169, 169, 169))
         );
 
@@ -1948,8 +2039,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
         if(flagset != null) {
             trackerState.binary_flags = flagset.getBinary().split("\\.")[0];
             trackerState.text_flags = flagset.toString();
-            trackerState.seed = flagset.getSeed();
-        }        
+            if(flagset.hasSeed())
+                trackerState.seed = flagset.getBinary().split("\\.",2)[1];
+            else
+                trackerState.seed = null;
+        }
         getKeyItemPanels().forEach((panel) -> trackerState.addKeyItem(panel));
         bossLabels.forEach((label) -> trackerState.addBoss(label, !allowCheckedBosses.isSelected()));
         locationsVisited.forEach((location) -> trackerState.locationsVisited.add(location.name()));
@@ -2010,9 +2104,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
         
         if(trackerState.text_flags == null && trackerState.binary_flags == null)
             flagsTextField.setText("--NULL--");
-        else if (trackerState.binary_flags != null && trackerState.seed != null)
+        else if (!Util.isNullOrWhiteSpace(trackerState.binary_flags) && !Util.isNullOrWhiteSpace(trackerState.seed))
             flagsTextField.setText(trackerState.binary_flags + "." + trackerState.seed);
-        else if (trackerState.binary_flags != null)
+        else if (!Util.isNullOrWhiteSpace(trackerState.binary_flags))
             flagsTextField.setText(trackerState.binary_flags);
         else
             flagsTextField.setText(trackerState.text_flags);
@@ -2064,6 +2158,53 @@ public final class MaikaTracker extends javax.swing.JFrame {
         ShopPanel.setCheckedItems(trackerState.shopItems);
     }//GEN-LAST:event_loadDataButtonActionPerformed
 
+    private static final Pattern CHEST_BATTLE_PATTERN = Pattern.compile(
+            "^\\s+(?<X>\\d+)" + 
+            ",\\s+(?<Y>\\d+):" + 
+            " Battle against (?<Battle>[\\w\\. ,]+)\\((?<BattleGP>\\d+) GP\\) \\(Reward: " + 
+            "(?<Item>(?:\\[KEY\\] )?(?:\\([\\w ]+\\) )?\\w+)" + 
+            "\\) \\(Sell: (?:(?:" + 
+            "(?<GP>\\d+)" + 
+            " GP)|N\\/A)\\)$");
+    
+    private static final Pattern CHEST_ITEM_PATTERN = Pattern.compile(
+            "^(?<Battle>)(?<BattleGP>)" + //Included to avoid exceptions
+            "\\s+(?<X>\\d+)" + 
+            ",\\s+(?<Y>\\d+): " + 
+            "(?<Item>(?:\\[KEY\\] )?(?:\\([\\w ]+\\) )?[\\w-]+)" + 
+            "(?:\\s+Sell:\\s+(?:(?:(?<GP>\\d+) GP)|N\\/A))?$"
+    );
+    
+    private static final Pattern CHEST_GP_PATTERN = Pattern.compile(
+            "^(?<Battle>)(?<BattleGP>)(?<Item>)" + //Included to avoid exceptions
+            "\\s+(?<X>\\d+)" + 
+            ",\\s+(?<Y>\\d+): " + 
+            "(?<GP>\\d+) GP$"
+    );
+    
+    private static final Pattern ITEM_SHOP_PATTERN = Pattern.compile(
+            "^\\s+(?<Item>(?:\\([\\w ]+\\) )?[\\w-]+)\\s+Buy:\\s+(?<Price>\\d+) GP$"
+    );
+    
+    private Matcher GetChestDetails(String chest) {
+        Matcher matcher = CHEST_BATTLE_PATTERN.matcher(chest);
+        if(matcher.find())
+            return matcher;
+        matcher = CHEST_ITEM_PATTERN.matcher(chest);
+        if(matcher.find())
+            return matcher;
+        matcher = CHEST_GP_PATTERN.matcher(chest);
+        if(matcher.find())
+            return matcher;
+        return null;
+    }
+    
+    private Matcher GetItemShopItemDetails(String item) {
+        Matcher matcher = ITEM_SHOP_PATTERN.matcher(item);
+        if(matcher.find())
+            return matcher;
+        return null;
+    }
     
     private void parseSpoilerLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_parseSpoilerLogButtonActionPerformed
         List<String> spoilerLogLines = new ArrayList<>();
@@ -2186,6 +2327,230 @@ public final class MaikaTracker extends javax.swing.JFrame {
                     break;
             }
         }
+        while(!spoilerLogLines.get(logOffset++).equals("Characters")) {}
+        while(!spoilerLogLines.get(++logOffset).equals("")) {
+            String location = spoilerLogLines.get(logOffset).substring(0, 41).trim();
+            String character = spoilerLogLines.get(logOffset).substring(41).trim();
+            if(location.equals("Start A")) {
+                SetStartingMember(2, character);
+            }
+            if(location.equals("Start B")) {
+                SetStartingMember(0, character);
+            }
+        }
+        while(!spoilerLogLines.get(logOffset++).equals("Battles")) {}
+        while(!spoilerLogLines.get(++logOffset).equals("")) {
+            String location = spoilerLogLines.get(logOffset).substring(0, 41).trim();
+            String formation = spoilerLogLines.get(logOffset).substring(41).split("\\(")[0].trim();
+            BossLabel bossLocation = BossLabel.valueOf(location);
+            BossLabel bossFormation = BossLabel.valueOf(formation);
+            if(bossLocation == null || bossFormation == null)
+                continue;
+            bossFormation.setBossLocation(bossLocation);
+            if(bossLocation.equals(BossLabel.valueOf("Baigan")))
+                bossFormation.setState(1);
+        }
+        
+        bossLabels.stream()
+                .filter(boss -> boss.getBossLocation() == null)
+                .findAny()
+                .get().setBossLocation(BossLabel.valueOf("Waterhag"));
+        
+        while(!spoilerLogLines.get(logOffset++).equals("Treasures")) {}
+        TreasureMap tm = null;
+        boolean towerOfBabil1F = false;
+        do {
+            Matcher matcher;
+            KeyItemPanel kip;
+            ChestLabel cl = null;
+            
+            if(spoilerLogLines.get(logOffset).equals("=========") || spoilerLogLines.get(logOffset).equals("")) {
+                tm = TreasureMap.valueOf(spoilerLogLines.get(++logOffset));
+                if(tm == null) {
+                    switch (spoilerLogLines.get(logOffset)) {
+                        case "Tower of Bab-il 1F":
+                            if(!towerOfBabil1F) {
+                                tm = TreasureMap.valueOf("Tower of Bab-il 1F (Upper)");
+                                towerOfBabil1F = true;
+                            }
+                            else {
+                                tm = TreasureMap.valueOf("Tower of Bab-il 1F (Lower)");
+                            }
+                            break;                            
+                        case "Pass to Bab-il (north) Save Room":
+                            cl = getAtlas().getChestLabel("V21");
+                            break;
+                        case "Tower of Bab-il 2F Treasure Room B":
+                            cl = getAtlas().getChestLabel("B6");
+                            break;
+                        case "Tower of Bab-il 2F Treasure Room A":
+                            cl = getAtlas().getChestLabel("B5");
+                            break;
+                        case "Tower of Bab-il 4F Treasure Room A":
+                            cl = getAtlas().getChestLabel("B12");
+                            break;
+                        case "Tower of Bab-il 4F Treasure Room B":
+                            cl = getAtlas().getChestLabel("B13");
+                            break;
+                        case "Lunar Subterrane B4 Treasure Room":
+                            cl = getAtlas().getChestLabel("L9");
+                            break;
+                        case "Lunar Subterrane B5 Passage A":
+                            cl = getAtlas().getChestLabel("L14");
+                            break;
+                        case "Lunar Subterrane B5 Passage B":
+                            cl = getAtlas().getChestLabel("L17");
+                            break;
+                        case "Lunar Subterrane B5 Pink Puff Room":
+                            cl = getAtlas().getChestLabel("L19");
+                            break;
+                        case "Lunar Subterrane B6 Passage":
+                            cl = getAtlas().getChestLabel("L25");
+                            break;
+                    }
+                    if(cl != null) {
+                        matcher = GetChestDetails(spoilerLogLines.get(++logOffset));
+                        if(matcher == null)
+                            continue;
+                        kip = getPanelForKeyItem(matcher.group("Item"));
+                        if(kip == null || kip.isKnown())
+                            continue;
+                        kip.setLocationInChest(cl);
+                        cl.setKeyItem(kip.getKeyItem());
+                    }
+                }
+                continue;                
+            }
+            if(tm == null)
+                continue;
+            matcher = GetChestDetails(spoilerLogLines.get(logOffset));
+            if(matcher == null)
+                continue;
+            cl = tm.getChestLabel(Integer.parseInt(matcher.group("X")), Integer.parseInt(matcher.group("Y")));
+            kip = getPanelForKeyItem(matcher.group("Item"));
+            if(kip == null  || kip.isKnown())
+                continue;
+            kip.setLocationInChest(cl);
+            cl.setKeyItem(kip.getKeyItem());
+        } while(!spoilerLogLines.get(++logOffset).equals("Shops"));
+        
+        ShopPanel sp = null;
+        do {
+            if(spoilerLogLines.get(logOffset).equals("=====") || spoilerLogLines.get(logOffset).equals("")) {
+                if(sp != null)
+                    sp.updateCheckBoxes();
+                sp = shopMap.get(spoilerLogLines.get(++logOffset));
+            }
+            if(sp == null)
+                continue;
+            Matcher matcher = ITEM_SHOP_PATTERN.matcher(spoilerLogLines.get(logOffset));
+            if(!matcher.find())
+                continue;
+            switch(matcher.group("Item").trim()) {
+                case "HrGlass1":
+                    sp.hourglass1.setSelected(true);
+                    break;
+                case "HrGlass2":
+                    sp.hourglass2.setSelected(true);
+                    break;
+                case "HrGlass3":
+                    sp.hourglass3.setSelected(true);
+                    break;
+                case "SilkWeb":
+                    sp.silkweb.setSelected(true);
+                    break;
+                case "Bacchus":
+                    sp.bacchus.setSelected(true);
+                    break;
+                case "Illusion":
+                    sp.illusion.setSelected(true);
+                    break;
+                case "(tent) Tent":
+                    sp.tent.setSelected(true);
+                    break;
+                case "Kamikaze":
+                    sp.kamikaze.setSelected(true);
+                    break;
+                case "MuteBell":
+                    sp.mutebell.setSelected(true);
+                    break;
+                case "ThorRage":
+                    sp.thorrage.setSelected(true);
+                    break;
+                case "(potion) Cure1":
+                    sp.cure1.setSelected(true);
+                    break;
+                case "(potion) Cure2":
+                    sp.cure2.setSelected(true);
+                    break;
+                case "(potion) Cure3":
+                    sp.cure3.setSelected(true);
+                    break;
+                case "(potion) Ether1":
+                    sp.ether1.setSelected(true);
+                    break;
+                case "(potion) Ether2":
+                    sp.ether2.setSelected(true);
+                    break;
+                case "Exit":
+                    sp.exit.setSelected(true);
+                    break;
+                case "(tent) Cabin":
+                    sp.cabin.setSelected(true);
+                    break;
+                case "Coffin":
+                    sp.coffin.setSelected(true);
+                    break;
+                case "StarVeil":
+                    sp.starveil.setSelected(true);
+                    break;
+                case "MoonVeil":
+                    sp.moonveil.setSelected(true);
+                    break;
+                case "(potion) Life":
+                    sp.life.setSelected(true);
+                    break;
+                case "Stardust":
+                    sp.stardust.setSelected(true);
+                    break;
+                case "(potion) Elixir":
+                    sp.elixir.setSelected(true);
+                    break;
+                case "Grimoire":
+                    sp.grimoire.setSelected(true);
+                    break;
+                case "Pass":
+                    if(getPanelForKeyItem(KeyItemMetadata.PASS).isKnown())
+                        continue;
+                    sp.pass.setSelected(true);
+                    break;
+                case "AgApple":
+                    sp.agapple.setSelected(true);
+                    break;
+                case "AuApple":
+                    sp.agapple.setSelected(true);
+                    break;
+                case "SomaDrop":
+                    sp.somadrop.setSelected(true);
+                    break;
+                case "Siren":
+                    sp.siren.setSelected(true);
+                    break;
+                case "GaiaDrum":
+                    sp.gaiadrum.setSelected(true);
+                    break;
+            }
+        } while(!spoilerLogLines.get(++logOffset).equals("Spells"));
+        if(sp != null)
+            sp.updateCheckBoxes();
+        ShopPanel.UpdateToolTips();
+        
+        getKeyItemPanelsStream()
+                .filter(ki -> ki.getItemLocation() != null)
+                .filter(ki -> ki.getItemLocation().equals(KeyItemLocation.START))
+                .forEach(ki -> ki.setActive(true));
+        locationsVisited.add(KeyItemLocation.START);
+        updateLogic();
     }//GEN-LAST:event_parseSpoilerLogButtonActionPerformed
 
     private void calculateXp(int xpGained, boolean commit) {

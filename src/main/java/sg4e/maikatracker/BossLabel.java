@@ -8,6 +8,7 @@ package sg4e.maikatracker;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -79,7 +80,7 @@ public class BossLabel extends StativeLabel {
     }
     
     //loadBossIcon("2Soldier", "2Soldier", "Baron Soldiers");
-    public BossLabel(String imageName, String bossName) {
+    public BossLabel(String imageName, String bossName, String spoilerLocation, String spoilerFormation) {
         super();
         
         greyBoss = new ImageIcon(MaikaTracker.loadImageResource("bosses/grayscale/FFIVFE-Bosses-" + imageName + "-Gray.png"));
@@ -92,7 +93,9 @@ public class BossLabel extends StativeLabel {
         this.imageName = imageName;
         this.bossName = bossName;
         bossNames.add(this);
-        bossMap.put(imageName.replaceAll("\\d+", ""), this);
+        bossMap.put(imageName.replaceAll("\\d+", ""), this);        
+        bossMap.put(spoilerLocation, this);
+        bossMap.put(spoilerFormation, this);
         
         addMouseListener(new MouseAdapter() {
             @Override
@@ -100,13 +103,25 @@ public class BossLabel extends StativeLabel {
                 if(SwingUtilities.isRightMouseButton(e)) {
                     
                     JPopupMenu locationMenu = getBossNameMenu(bn -> {setBossLocation(bn);});
-                    if(bossLocation != null && (MaikaTracker.tracker.flagsetContains("B"))) {
+                    if(MaikaTracker.tracker.flagsetContains("B")) {
+                        if(bossLocation != null) {
+                            locationMenu.add(new JSeparator(), 0);
+                            JMenuItem resetMenu = new JMenuItem("Reset");
+                            resetMenu.addActionListener((ae) -> setBossLocation(null));
+                            locationMenu.add(resetMenu, 0);
+                        }
                         locationMenu.add(new JSeparator(), 0);
-                        JMenuItem resetMenu = new JMenuItem("Reset");
-                        resetMenu.addActionListener((ae) -> setBossLocation(null));
-                        locationMenu.add(resetMenu, 0);
+                        JMenuItem bossNameMenu = new JMenuItem(bossName);
+                        bossNameMenu.setEnabled(false);
+                        locationMenu.add(bossNameMenu, 0);
                     }
-                    locationMenu.show(e.getComponent(), e.getX(), e.getY());
+                    System.out.println(MouseInfo.getPointerInfo().getLocation().x);
+                    System.out.println(MaikaTracker.tracker.getLocationOnScreen().x);
+                    //System.out.println(locationMenu.getPreferredSize().height);
+                    locationMenu.show(MaikaTracker.tracker, 
+                            MouseInfo.getPointerInfo().getLocation().x - MaikaTracker.tracker.getLocationOnScreen().x,
+                            MaikaTracker.tracker.getPreferredSize().height - locationMenu.getPreferredSize().height - 6);
+                    //locationMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
@@ -143,8 +158,12 @@ public class BossLabel extends StativeLabel {
     private JPopupMenu getBossNameMenu(Consumer<BossLabel> actionOnEachItem) {
         JPopupMenu bossMenu = new JPopupMenu("Boss Locations");
         bossNames.forEach(bn -> {
-            if(bn.contains == null)
-                bossMenu.add(bn.bossName).addActionListener((ae) -> actionOnEachItem.accept(bn));
+            if (MaikaTracker.tracker.flagsetContains("B")) {
+                if(bn.contains == null)
+                    bossMenu.add(bn.bossName).addActionListener((ae) -> actionOnEachItem.accept(bn));
+                else if(bn.contains.equals(this))
+                    bossMenu.add("--> " + bn.bossName + " <--").addActionListener((ae) -> actionOnEachItem.accept(bn));
+            }
         });
         return bossMenu;
     }

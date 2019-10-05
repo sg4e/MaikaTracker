@@ -91,14 +91,14 @@
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="auapple" min="-2" pref="88" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="stardust1" min="-2" pref="88" max="-2" attributes="0"/>
+              <Component id="somadrop" min="-2" pref="88" max="-2" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">
               <Component id="mutebell" min="-2" pref="88" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="kamikaze" min="-2" pref="88" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="jLabel7" min="-2" pref="88" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="thorrage" min="-2" pref="88" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -159,12 +159,14 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="agapple" min="-2" pref="25" max="-2" attributes="0"/>
                   <Component id="auapple" min="-2" pref="25" max="-2" attributes="0"/>
-                  <Component id="stardust1" min="-2" pref="25" max="-2" attributes="0"/>
+                  <Component id="somadrop" min="-2" pref="25" max="-2" attributes="0"/>
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="mutebell" min="-2" pref="25" max="-2" attributes="0"/>
-                  <Component id="kamikaze" min="-2" pref="25" max="-2" attributes="0"/>
-                  <Component id="jLabel7" min="-2" pref="25" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="kamikaze" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
+                      <Component id="thorrage" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
+                  </Group>
               </Group>
           </Group>
       </Group>
@@ -239,7 +241,7 @@
     <Component class="javax.swing.JCheckBox" name="elixir">
       <Properties>
         <Property name="text" type="java.lang.String" value="Elixir"/>
-        <Property name="name" type="java.lang.String" value="default" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="elixir" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -417,7 +419,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="stardust1">
+    <Component class="javax.swing.JCheckBox" name="somadrop">
       <Properties>
         <Property name="text" type="java.lang.String" value="Soma Drop"/>
         <Property name="name" type="java.lang.String" value="apples" noResource="true"/>
@@ -444,7 +446,14 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel7">
+    <Component class="javax.swing.JCheckBox" name="thorrage">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Thor Rage"/>
+        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
