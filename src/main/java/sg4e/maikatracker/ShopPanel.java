@@ -107,6 +107,7 @@ public class ShopPanel extends javax.swing.JPanel {
         final Boolean jItems = tracker.flagsetContains("Ji") && !vanillaShop;
         final Boolean sirens = !tracker.flagsetContains(false, "-nosirens") && jItems;
         final Boolean rarejItems = tracker.flagsetContainsAny("S3", "S4") && jItems;
+        final Boolean elixir = tracker.flagsetContainsAny("S1", "S3", "S4") || vanillaShop;
         final Boolean wildShops = tracker.flagsetContains("S4");
         final Boolean apples = !tracker.flagsetContains(false, "-noapples") && jItems && wildShops;
         final Boolean pass = tracker.flagsetContains("Ps");
@@ -138,11 +139,15 @@ public class ShopPanel extends javax.swing.JPanel {
                         break;
                         
                     case "not_vanilla":
-                        box.setVisible(!vanillaShop);
+                        box.setVisible(!vanillaShop && !cabinsOnly && !emptyShop);
                         break;
 
                     case "default":
                         box.setVisible(!emptyShop && !cabinsOnly);
+                        break;
+                        
+                    case "elixir":
+                        box.setVisible(elixir);
                         break;
                 }
             }
@@ -217,7 +222,7 @@ public class ShopPanel extends javax.swing.JPanel {
         return shopLocations.get(location);
     }
     
-    private void updateCheckBoxes() {
+    public void updateCheckBoxes() {
         getCheckBoxes(this).forEach((box) -> {
             if(box.isSelected())
                 itemLocations.get(box.getText()).add(shopLocation);
@@ -310,7 +315,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
     }
     
-    private static void UpdateToolTips() {
+    public static void UpdateToolTips() {
         shopPanels.forEach(panel -> {
             for (JCheckBox box : getCheckBoxes(panel)) {
                 List<String> locations = itemLocations.get(box.getText()).stream().sorted().collect(Collectors.toList());
@@ -363,10 +368,10 @@ public class ShopPanel extends javax.swing.JPanel {
         stardust = new javax.swing.JCheckBox();
         agapple = new javax.swing.JCheckBox();
         auapple = new javax.swing.JCheckBox();
-        stardust1 = new javax.swing.JCheckBox();
+        somadrop = new javax.swing.JCheckBox();
         mutebell = new javax.swing.JCheckBox();
         kamikaze = new javax.swing.JCheckBox();
-        jLabel7 = new javax.swing.JLabel();
+        thorrage = new javax.swing.JCheckBox();
 
         life.setText("Life");
         life.setName("default"); // NOI18N
@@ -425,7 +430,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         elixir.setText("Elixir");
-        elixir.setName("default"); // NOI18N
+        elixir.setName("elixir"); // NOI18N
         elixir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -576,9 +581,9 @@ public class ShopPanel extends javax.swing.JPanel {
             }
         });
 
-        stardust1.setText("Soma Drop");
-        stardust1.setName("apples"); // NOI18N
-        stardust1.addActionListener(new java.awt.event.ActionListener() {
+        somadrop.setText("Soma Drop");
+        somadrop.setName("apples"); // NOI18N
+        somadrop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
             }
@@ -595,6 +600,14 @@ public class ShopPanel extends javax.swing.JPanel {
         kamikaze.setText("Kamikaze");
         kamikaze.setName("j item"); // NOI18N
         kamikaze.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkboxActionPerformed(evt);
+            }
+        });
+
+        thorrage.setText("Thor Rage");
+        thorrage.setName("j item"); // NOI18N
+        thorrage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
             }
@@ -669,13 +682,13 @@ public class ShopPanel extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(auapple, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(stardust1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(somadrop, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addComponent(mutebell, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(kamikaze, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(thorrage, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -724,11 +737,12 @@ public class ShopPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(agapple, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(auapple, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(stardust1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(somadrop, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(mutebell, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(kamikaze, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(kamikaze, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(thorrage, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -795,7 +809,6 @@ public class ShopPanel extends javax.swing.JPanel {
     public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
     public javax.swing.JLabel jLabel6;
-    public javax.swing.JLabel jLabel7;
     public javax.swing.JCheckBox kamikaze;
     public javax.swing.JCheckBox life;
     public javax.swing.JCheckBox moonveil;
@@ -803,9 +816,10 @@ public class ShopPanel extends javax.swing.JPanel {
     public javax.swing.JCheckBox pass;
     public javax.swing.JCheckBox silkweb;
     public javax.swing.JCheckBox siren;
+    public javax.swing.JCheckBox somadrop;
     public javax.swing.JCheckBox stardust;
-    public javax.swing.JCheckBox stardust1;
     public javax.swing.JCheckBox starveil;
     public javax.swing.JCheckBox tent;
+    public javax.swing.JCheckBox thorrage;
     // End of variables declaration//GEN-END:variables
 }

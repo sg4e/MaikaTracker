@@ -119,7 +119,16 @@ public class KeyItemPanel extends JPanel {
                         if(allowLocation())
                             tracker.getAvailableLocationsMenu(loc -> setLocation(loc), locationMenu);
                     }
-                    locationMenu.show(e.getComponent(), e.getX(), e.getY());
+                    if(allowLocation() || allowShop() || allowChest()) {
+                        locationMenu.add(new JSeparator(), 0); 
+                        JMenuItem keyItemMenuItem = new JMenuItem(metadata.getEnum().toString());
+                        keyItemMenuItem.setEnabled(false);
+                        locationMenu.add(keyItemMenuItem, 0);                        
+                    }
+                    
+                    locationMenu.show(MaikaTracker.tracker, -1, 170);
+                    //locationMenu.show(e.getComponent(), e.getX(), e.getY());
+                    //System.out.println(e.getX() + ", " + e.getY());
                 }
             }
         });

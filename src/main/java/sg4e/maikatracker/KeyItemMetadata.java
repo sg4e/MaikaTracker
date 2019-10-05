@@ -28,33 +28,35 @@ import sg4e.ff4stats.fe.KeyItem;
  * @author sg4e
  */
 public enum KeyItemMetadata {
-    CRYSTAL(KeyItem.CRYSTAL, "1THE"),
-    PASS(KeyItem.PASS, "2"),
-    HOOK(KeyItem.HOOK, "3"),
-    DARKNESS(KeyItem.DARKNESS, "4"),
-    EARTH(KeyItem.EARTH, "5"),
-    TWIN_HARP(KeyItem.TWIN_HARP, "6"),
-    PACKAGE(KeyItem.PACKAGE, "7"),
-    SAND_RUBY(KeyItem.SAND_RUBY, "8"),
-    BARON_KEY(KeyItem.BARON_KEY, "9"),
-    MAGMA_KEY(KeyItem.MAGMA_KEY, "10"),
-    TOWER_KEY(KeyItem.TOWER_KEY, "11"),
-    LUCA_KEY(KeyItem.LUCA_KEY, "12"),
-    ADAMANT(KeyItem.ADAMANT, "13"),
-    LEGEND(KeyItem.LEGEND, "14"),
-    PAN(KeyItem.PAN, "15"),
-    SPOON(KeyItem.SPOON, "16"),
-    RAT_TAIL(KeyItem.RAT_TAIL, "17"),
-    PINK_TAIL(KeyItem.PINK_TAIL, "18");
+    CRYSTAL(KeyItem.CRYSTAL, "1THE", "[KEY] (crystal) Crystal"),
+    PASS(KeyItem.PASS, "2", "Pass"),
+    HOOK(KeyItem.HOOK, "3", "[KEY] Hook"),
+    DARKNESS(KeyItem.DARKNESS, "4", "[KEY] (crystal) Darkness"),
+    EARTH(KeyItem.EARTH, "5", "[KEY] (crystal) Earth"),
+    TWIN_HARP(KeyItem.TWIN_HARP, "6", "[KEY] (harp) TwinHarp"),
+    PACKAGE(KeyItem.PACKAGE, "7", "[KEY] Package"),
+    SAND_RUBY(KeyItem.SAND_RUBY, "8", "[KEY] SandRuby"),
+    BARON_KEY(KeyItem.BARON_KEY, "9", "[KEY] (key) Baron"),
+    MAGMA_KEY(KeyItem.MAGMA_KEY, "10", "[KEY] (key) Magma"),
+    TOWER_KEY(KeyItem.TOWER_KEY, "11", "[KEY] (key) Tower"),
+    LUCA_KEY(KeyItem.LUCA_KEY, "12", "[KEY] (key) Luca"),
+    ADAMANT(KeyItem.ADAMANT, "13", "[KEY] Adamant"),
+    LEGEND(KeyItem.LEGEND, "14", "[KEY] (holy sword) Legend"),
+    PAN(KeyItem.PAN, "15", "[KEY] Pan"),
+    SPOON(KeyItem.SPOON, "16", "[KEY] (dagger) Spoon"),
+    RAT_TAIL(KeyItem.RAT_TAIL, "17", "[KEY] (tail) Rat"),
+    PINK_TAIL(KeyItem.PINK_TAIL, "18", "[KEY] (tail) Pink");
     
     private final KeyItem ki;
     private ImageIcon gray, color, checked;
     private String imageName;
+    private String spoilerEntry;
     
     private static final Logger LOG = LogManager.getLogger();
     
-    private KeyItemMetadata(KeyItem ki, String imageId) {
+    private KeyItemMetadata(KeyItem ki, String imageId, String spoiler) {
         this.ki = ki;
+        spoilerEntry = spoiler;
         imageName = imageId + ki.toString().replaceAll(" ", "");
         String baseUrl = "key-items/%s/FFIVFE-Icons-" + imageName + "-";
         String grayUrl = String.format(baseUrl, "grayscale") + "Gray.png";
@@ -92,5 +94,9 @@ public enum KeyItemMetadata {
     
     public String getImageName() {
         return imageName;
+    }
+    
+    public String getSpoiler() {
+        return spoilerEntry;
     }
 }

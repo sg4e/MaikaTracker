@@ -479,6 +479,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Agart"/>
+                    <Property name="name" type="java.lang.String" value="Agart Item Stop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -495,6 +496,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Baron"/>
+                    <Property name="name" type="java.lang.String" value="Baron Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -511,6 +513,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Eblan Cave"/>
+                    <Property name="name" type="java.lang.String" value="Cave Eblana Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -527,6 +530,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Fabul"/>
+                    <Property name="name" type="java.lang.String" value="Fabul Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -543,6 +547,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Kaipo"/>
+                    <Property name="name" type="java.lang.String" value="Kaipo Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -559,6 +564,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Mysidia"/>
+                    <Property name="name" type="java.lang.String" value="Mysidia Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -575,6 +581,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Silvera"/>
+                    <Property name="name" type="java.lang.String" value="Silvera Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -591,6 +598,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Troia [Item]"/>
+                    <Property name="name" type="java.lang.String" value="Toroia Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -607,6 +615,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Troia [Pub]"/>
+                    <Property name="name" type="java.lang.String" value="Toroia Pass Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -623,6 +632,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Dwarf Castle"/>
+                    <Property name="name" type="java.lang.String" value="Castle of Dwarves Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -639,6 +649,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Feymarch"/>
+                    <Property name="name" type="java.lang.String" value="Town of Monsters Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -655,6 +666,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Tomara"/>
+                    <Property name="name" type="java.lang.String" value="Tomra Item Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -671,6 +683,7 @@
                       <Font name="Tahoma" size="18" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Hummingway"/>
+                    <Property name="name" type="java.lang.String" value="Hummingway Shop" noResource="true"/>
                   </Properties>
                   <Events>
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="shopLabelClicked"/>
@@ -738,7 +751,10 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="checkedIconSettingPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="saveLoadPanel" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="saveLoadPanel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="parseSpoilerLogButton" min="-2" pref="117" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -759,7 +775,11 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="checkedIconSettingPanel" min="-2" max="-2" attributes="0"/>
-                          <Component id="saveLoadPanel" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="saveLoadPanel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="parseSpoilerLogButton" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace min="-2" pref="169" max="-2" attributes="0"/>
                   </Group>
@@ -1176,6 +1196,14 @@
                 </Component>
               </SubComponents>
             </Container>
+            <Component class="javax.swing.JButton" name="parseSpoilerLogButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Parse Spoiler Log"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="parseSpoilerLogButtonActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
         </Container>
       </SubComponents>

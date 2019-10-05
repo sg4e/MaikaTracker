@@ -25,8 +25,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JPanel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -44,11 +48,19 @@ public class TreasureMap extends JPanel {
     private final List<TreasureChest> chests;
     private final ChestLabel[][] cells;
     private final String dungeon, floor;
+    private static final Map<String, TreasureMap> treasureMaps = new HashMap<>();
     
-    public TreasureMap(String dungeon, String floor, Image map, TreasureChest... chests) {
+    private static final Logger LOG = LogManager.getLogger();
+    
+    public TreasureMap(String dungeon, String floor, Image map, String spoilerMap, TreasureChest... chests) {
         this.dungeon = dungeon;
         this.floor = floor;
         this.map = map;
+        TreasureMap tm = treasureMaps.get(spoilerMap);
+        if(tm != null) {
+            LOG.error("spoiler log parser ID \"{}\" used for {}:{} is already used by {}:{}", spoilerMap, dungeon, floor, tm.dungeon, tm.floor);
+        }
+        treasureMaps.put(spoilerMap, this);
         setMinimumSize(MAP_DIMENSIONS);
         setMaximumSize(MAP_DIMENSIONS);
         setPreferredSize(MAP_DIMENSIONS);
@@ -91,6 +103,10 @@ public class TreasureMap extends JPanel {
         return cells[chest.getX()][chest.getY()];
     }
     
+    public ChestLabel getChestLabel(int x, int y) {        
+        return cells[y][x];
+    }
+    
     public void clearChestContents(String chestId) {
         TreasureChest chest = getChest(chestId);
         cells[chest.getX()][chest.getY()].clearKeyItem();
@@ -114,6 +130,10 @@ public class TreasureMap extends JPanel {
 
     public String getFloor() {
         return floor;
+    }
+    
+    public static TreasureMap valueOf(String spoilerMap) {
+        return treasureMaps.get(spoilerMap);
     }
     
     @Override
