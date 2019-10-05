@@ -146,7 +146,8 @@ public class PartyLabel extends StativeLabel {
                             count--;
                         }
                     }
-                    menu.show(e.getComponent(), e.getX(), e.getY());
+                    menu.show(MaikaTracker.tracker, -1, 171);
+                    //menu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
