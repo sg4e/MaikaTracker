@@ -1053,30 +1053,30 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     public void SetStartingMember() {
         if(flagset == null) return;
-        PartyLabel label = PartyLabel.PartyMembers.get(0);
-        if(flagset.contains("-startcecil"))
+        PartyLabel label = PartyLabel.PartyMembers.get(2);
+        if(flagsetContainsAny("-startcecil", "Cstart:cecil"))
             label.setPartyMember(LevelData.DARK_KNIGHT_CECIL);
-        else if (flagset.contains("-startkain"))
+        else if (flagsetContainsAny("-startkain", "Cstart:kain"))
             label.setPartyMember(LevelData.KAIN);
-        else if (flagset.contains("-startrydia"))
+        else if (flagsetContainsAny("-startrydia", "Cstart:rydia"))
             label.setPartyMember(LevelData.RYDIA);
-        else if (flagset.contains("-startedward"))
+        else if (flagsetContainsAny("-startedward", "Cstart:edward"))
             label.setPartyMember(LevelData.EDWARD);
-        else if (flagset.contains("-startrosa"))
+        else if (flagsetContainsAny("-startrosa", "Cstart:rosa"))
             label.setPartyMember(LevelData.ROSA);
-        else if (flagset.contains("-starttellah"))
+        else if (flagsetContainsAny("-starttellah", "Cstart:tellah"))
             label.setPartyMember(LevelData.TELLAH);
-        else if (flagset.contains("-startyang"))
+        else if (flagsetContainsAny("-startyang", "Cstart:yang"))
             label.setPartyMember(LevelData.YANG);
-        else if (flagset.contains("-startpalom"))
+        else if (flagsetContainsAny("-startpalom", "Cstart:palom"))
             label.setPartyMember(LevelData.PALOM);
-        else if (flagset.contains("-startporom"))
+        else if (flagsetContainsAny("-startporom", "Cstart:porom"))
             label.setPartyMember(LevelData.POROM);
-        else if (flagset.contains("-startedge"))
+        else if (flagsetContainsAny("-startedge", "Cstart:edge"))
             label.setPartyMember(LevelData.EDGE);
-        else if (flagset.contains("-startcid"))
+        else if (flagsetContainsAny("-startcid", "Cstart:cid"))
             label.setPartyMember(LevelData.CID);
-        else if (flagset.contains("-startfusoya"))
+        else if (flagsetContainsAny("-startfusoya", "Cstart:fusoya"))
             label.setPartyMember(LevelData.FUSOYA);
     }
     

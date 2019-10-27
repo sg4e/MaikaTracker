@@ -152,9 +152,22 @@ public class PartyLabel extends StativeLabel {
         });
     }
     
+    private Boolean onlyMembers() {
+        return tracker.newFlagset() && tracker.flagsetContainsAny(
+                "Conly:cid", "Conly:cecil", "Conly:edge", "Conly:edward", 
+                "Conly:fusoya", "Conly:kain", "Conly:palom", "Conly:porom", 
+                "Conly:rosa", "Conly:rydia", "Conly:tellah", "Conly:yang");
+    }
+    
     private Boolean memberAllowed(String member) {
-        return tracker.flagsetContainsAny("-start" + member, "Cstart:" + member, "Conly:" + member) || 
-                !tracker.flagsetContainsAny("-no" + member, "Cno:" + member);
+        if(tracker.newFlagset()) {
+            return tracker.flagsetContainsAny("Cstart:" + member, "Conly:" + member) 
+                    || (!tracker.flagsetContains("Cno:" + member) && !onlyMembers());
+        }
+        else {
+            return tracker.flagsetContains("-start" + member) || 
+                    !tracker.flagsetContains("-no" + member);
+        }
     }
     
     private Boolean isDupeAllowed(LevelData member)
@@ -162,10 +175,7 @@ public class PartyLabel extends StativeLabel {
         if(member == null || tracker.flagset == null) return true;
         
         Boolean notAllowed = tracker.flagsetContainsAny("-nodupes", "Cnodupes");
-        Boolean only = tracker.flagsetContainsAny(
-                "Conly:cid", "Conly:cecil", "Conly:edge", "Conly:edward", 
-                "Conly:fusoya", "Conly:kain", "Conly:palom", "Conly:porom", 
-                "Conly:rosa", "Conly:rydia", "Conly:tellah", "Conly:yang");
+        Boolean only = onlyMembers();
 
         switch(member)
         {
