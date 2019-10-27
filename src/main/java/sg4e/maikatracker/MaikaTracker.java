@@ -73,6 +73,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableModel;
+import org.apache.log4j.BasicConfigurator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sg4e.ff4stats.fe.FlagSet;
@@ -196,6 +197,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         logicTabPanel.add(logicPanel);
         
         //add party characters
+        PartyLabel.tracker = this;
         PartyTableModel partyTableModel = (PartyTableModel) xpTable.getModel();
         Runnable newPartyMemberCallback = () -> partyTableModel.setPartyMembers(getPartyMembers());
         for(int i = 0; i < 5; i++) {
@@ -650,33 +652,37 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 case ODIN:
                 case SYLPH:
                 case BAHAMUT:
-                    createLocationPanel(l, flagsetContains("Kq"));
+                    createLocationPanel(l, flagsetContainsAny("Kq", "Ksummon"));
                     break;
                 case PALE_DIM:
                 case PLAGUE:
                 case DLUNAR:
                 case OGOPOGO:
                 case WYVERN:
-                    createLocationPanel(l, flagsetContains("Km"));
+                    createLocationPanel(l, flagsetContainsAny("Km", "Kmoon"));
                     break;
                 case TOROIA:
-                    createLocationPanel(l, flagset == null || !flagsetContains("Nk"));
+                    createLocationPanel(l, flagset == null || !flagsetContainsAny("Nk", "Nkey"));
                     break;
                 case MIST:
-                    createLocationPanel(l, flagsetContains("Nk"));
+                    createLocationPanel(l, flagsetContainsAny("Nk", "Nkey"));
                     break;
                 case KOKKOL:
                     createLocationPanel(l, flagsetContains("V1"));
                     break;
+                case OBJECTIVE:
+                    createLocationPanel(l, flagsetContains("Owin:crystal"));
+                    break;
+                    
                 case ZEROMUS:
                     break;
                     
                 case FABUL:
-                    createLocationPanel(l, flagsetContains("K"));
+                    createLocationPanel(l, flagsetContainsAny("K", "Kmain"));
                     break;
                     
                 case BARON_CASTLE:
-                    createLocationPanel(l, flagsetContainsAny("K", "Pk"));
+                    createLocationPanel(l, flagsetContainsAny("K", "Pk", "Kmain", "Pkey"));
                     break;
                     
                 default:
@@ -739,13 +745,13 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         
-        if(!flagsetContains("Nk"))
+        if(!flagsetContainsAny("Nk", "Nkey"))
             knownLocations.add(KeyItemLocation.MIST);
         
-        if (flagsetContains(false, "Nk"))
+        if (flagsetContainsAny(false, "Nk", "Nkey"))
             knownLocations.add(KeyItemLocation.TOROIA);
         
-        if(!flagsetContains("Kq")) {
+        if(!flagsetContainsAny("Kq", "Ksummon")) {
             knownLocations.add(KeyItemLocation.ASURA);
             knownLocations.add(KeyItemLocation.LEVIATAN);
             knownLocations.add(KeyItemLocation.SYLPH);
@@ -753,7 +759,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
             knownLocations.add(KeyItemLocation.BAHAMUT);
         }
         
-        if (!flagsetContains("Km")) {
+        if (!flagsetContainsAny("Km", "Kmoon")) {
             knownLocations.add(KeyItemLocation.PALE_DIM);
             knownLocations.add(KeyItemLocation.PLAGUE);
             knownLocations.add(KeyItemLocation.DLUNAR);
@@ -763,14 +769,17 @@ public final class MaikaTracker extends javax.swing.JFrame {
         else if(dLunar.size() < 2)
             knownLocations.remove(KeyItemLocation.DLUNAR);
         
-        if (!flagsetContains("K")) {
+        if (!flagsetContainsAny("K", "Kmain")) {
             knownLocations.add(KeyItemLocation.FABUL);
-            if(!flagsetContains("Pk"))
+            if(!flagsetContainsAny("Pk", "Pkey"))
                 knownLocations.add(KeyItemLocation.BARON_CASTLE);
         }
         
         if (!flagsetContains("V1"))
             knownLocations.add(KeyItemLocation.KOKKOL);
+        
+        if (!flagsetContains("Owin:crystal"))
+            knownLocations.add(KeyItemLocation.OBJECTIVE);
         
         //Always.  Crystal location set there automatically on K0 seeds.
         if(flagset != null)
@@ -832,11 +841,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
     public boolean isItemAllowedInChest(KeyItemMetadata ki) {
         switch(ki) {
             case PASS:
-                return flagsetContains("Pt") || flagsetContainsAll("Pk", "Kt");
+                return flagsetContainsAny("Pt", "Pchests") || flagsetContainsAll("Pk", "Kt") || flagsetContainsAll("Pkey", "Ktrap");
             case CRYSTAL:
-                return flagsetContains("Kt") && !flagsetContains(false, "V1");
+                return flagsetContainsAny("Kt", "Ktrap") && !flagsetContainsAny(false, "V1", "Owin:crystal");
             default:
-                return flagsetContains("Kt");
+                return flagsetContainsAny("Kt", "Ktrap");
         }
     }
     
@@ -850,7 +859,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     public void updateKeyItemCountLabel() {
         keyItemCountLabel.setText("Key Items: " + getKeyItemCount());
-        Boolean keyItemBonusXP = flagsetContains("Xk");
+        Boolean keyItemBonusXP = flagsetContains("Xk") || (flagsetContainsAny("Kmain", "Kvanilla") && !flagsetContains("-vanilla:exp"));
         keyItemCountLabel.setForeground(getKeyItemCount() >= 10 && keyItemBonusXP ? tenKeyItemColorLabel.getForeground() : textColorLabel.getForeground());
     }
         
@@ -1069,6 +1078,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
             label.setPartyMember(LevelData.CID);
         else if (flagset.contains("-startfusoya"))
             label.setPartyMember(LevelData.FUSOYA);
+    }
+    
+    public boolean newFlagset() {
+        return flagset != null && !flagset.getVersion().startsWith("0");
     }
     
     public boolean flagsetContains(boolean allowNullFlagset, String firstFlag) {
@@ -1952,8 +1965,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
             flagErrorLabel.setText(ex.getMessage());
             flagset = null;
         }        
-        ShopPanel.UpdateFlags();
-        PartyLabel.flagset = flagset;
+        ShopPanel.UpdateFlags();        
         updateLogic();
         updateKeyItemCountLabel();
     }//GEN-LAST:event_applyFlagsButtonActionPerformed
@@ -2556,9 +2568,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
 
     private void calculateXp(int xpGained, boolean commit) {
         List<PartyMember> members = getPartyMembers();
-        int kiMultipler = getKeyItemCount() >= 10 && (flagsetContains("Xk")) ? 2 : 1;
-        boolean slingshot = (flagsetContains("Xb"));
-        int sharedXP = (flagsetContains("Xs")) ? xpGained : xpGained / members.size();        
+        boolean newFlags = newFlagset() && !flagsetContains("-vanilla:exp");
+        int kiMultipler = getKeyItemCount() >= 10 && (flagsetContains("Xk") || newFlags) ? 2 : 1;
+        boolean slingshot = (flagsetContains("Xb") || newFlags);
+        int sharedXP = (flagsetContains("Xs") || newFlags) ? xpGained : xpGained / members.size();        
         PartyTableModel model = (PartyTableModel) xpTable.getModel();
         List<Integer> partyLevels = members.stream().map(p -> model.getStartingLevel(p)).collect(Collectors.toList());
         Collections.sort(partyLevels);
@@ -2574,7 +2587,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
             if((members.size() == 5) && slingshot) {
                 if(startingLevel <= medianPartyLevel - 5)
                     slingshotMuliplier += 1;
-                if(startingLevel <= medianPartyLevel - 10)
+                if((startingLevel <= medianPartyLevel - 10) && !newFlags)
                     slingshotMuliplier += 1;
             }
             
@@ -2674,6 +2687,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
+            BasicConfigurator.configure();
             new MaikaTracker().setVisible(true);
             tracker.flagsTextField.setText(String.join(" ", args));
             tracker.resetButton.doClick();            

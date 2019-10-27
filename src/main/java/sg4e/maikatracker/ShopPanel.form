@@ -176,7 +176,7 @@
     <Component class="javax.swing.JCheckBox" name="life">
       <Properties>
         <Property name="text" type="java.lang.String" value="Life"/>
-        <Property name="name" type="java.lang.String" value="default" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="default,default" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -185,7 +185,7 @@
     <Component class="javax.swing.JCheckBox" name="pass">
       <Properties>
         <Property name="text" type="java.lang.String" value="Pass"/>
-        <Property name="name" type="java.lang.String" value="pass" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="pass,pass" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -196,7 +196,7 @@
     <Component class="javax.swing.JCheckBox" name="cure1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cure 1"/>
-        <Property name="name" type="java.lang.String" value="default" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="default,default" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -205,7 +205,7 @@
     <Component class="javax.swing.JCheckBox" name="cure2">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cure 2"/>
-        <Property name="name" type="java.lang.String" value="default" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="default,default" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -214,7 +214,7 @@
     <Component class="javax.swing.JCheckBox" name="cure3">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cure 3"/>
-        <Property name="name" type="java.lang.String" value="not_vanilla" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="not_vanilla,tier4" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -223,7 +223,7 @@
     <Component class="javax.swing.JCheckBox" name="ether1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Ether 1"/>
-        <Property name="name" type="java.lang.String" value="default" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="default,default" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -232,7 +232,7 @@
     <Component class="javax.swing.JCheckBox" name="ether2">
       <Properties>
         <Property name="text" type="java.lang.String" value="Ether 2"/>
-        <Property name="name" type="java.lang.String" value="default" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="default,tier4" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -241,7 +241,7 @@
     <Component class="javax.swing.JCheckBox" name="elixir">
       <Properties>
         <Property name="text" type="java.lang.String" value="Elixir"/>
-        <Property name="name" type="java.lang.String" value="elixir" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="elixir,elixir" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -250,7 +250,7 @@
     <Component class="javax.swing.JCheckBox" name="tent">
       <Properties>
         <Property name="text" type="java.lang.String" value="Tent"/>
-        <Property name="name" type="java.lang.String" value="default" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="default,default" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -259,7 +259,7 @@
     <Component class="javax.swing.JCheckBox" name="cabin">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cabin"/>
-        <Property name="name" type="java.lang.String" value="cabin" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="cabin,cabin" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -276,7 +276,7 @@
     <Component class="javax.swing.JCheckBox" name="coffin">
       <Properties>
         <Property name="text" type="java.lang.String" value="Coffin"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier5" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -285,7 +285,7 @@
     <Component class="javax.swing.JCheckBox" name="siren">
       <Properties>
         <Property name="text" type="java.lang.String" value="Siren"/>
-        <Property name="name" type="java.lang.String" value="siren" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="siren,siren" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -296,7 +296,7 @@
     <Component class="javax.swing.JCheckBox" name="bacchus">
       <Properties>
         <Property name="text" type="java.lang.String" value="Bacchus"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier5" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -305,7 +305,7 @@
     <Component class="javax.swing.JCheckBox" name="illusion">
       <Properties>
         <Property name="text" type="java.lang.String" value="Illusion"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier4" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -314,7 +314,7 @@
     <Component class="javax.swing.JCheckBox" name="silkweb">
       <Properties>
         <Property name="text" type="java.lang.String" value="Silkweb"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier3" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -323,7 +323,7 @@
     <Component class="javax.swing.JCheckBox" name="starveil">
       <Properties>
         <Property name="text" type="java.lang.String" value="Starveil"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier2" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -332,7 +332,7 @@
     <Component class="javax.swing.JCheckBox" name="moonveil">
       <Properties>
         <Property name="text" type="java.lang.String" value="Moonveil"/>
-        <Property name="name" type="java.lang.String" value="rare j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="rare j item,j tier6" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -341,7 +341,7 @@
     <Component class="javax.swing.JCheckBox" name="exit">
       <Properties>
         <Property name="text" type="java.lang.String" value="Exit"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier2" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -350,7 +350,7 @@
     <Component class="javax.swing.JCheckBox" name="hourglass1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Hourglass 1"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier5" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -359,7 +359,7 @@
     <Component class="javax.swing.JCheckBox" name="hourglass2">
       <Properties>
         <Property name="text" type="java.lang.String" value="Hourglass 2"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier5" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -368,7 +368,7 @@
     <Component class="javax.swing.JCheckBox" name="hourglass3">
       <Properties>
         <Property name="text" type="java.lang.String" value="Hourglass 3"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier5" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -377,7 +377,7 @@
     <Component class="javax.swing.JCheckBox" name="grimoire">
       <Properties>
         <Property name="text" type="java.lang.String" value="Grimoire"/>
-        <Property name="name" type="java.lang.String" value="rare j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="rare j item,j tier7" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -386,7 +386,7 @@
     <Component class="javax.swing.JCheckBox" name="gaiadrum">
       <Properties>
         <Property name="text" type="java.lang.String" value="GaiaDrum"/>
-        <Property name="name" type="java.lang.String" value="rare j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="rare j item,j tier7" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -395,7 +395,7 @@
     <Component class="javax.swing.JCheckBox" name="stardust">
       <Properties>
         <Property name="text" type="java.lang.String" value="Stardust"/>
-        <Property name="name" type="java.lang.String" value="rare j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="rare j item,j tier7" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -404,7 +404,7 @@
     <Component class="javax.swing.JCheckBox" name="agapple">
       <Properties>
         <Property name="text" type="java.lang.String" value="Ag Apple"/>
-        <Property name="name" type="java.lang.String" value="apples" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="apples,apples" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -413,7 +413,7 @@
     <Component class="javax.swing.JCheckBox" name="auapple">
       <Properties>
         <Property name="text" type="java.lang.String" value="Au Apple"/>
-        <Property name="name" type="java.lang.String" value="apples" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="apples,apples" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -422,7 +422,7 @@
     <Component class="javax.swing.JCheckBox" name="somadrop">
       <Properties>
         <Property name="text" type="java.lang.String" value="Soma Drop"/>
-        <Property name="name" type="java.lang.String" value="apples" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="apples,somadrop" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -431,7 +431,7 @@
     <Component class="javax.swing.JCheckBox" name="mutebell">
       <Properties>
         <Property name="text" type="java.lang.String" value="MuteBell"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier1" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -440,7 +440,7 @@
     <Component class="javax.swing.JCheckBox" name="kamikaze">
       <Properties>
         <Property name="text" type="java.lang.String" value="Kamikaze"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier3" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
@@ -449,7 +449,7 @@
     <Component class="javax.swing.JCheckBox" name="thorrage">
       <Properties>
         <Property name="text" type="java.lang.String" value="Thor Rage"/>
-        <Property name="name" type="java.lang.String" value="j item" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="j item,j tier2" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkboxActionPerformed"/>
