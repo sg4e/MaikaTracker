@@ -103,7 +103,7 @@ public class BossLabel extends StativeLabel {
                 if(SwingUtilities.isRightMouseButton(e)) {
                     
                     JPopupMenu locationMenu = getBossNameMenu(bn -> {setBossLocation(bn);});
-                    if(MaikaTracker.tracker.flagsetContains("B")) {
+                    if(MaikaTracker.tracker.flagsetContainsAny("B","Bstandard")) {
                         if(bossLocation != null) {
                             locationMenu.add(new JSeparator(), 0);
                             JMenuItem resetMenu = new JMenuItem("Reset");
@@ -144,7 +144,7 @@ public class BossLabel extends StativeLabel {
     @Override
     public void reset() {
         super.reset();
-        setBossLocation((MaikaTracker.tracker.flagsetContains("B")) ? null : this);
+        setBossLocation((MaikaTracker.tracker.flagsetContainsAny("B", "Bstandard")) ? null : this);
     }
     
     public final void setCheckedBoss(boolean checked) {
@@ -158,7 +158,7 @@ public class BossLabel extends StativeLabel {
     private JPopupMenu getBossNameMenu(Consumer<BossLabel> actionOnEachItem) {
         JPopupMenu bossMenu = new JPopupMenu("Boss Locations");
         bossNames.forEach(bn -> {
-            if (MaikaTracker.tracker.flagsetContains("B")) {
+            if (MaikaTracker.tracker.flagsetContainsAny("B", "Bstandard")) {
                 if(bn.contains == null)
                     bossMenu.add(bn.bossName).addActionListener((ae) -> actionOnEachItem.accept(bn));
                 else if(bn.contains.equals(this))

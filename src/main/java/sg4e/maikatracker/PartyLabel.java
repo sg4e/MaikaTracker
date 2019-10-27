@@ -30,7 +30,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
-import sg4e.ff4stats.fe.FlagSet;
 import sg4e.ff4stats.party.LevelData;
 import sg4e.ff4stats.party.PartyMember;
 
@@ -54,7 +53,7 @@ public class PartyLabel extends StativeLabel {
     
     public static boolean MtOrdealsComplete;
     public static boolean DwarfCastleComplete;
-    public static FlagSet flagset;
+    public static MaikaTracker tracker;
     
     public PartyLabel(PropertyChangeListener onLevelUp) {
         this.pcl = onLevelUp;
@@ -146,61 +145,88 @@ public class PartyLabel extends StativeLabel {
                             count--;
                         }
                     }
-                    menu.show(MaikaTracker.tracker, -1, 171);
+                    menu.show(tracker, -1, 171);
                     //menu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
     }
     
+    private Boolean onlyMembers() {
+        return tracker.newFlagset() && tracker.flagsetContainsAny(
+                "Conly:cid", "Conly:cecil", "Conly:edge", "Conly:edward", 
+                "Conly:fusoya", "Conly:kain", "Conly:palom", "Conly:porom", 
+                "Conly:rosa", "Conly:rydia", "Conly:tellah", "Conly:yang");
+    }
+    
     private Boolean memberAllowed(String member) {
-        return flagset == null || flagset.contains("-start" + member) || !flagset.contains("-no" + member);
+        if(tracker.newFlagset()) {
+            return tracker.flagsetContainsAny("Cstart:" + member, "Conly:" + member) 
+                    || (!tracker.flagsetContains("Cno:" + member) && !onlyMembers());
+        }
+        else {
+            return tracker.flagsetContains("-start" + member) || 
+                    !tracker.flagsetContains("-no" + member);
+        }
     }
     
     private Boolean isDupeAllowed(LevelData member)
     {
-        if(member == null || flagset == null) return true;
+        if(member == null || tracker.flagset == null) return true;
         
-        Boolean notAllowed = flagset.contains("-nodupes");
+        Boolean notAllowed = tracker.flagsetContainsAny("-nodupes", "Cnodupes");
+        Boolean only = onlyMembers();
 
         switch(member)
         {
             case CID:
-                notAllowed |= flagset.contains("-nocid");
+                notAllowed |= tracker.flagsetContainsAny("-nocid", "Cno:cid") ||
+                        (only && !tracker.flagsetContains("Conly:cid"));
                 break;
             case DARK_KNIGHT_CECIL:
             case PALADIN_CECIL:
-                notAllowed |= flagset.contains("-nocecil");
+                notAllowed |= tracker.flagsetContainsAny("-nocecil", "Cno:cecil") ||
+                        (only && !tracker.flagsetContains("Conly:cecil"));
                 break;
             case EDGE:
-                notAllowed |= flagset.contains("-noedge");
+                notAllowed |= tracker.flagsetContainsAny("-noedge", "Cno:edge") ||
+                        (only && !tracker.flagsetContains("Conly:edge"));
                 break;
             case EDWARD:
-                notAllowed |= flagset.contains("-noedward");
+                notAllowed |= tracker.flagsetContainsAny("-noedward", "Cno:edward") ||
+                        (only && !tracker.flagsetContains("Conly:edward"));
                 break;
             case FUSOYA:
-                notAllowed |= flagset.contains("-nofusoya");
+                notAllowed |= tracker.flagsetContainsAny("-nofusoya", "Cno:fusoya") ||
+                        (only && !tracker.flagsetContains("Conly:fusoya"));
                 break;
             case KAIN:
-                notAllowed |= flagset.contains("-nokain");
+                notAllowed |= tracker.flagsetContainsAny("-nokain", "Cno:kain") ||
+                        (only && !tracker.flagsetContains("Conly:kain"));
                 break;
             case PALOM:
-                notAllowed |= flagset.contains("-nopalom");
+                notAllowed |= tracker.flagsetContainsAny("-nopalom", "Cno:palom") ||
+                        (only && !tracker.flagsetContains("Conly:palom"));
                 break;
             case POROM:
-                notAllowed |= flagset.contains("-noporom");
+                notAllowed |= tracker.flagsetContainsAny("-noporom", "Cno:porom") ||
+                        (only && !tracker.flagsetContains("Conly:porom"));
                 break;
             case ROSA:
-                notAllowed |= flagset.contains("-norosa");
+                notAllowed |= tracker.flagsetContainsAny("-norosa", "Cno:rosa") ||
+                        (only && !tracker.flagsetContains("Conly:rosa"));
                 break;
             case RYDIA:
-                notAllowed |= flagset.contains("-norydia");
+                notAllowed |= tracker.flagsetContainsAny("-norydia", "Cno:rydia") ||
+                        (only && !tracker.flagsetContains("Conly:rydia"));
                 break;
             case TELLAH:
-                notAllowed |= flagset.contains("-notellah");
+                notAllowed |= tracker.flagsetContainsAny("-notellah", "Cno:tellah") ||
+                        (only && !tracker.flagsetContains("Conly:tellah"));
                 break;
             case YANG:
-                notAllowed |= flagset.contains("-noyang");
+                notAllowed |= tracker.flagsetContainsAny("-noyang", "Cno:yang") ||
+                        (only && !tracker.flagsetContains("Conly:yang"));
                 break;
             default:
                 return false;

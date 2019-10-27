@@ -20,7 +20,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
-import sg4e.ff4stats.fe.FlagSet;
 
 /**
  *
@@ -57,6 +56,7 @@ public class ShopPanel extends javax.swing.JPanel {
     /**
      * Creates new form ShopPanel
      * @param location - Specifies the Label whose text will be used for location purposes.
+     * @param gated - Specifies whether the shop is gated. Affects item availability of different tiers.
      */
     public ShopPanel(JLabel location) {
         initComponents();
@@ -101,64 +101,173 @@ public class ShopPanel extends javax.swing.JPanel {
     public static void UpdateFlags()
     {
         MaikaTracker tracker = MaikaTracker.tracker;
-        final Boolean cabinsOnly = tracker.flagsetContains(false, "Sc");
-        final Boolean emptyShop = tracker.flagsetContains(false, "Sx");
-        final Boolean vanillaShop = !tracker.flagsetContainsAny("S2", "S3", "S4", "Sc", "Sx");
-        final Boolean jItems = tracker.flagsetContains("Ji") && !vanillaShop;
-        final Boolean sirens = !tracker.flagsetContains(false, "-nosirens") && jItems;
-        final Boolean rarejItems = tracker.flagsetContainsAny("S3", "S4") && jItems;
-        final Boolean elixir = tracker.flagsetContainsAny("S1", "S3", "S4") || vanillaShop;
-        final Boolean wildShops = tracker.flagsetContains("S4");
-        final Boolean apples = !tracker.flagsetContains(false, "-noapples") && jItems && wildShops;
-        final Boolean pass = tracker.flagsetContains("Ps");
-       
-        shopPanels.forEach(panel -> {            
-            for (JCheckBox box : getCheckBoxes(panel)) {
-                switch(box.getName())
-                {
-                    case "j item":                        
-                        box.setVisible(jItems);
-                        break;
-                    case "siren":
-                        box.setVisible(sirens);
-                        break;
-                    case "apples":
-                        box.setVisible(apples);
-                        break;
-                        
-                    case "rare j item":
-                        box.setVisible(rarejItems);
-                        break;
+        final Boolean newFlags = tracker.newFlagset();
+        //Common
+        
+        if(!newFlags) {
+            //Flags 0.3.0 to 0.3.8
+            final Boolean cabinsOnly = tracker.flagsetContainsAny(false, "Sc");
+            final Boolean emptyShop = tracker.flagsetContainsAny(false, "Sx");
+            final Boolean pass = tracker.flagsetContainsAny("Ps");
+            final Boolean wildShops = tracker.flagsetContainsAny("S4");
+            
+            final Boolean vanillaShop = !tracker.flagsetContainsAny("S2", "S3", "S4", "Sc", "Sx");
+            final Boolean jItems = tracker.flagsetContains("Ji") && !vanillaShop;
+            final Boolean sirens = !tracker.flagsetContainsAny(false, "-nosirens") && jItems;
+            final Boolean rarejItems = tracker.flagsetContainsAny("S3", "S4") && jItems;
+            final Boolean elixir = tracker.flagsetContainsAny("S1", "S3", "S4") || vanillaShop;        
+            final Boolean apples = !tracker.flagsetContainsAny(false, "-noapples") && jItems && wildShops;
+            
+            shopPanels.forEach(panel -> {
+                final Boolean gated = panel.shopLabel.getText().equals("Eblan Cave") ||
+                        panel.shopLabel.getText().equals("Dwarf Castle") ||
+                        panel.shopLabel.getText().equals("Feymarch") ||
+                        panel.shopLabel.getText().equals("Tomara") ||
+                        panel.shopLabel.getText().equals("Hummingway") ||
+                        panel.shopLabel.getText().equals("Known Locations");
 
-                    case "pass":
-                        box.setVisible(pass);
-                        break;
+                for (JCheckBox box : getCheckBoxes(panel)) {
+                    switch(box.getName().split(",")[0])
+                    {
+                        case "j item":                        
+                            box.setVisible(jItems);
+                            break;
+                        case "siren":
+                            box.setVisible(sirens);
+                            break;
+                        case "apples":
+                            box.setVisible(apples);
+                            break;
 
-                    case "cabin":
-                        box.setVisible(!emptyShop);
-                        break;
-                        
-                    case "not_vanilla":
-                        box.setVisible(!vanillaShop && !cabinsOnly && !emptyShop);
-                        break;
+                        case "rare j item":
+                            box.setVisible(rarejItems);
+                            break;
 
-                    case "default":
-                        box.setVisible(!emptyShop && !cabinsOnly);
-                        break;
-                        
-                    case "elixir":
-                        box.setVisible(elixir);
-                        break;
+                        case "pass":
+                            box.setVisible(pass);
+                            break;
+
+                        case "cabin":
+                            box.setVisible(!emptyShop);
+                            break;
+
+                        case "not_vanilla":
+                            box.setVisible(!vanillaShop && !cabinsOnly && !emptyShop);
+                            break;
+
+                        case "default":
+                            box.setVisible(!emptyShop && !cabinsOnly);
+                            break;
+
+                        case "elixir":
+                            box.setVisible(elixir);
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
+        else {
+            //Flags 4.0.0+
+            final Boolean cabinsOnly = tracker.flagsetContainsAny(false, "Scabins");
+            final Boolean emptyShop = tracker.flagsetContainsAny(false, "Sempty");
+            final Boolean pass = tracker.flagsetContainsAny("Pshop");
+            
+            final Boolean vanilla = tracker.flagsetContainsAny("Svanilla", "Sshuffle");
+            final Boolean jItems = !tracker.flagsetContains("Sno:j") && !vanilla;
+            final Boolean standard = tracker.flagsetContains("Sstandard");
+            final Boolean pro = tracker.flagsetContains("Spro");
+            final Boolean wild = tracker.flagsetContains("Swild");
+            final Boolean apples = jItems && !tracker.flagsetContains("Sno:apples");
+            final Boolean somadrop = jItems && !tracker.flagsetContains("Sno:apples");
+            final Boolean sirens = jItems && !tracker.flagsetContains("Sno:sirens");
+            //final Boolean newCabins = newFlags && tier4 || 
+            
+            shopPanels.forEach(panel -> {
+                final Boolean gated = panel.shopLabel.getText().equals("Eblan Cave") ||
+                        panel.shopLabel.getText().equals("Dwarf Castle") ||
+                        panel.shopLabel.getText().equals("Feymarch") ||
+                        panel.shopLabel.getText().equals("Tomara") ||
+                        panel.shopLabel.getText().equals("Hummingway") ||
+                        panel.shopLabel.getText().equals("Known Locations");
+
+                for (JCheckBox box : getCheckBoxes(panel)) {
+                    switch(box.getName().split(",")[1])
+                    {
+                        case "tier1":
+                        case "tier2":
+                        case "tier3":
+                            box.setVisible(standard || pro || wild);
+                            break;
+
+                        case "tier4":
+                            box.setVisible(standard || (pro && gated) || wild);
+                            break;
+
+                        case "tier5":
+                            box.setVisible((standard && gated) || wild);
+                            break;
+
+                        case "tier6":
+                        case "tier7":
+                            box.setVisible(wild);
+                            break;
+
+                        case "j tier1":
+                        case "j tier2":
+                        case "j tier3":
+                            box.setVisible(jItems && (standard || pro || wild));
+                            break;
+
+                        case "j tier4":
+                            box.setVisible(jItems && (standard || (pro && gated) || wild));
+                            break;
+
+                        case "j tier5":
+                            box.setVisible(jItems && ((standard && gated) || wild));
+                            break;
+
+                        case "j tier6":
+                        case "j tier7":
+                            box.setVisible(jItems && wild);
+                            break;
+                            
+                        case "siren":
+                            box.setVisible(sirens && ((standard && gated) || wild));
+                            break;
+                        case "apples":
+                            box.setVisible(apples && wild);
+                            break;                        
+                        case "somadrop":
+                            box.setVisible(somadrop && (standard || (pro && gated) || wild));
+                            break;
+
+                        case "pass":
+                            box.setVisible(pass);
+                            break;
+
+                        case "cabin":
+                            box.setVisible(vanilla || standard || (pro & gated) || wild || cabinsOnly);
+                            break;
+
+                        case "default":
+                            box.setVisible(!emptyShop && !cabinsOnly);
+                            break;
+
+                        case "elixir":
+                            box.setVisible(vanilla || (standard && gated) || wild);
+                            break;
+                    }
+                }
+            });
+        }
     }
     
     public static void reset() {
         final MaikaTracker tracker = MaikaTracker.tracker;
-        final Boolean vanillaShop = !tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx");
-        final Boolean pass = tracker.flagsetContains("Ps");
-        final Boolean jItems = tracker.flagsetContains("Ji");
+        final Boolean newFlags = tracker.flagsetContainsAny("Kvanilla", "Kmain");
+        final Boolean vanillaShop = (!newFlags && !tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx")) || tracker.flagsetContains("Svanilla");
+        final Boolean pass = tracker.flagsetContainsAny("Ps", "Pshop");
+        final Boolean jItems = tracker.flagsetContainsAny("Ji") || (!tracker.flagsetContains("Sno:j") && newFlags);
         tracker.getPanelForKeyItem(KeyItemMetadata.PASS).setLocationInShop(null);
         shopPanels.forEach(panel -> {
             getCheckBoxes(panel).forEach((box) -> {
@@ -374,7 +483,7 @@ public class ShopPanel extends javax.swing.JPanel {
         thorrage = new javax.swing.JCheckBox();
 
         life.setText("Life");
-        life.setName("default"); // NOI18N
+        life.setName("default,default"); // NOI18N
         life.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -382,7 +491,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         pass.setText("Pass");
-        pass.setName("pass"); // NOI18N
+        pass.setName("pass,pass"); // NOI18N
         pass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -390,7 +499,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         cure1.setText("Cure 1");
-        cure1.setName("default"); // NOI18N
+        cure1.setName("default,default"); // NOI18N
         cure1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -398,7 +507,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         cure2.setText("Cure 2");
-        cure2.setName("default"); // NOI18N
+        cure2.setName("default,default"); // NOI18N
         cure2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -406,7 +515,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         cure3.setText("Cure 3");
-        cure3.setName("not_vanilla"); // NOI18N
+        cure3.setName("not_vanilla,tier4"); // NOI18N
         cure3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -414,7 +523,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         ether1.setText("Ether 1");
-        ether1.setName("default"); // NOI18N
+        ether1.setName("default,default"); // NOI18N
         ether1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -422,7 +531,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         ether2.setText("Ether 2");
-        ether2.setName("default"); // NOI18N
+        ether2.setName("default,tier4"); // NOI18N
         ether2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -430,7 +539,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         elixir.setText("Elixir");
-        elixir.setName("elixir"); // NOI18N
+        elixir.setName("elixir,elixir"); // NOI18N
         elixir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -438,7 +547,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         tent.setText("Tent");
-        tent.setName("default"); // NOI18N
+        tent.setName("default,default"); // NOI18N
         tent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -446,7 +555,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         cabin.setText("Cabin");
-        cabin.setName("cabin"); // NOI18N
+        cabin.setName("cabin,cabin"); // NOI18N
         cabin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -454,7 +563,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         coffin.setText("Coffin");
-        coffin.setName("j item"); // NOI18N
+        coffin.setName("j item,j tier5"); // NOI18N
         coffin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -462,7 +571,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         siren.setText("Siren");
-        siren.setName("siren"); // NOI18N
+        siren.setName("siren,siren"); // NOI18N
         siren.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -470,7 +579,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         bacchus.setText("Bacchus");
-        bacchus.setName("j item"); // NOI18N
+        bacchus.setName("j item,j tier5"); // NOI18N
         bacchus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -478,7 +587,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         illusion.setText("Illusion");
-        illusion.setName("j item"); // NOI18N
+        illusion.setName("j item,j tier4"); // NOI18N
         illusion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -486,7 +595,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         silkweb.setText("Silkweb");
-        silkweb.setName("j item"); // NOI18N
+        silkweb.setName("j item,j tier3"); // NOI18N
         silkweb.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -494,7 +603,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         starveil.setText("Starveil");
-        starveil.setName("j item"); // NOI18N
+        starveil.setName("j item,j tier2"); // NOI18N
         starveil.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -502,7 +611,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         moonveil.setText("Moonveil");
-        moonveil.setName("rare j item"); // NOI18N
+        moonveil.setName("rare j item,j tier6"); // NOI18N
         moonveil.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -510,7 +619,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         exit.setText("Exit");
-        exit.setName("j item"); // NOI18N
+        exit.setName("j item,j tier2"); // NOI18N
         exit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -518,7 +627,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         hourglass1.setText("Hourglass 1");
-        hourglass1.setName("j item"); // NOI18N
+        hourglass1.setName("j item,j tier5"); // NOI18N
         hourglass1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -526,7 +635,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         hourglass2.setText("Hourglass 2");
-        hourglass2.setName("j item"); // NOI18N
+        hourglass2.setName("j item,j tier5"); // NOI18N
         hourglass2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -534,7 +643,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         hourglass3.setText("Hourglass 3");
-        hourglass3.setName("j item"); // NOI18N
+        hourglass3.setName("j item,j tier5"); // NOI18N
         hourglass3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -542,7 +651,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         grimoire.setText("Grimoire");
-        grimoire.setName("rare j item"); // NOI18N
+        grimoire.setName("rare j item,j tier7"); // NOI18N
         grimoire.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -550,7 +659,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         gaiadrum.setText("GaiaDrum");
-        gaiadrum.setName("rare j item"); // NOI18N
+        gaiadrum.setName("rare j item,j tier7"); // NOI18N
         gaiadrum.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -558,7 +667,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         stardust.setText("Stardust");
-        stardust.setName("rare j item"); // NOI18N
+        stardust.setName("rare j item,j tier7"); // NOI18N
         stardust.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -566,7 +675,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         agapple.setText("Ag Apple");
-        agapple.setName("apples"); // NOI18N
+        agapple.setName("apples,apples"); // NOI18N
         agapple.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -574,7 +683,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         auapple.setText("Au Apple");
-        auapple.setName("apples"); // NOI18N
+        auapple.setName("apples,apples"); // NOI18N
         auapple.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -582,7 +691,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         somadrop.setText("Soma Drop");
-        somadrop.setName("apples"); // NOI18N
+        somadrop.setName("apples,somadrop"); // NOI18N
         somadrop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -590,7 +699,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         mutebell.setText("MuteBell");
-        mutebell.setName("j item"); // NOI18N
+        mutebell.setName("j item,j tier1"); // NOI18N
         mutebell.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -598,7 +707,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         kamikaze.setText("Kamikaze");
-        kamikaze.setName("j item"); // NOI18N
+        kamikaze.setName("j item,j tier3"); // NOI18N
         kamikaze.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -606,7 +715,7 @@ public class ShopPanel extends javax.swing.JPanel {
         });
 
         thorrage.setText("Thor Rage");
-        thorrage.setName("j item"); // NOI18N
+        thorrage.setName("j item,j tier2"); // NOI18N
         thorrage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 checkboxActionPerformed(evt);
@@ -748,7 +857,8 @@ public class ShopPanel extends javax.swing.JPanel {
 
     private void checkboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxActionPerformed
         final MaikaTracker tracker = MaikaTracker.tracker;
-        final Boolean vanillaShop = !tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx");
+        final Boolean newFlags = tracker.flagsetContainsAny("Kvanilla", "Kmain");
+        final Boolean vanillaShop = (!newFlags && !tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx")) || tracker.flagsetContains("Svanilla");
         
         if(evt.getSource() instanceof JCheckBox) {
             JCheckBox box = (JCheckBox) evt.getSource();

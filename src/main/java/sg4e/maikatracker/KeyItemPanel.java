@@ -21,7 +21,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -170,11 +169,11 @@ public class KeyItemPanel extends JPanel {
     public boolean allowLocation() {
         switch(metadata) {
             case PASS:
-                return tracker.flagsetContainsAll("K", "Pk");
+                return tracker.flagsetContainsAll("K", "Pk") || tracker.flagsetContainsAll("Kmain", "Pkey");
             case CRYSTAL:
-                return tracker.flagsetContains("K") && !tracker.flagsetContains(false, "V1");
+                return tracker.flagsetContainsAny("K", "Kmain") && !tracker.flagsetContainsAny(false, "V1", "Owin:crystal");
             default:
-                return tracker.flagsetContains("K");
+                return tracker.flagsetContainsAny("K", "Kmain");
         }
     }
     
@@ -183,8 +182,9 @@ public class KeyItemPanel extends JPanel {
     }
     
     public boolean allowShop() {
-        return metadata.equals(KeyItemMetadata.PASS) && tracker.flagsetContains("Ps") &&
-                tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx");
+        return metadata.equals(KeyItemMetadata.PASS) && tracker.flagsetContainsAny("Ps", "Pshop") &&
+                tracker.flagsetContainsAny("S1", "S2", "S3", "S4", "Sc", "Sx",
+                        "Sshuffle", "Sstandard", "Spro", "Swild", "Scabins", "Sempty");
     }
     
     public void setActive(boolean on) {
@@ -339,12 +339,12 @@ public class KeyItemPanel extends JPanel {
             return;
         }
         
-        if(!tracker.flagsetContainsAny("Pk", "Ps", "Pt") && metadata.equals(KeyItemMetadata.PASS)) {
+        if(!tracker.flagsetContainsAny("Pk", "Ps", "Pt", "Pshop", "Pkey", "Pchests") && metadata.equals(KeyItemMetadata.PASS)) {
             locationLabel.setText("None");
             locationLabel.setToolTipText("No Pass in this flagset :(");
         }            
         
-        if (!tracker.flagsetContains("K")) {
+        if (!tracker.flagsetContainsAny("K", "Kmain")) {
             switch(metadata) {
                 case ADAMANT:
                     setLocation(KeyItemLocation.RAT_TAIL);
@@ -353,7 +353,11 @@ public class KeyItemPanel extends JPanel {
                     setLocation(KeyItemLocation.BARON_INN);
                     break;
                 case CRYSTAL:
-                    setLocation(tracker.flagsetContains("V1") ? KeyItemLocation.KOKKOL : KeyItemLocation.ZEROMUS);
+                    setLocation(tracker.flagsetContains("V1") 
+                            ? KeyItemLocation.KOKKOL 
+                            : tracker.flagsetContains("Owin:crystal") 
+                                    ? KeyItemLocation.OBJECTIVE 
+                                    : KeyItemLocation.ZEROMUS);
                     break;
                 case DARKNESS:
                     setLocation(KeyItemLocation.SEALED_CAVE);
@@ -380,7 +384,7 @@ public class KeyItemPanel extends JPanel {
                     setLocation(KeyItemLocation.SHEILA_PANLESS);
                     break;
                 case PASS:
-                    if(tracker.flagsetContains("Pk"))
+                    if(tracker.flagsetContainsAny("Pk", "Pkey"))
                         setLocation(KeyItemLocation.BARON_CASTLE);
                     break;
                 case PINK_TAIL:                    
@@ -400,12 +404,14 @@ public class KeyItemPanel extends JPanel {
                 case TWIN_HARP:
                     if(tracker.flagset == null)
                         break;
-                    setLocation(tracker.flagsetContains("Nk") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
+                    setLocation(tracker.flagsetContainsAny("Nk", "Nkey") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
                     break;
             }
         }
         else if(tracker.flagsetContains("V1") && metadata.equals(KeyItemMetadata.CRYSTAL))
             setLocation(KeyItemLocation.KOKKOL);
+        else if (tracker.flagsetContains("Owin:crystal") && metadata.equals(KeyItemMetadata.CRYSTAL))
+            setLocation(KeyItemLocation.OBJECTIVE);
         tracker.updateLogic();
         
         resetting = false;
