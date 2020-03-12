@@ -60,6 +60,7 @@ import java.util.stream.Stream;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -171,6 +172,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private static TextFiles textFiles = new TextFiles();
     
     private final JFileChooser fileChooser = new JFileChooser();
+
+    private final JColorChooser colorChooser = new JColorChooser();
+    private final JDialog colorDialog = JColorChooser.createDialog(this,"title",true,colorChooser,null,null);
     
     public static MaikaTracker tracker;
 
@@ -885,7 +889,12 @@ public final class MaikaTracker extends javax.swing.JFrame {
         Color color = getColor(prefsNode, background ? colorPanel.getBackground() : colorPanel.getForeground());
         
         if(showPicker) {
-            color = JColorChooser.showDialog(this, colorPickerTitle, color);
+
+            colorDialog.setTitle(colorPickerTitle);
+            colorDialog.setVisible(true);
+
+            color = colorChooser.getColor();
+            // color = JColorChooser.showDialog(this, colorPickerTitle, color);
             if(color != null)
                 putColor(prefsNode, color);
         }
