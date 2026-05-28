@@ -15,8 +15,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Check out MaikaTracker
         uses: actions/checkout@v4
+        with:
+          path: MaikaTracker
+
+      - name: Check out FF4StatsLib
+        uses: actions/checkout@v4
+        with:
+          repository: sg4e/FF4StatsLib
+          path: FF4StatsLib
 
       - name: Set up Java 8
         uses: actions/setup-java@v4
@@ -30,6 +38,7 @@ jobs:
 
       - name: Run tests
         run: ./gradlew test
+        working-directory: MaikaTracker
 
   release:
     name: Build and create GitHub release
@@ -41,8 +50,16 @@ jobs:
       contents: write
 
     steps:
-      - name: Check out repository
+      - name: Check out MaikaTracker
         uses: actions/checkout@v4
+        with:
+          path: MaikaTracker
+
+      - name: Check out FF4StatsLib
+        uses: actions/checkout@v4
+        with:
+          repository: sg4e/FF4StatsLib
+          path: FF4StatsLib
 
       - name: Set up Java 8
         uses: actions/setup-java@v4
@@ -56,6 +73,7 @@ jobs:
 
       - name: Build JAR
         run: ./gradlew build
+        working-directory: MaikaTracker
 
       - name: Create release metadata
         id: release
@@ -72,6 +90,6 @@ jobs:
           tag_name: ${{ steps.release.outputs.tag }}
           name: ${{ steps.release.outputs.name }}
           target_commitish: ${{ github.sha }}
-          files: build/libs/MaikaTracker.jar
+          files: MaikaTracker/build/libs/MaikaTracker.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
