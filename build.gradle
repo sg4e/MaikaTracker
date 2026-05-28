@@ -10,15 +10,6 @@ java {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-}
-
-configurations.all {
-    if (file("../FF4StatsLib").exists()) {
-        resolutionStrategy.dependencySubstitution {
-            substitute(module("com.github.sg4e:FF4StatsLib:master-SNAPSHOT")).using(project(":FF4StatsLib"))
-        }
-    }
 }
 
 dependencies {
@@ -29,7 +20,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-log4j12:1.7.36'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.1'
     implementation 'com.google.guava:guava:33.6.0-jre'
-    implementation 'com.github.sg4e:FF4StatsLib:master-SNAPSHOT'
+    implementation project(':FF4StatsLib')
 
     testImplementation 'junit:junit:4.13.2'
 }
