@@ -8,6 +8,7 @@ service Devices {
 }
 
 service DeviceMemory {
+  rpc MappingDetect(DetectMemoryMappingRequest) returns (DetectMemoryMappingResponse) {}
   rpc SingleRead(SingleReadMemoryRequest) returns (SingleReadMemoryResponse) {}
 }
 
@@ -45,6 +46,17 @@ message DevicesResponse {
   }
 
   repeated Device devices = 1;
+}
+
+message DetectMemoryMappingRequest {
+  string uri = 1;
+}
+
+message DetectMemoryMappingResponse {
+  string uri = 1;
+  MemoryMapping memoryMapping = 2;
+  bool confidence = 3;
+  bytes romHeader00FFB0 = 4;
 }
 
 message ReadMemoryRequest {
