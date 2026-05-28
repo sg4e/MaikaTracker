@@ -84,7 +84,7 @@ import sg4e.maikatracker.autotracking.SniAutoTrackerService;
 import sg4e.maikatracker.autotracking.SniMemoryReader;
 import sg4e.maikatracker.autotracking.SniTrackerDecoder;
 import sg4e.maikatracker.autotracking.SniTrackerSnapshot;
-import sg4e.maikatracker.autotracking.SniUsb2SnesMemoryReader;
+import sg4e.maikatracker.autotracking.SniGrpcMemoryReader;
 
 /**
  *
@@ -188,8 +188,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         initComponents();        
         showBinaryFlagsButton.setText("Show Binary Flags");
         prefs = Preferences.userRoot().node(this.getClass().getName());
-        String sniEndpoint = System.getenv().getOrDefault("MAIKA_SNI_WS_URL", "ws://127.0.0.1:23074");
-        SniMemoryReader sniReader = new SniUsb2SnesMemoryReader(sniEndpoint);
+        String sniGrpcTarget = System.getenv().getOrDefault("MAIKA_SNI_GRPC_TARGET", "127.0.0.1:8191");
+        SniMemoryReader sniReader = new SniGrpcMemoryReader(sniGrpcTarget);
         autoTrackerService = new SniAutoTrackerService(sniReader, new SniTrackerDecoder(), this::applyAutoTrackerSnapshot, 1000);
         Map<Battle, Formation> bosses = Battle.getAllBosses();
         List<String> bossNames = bosses.keySet().stream().map(Battle::getBoss).distinct().collect(Collectors.toList());
