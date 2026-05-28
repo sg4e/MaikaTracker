@@ -3,7 +3,10 @@
 
 # Ignore Gradle build output directory
 build
+bin
 
 .nb-gradle
 nbproject
 .nb-gradle-properties
+.vscode
+.idea
