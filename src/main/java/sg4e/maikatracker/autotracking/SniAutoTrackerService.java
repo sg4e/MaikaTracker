@@ -14,6 +14,7 @@ public class SniAutoTrackerService implements Closeable {
     private static final int FOUND_ADDR = 0x7E1500;
     private static final int USED_ADDR = 0x7E1503;
     private static final int CHECKED_ADDR = 0x7E1510;
+    private static final int FOUND_LOCATION_ADDR = 0x707080;
     private volatile boolean enabled;
     private long lastWarningMs;
 
@@ -35,7 +36,7 @@ public class SniAutoTrackerService implements Closeable {
     void poll() {
         if (!enabled) return;
         try {
-            SniTrackerSnapshot snapshot = decoder.decode(reader.read(FOUND_ADDR, 3), reader.read(USED_ADDR, 3), reader.read(CHECKED_ADDR, 16));
+            SniTrackerSnapshot snapshot = decoder.decode(reader.read(FOUND_ADDR, 3), reader.read(USED_ADDR, 3), reader.read(CHECKED_ADDR, 16), reader.read(FOUND_LOCATION_ADDR, 34));
             consumer.accept(snapshot);
         } catch (Exception ex) {
             long now = System.currentTimeMillis();

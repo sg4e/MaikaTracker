@@ -2060,6 +2060,12 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 boolean found = snapshot.getFound().contains(panel.getKeyItem());
                 boolean used = snapshot.getUsed().contains(panel.getKeyItem());
                 panel.setState(found ? (used && allowCheckedKeyItems.isSelected() ? 2 : 1) : 0);
+                if (found) {
+                    KeyItemLocation foundLocation = snapshot.getFoundLocations().get(panel.getKeyItem());
+                    if (foundLocation != null) {
+                        panel.setLocation(foundLocation);
+                    }
+                }
             });
             locationsVisited.clear();
             locationsVisited.addAll(snapshot.getCheckedLocations());
