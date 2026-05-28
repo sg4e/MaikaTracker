@@ -43,7 +43,14 @@ jar {
         )
     }
 
-    from(project(':FF4StatsLib').sourceSets.main.output)
+    def ff4Project = findProject(':FF4StatsLib')
+    if (ff4Project != null) {
+        def ff4CompileJava = ff4Project.tasks.findByName('compileJava')
+        if (ff4CompileJava != null) {
+            dependsOn ff4CompileJava
+            from(ff4CompileJava.destinationDirectory)
+        }
+    }
 
     from {
         configurations.runtimeClasspath
@@ -51,3 +58,5 @@ jar {
             .collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+
+
