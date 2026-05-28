@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+option java_package = "com.github.alttpo.sni";
+option java_multiple_files = true;
+
+service Devices {
+  rpc ListDevices(DevicesRequest) returns (DevicesResponse) {}
+}
+
+service DeviceMemory {
+  rpc SingleRead(SingleReadMemoryRequest) returns (SingleReadMemoryResponse) {}
+}
+
+enum AddressSpace {
+  FxPakPro = 0;
+  SnesABus = 1;
+  Raw = 2;
+}
+
+enum MemoryMapping {
+  Unknown = 0;
+  HiROM = 1;
+  LoROM = 2;
+  ExHiROM = 3;
+  SA1 = 4;
+}
+
+enum DeviceCapability {
+  None = 0;
+  ReadMemory = 1;
+}
+
+message DevicesRequest {
+  repeated string kinds = 1;
+}
+
+message DevicesResponse {
+  message Device {
+    string uri = 1;
+    string displayName = 2;
+    string kind = 3;
+    repeated DeviceCapability capabilities = 4;
+    AddressSpace defaultAddressSpace = 5;
+    string system = 6;
+  }
+
+  repeated Device devices = 1;
+}
+
+message ReadMemoryRequest {
+  uint32 requestAddress = 1;
+  AddressSpace requestAddressSpace = 2;
+  uint32 size = 3;
+  MemoryMapping requestMemoryMapping = 4;
+}
+
+message ReadMemoryResponse {
+  uint32 requestAddress = 1;
+  AddressSpace requestAddressSpace = 2;
+  uint32 deviceAddress = 3;
+  AddressSpace deviceAddressSpace = 4;
+  bytes data = 5;
+  MemoryMapping requestMemoryMapping = 6;
+}
+
+message SingleReadMemoryRequest {
+  string uri = 1;
+  ReadMemoryRequest request = 2;
+}
+
+message SingleReadMemoryResponse {
+  string uri = 1;
+  ReadMemoryResponse response = 2;
+}
