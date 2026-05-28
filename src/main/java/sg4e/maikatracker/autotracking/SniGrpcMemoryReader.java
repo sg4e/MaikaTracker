@@ -47,20 +47,19 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
     @Override
     public synchronized byte[] read(int snesAddress, int length) throws IOException {
         DevicesResponse.Device device = resolveDevice();
-        ReadMemoryRequest request = buildRequest(device, snesAddress, length);
-        SingleReadMemoryResponse response = memoryStub.singleRead(SingleReadMemoryRequest.newBuilder()
-                .setUri(device.getUri())
-                .setRequest(request)
-                .build());
-        byte[] data = response.getResponse().getData().toByteArray();
-        if (data.length != length) {
-            throw new IOException("Expected " + length + " bytes but received " + data.length);
+        AddressMode mode = resolveMode(device);
+
+        byte[] primary = singleRead(device.getUri(), buildRequest(device, snesAddress, length, mode), length);
+        if (mode == AddressMode.FXPAKPRO && isAllZero(primary)) {
+            byte[] fallback = singleRead(device.getUri(), buildRequest(device, snesAddress, length, AddressMode.SNES_ABUS), length);
+            if (!isAllZero(fallback)) {
+                return fallback;
+            }
         }
-        return data;
+        return primary;
     }
 
-    private ReadMemoryRequest buildRequest(DevicesResponse.Device device, int snesAddress, int length) throws IOException {
-        AddressMode mode = resolveMode(device);
+    private ReadMemoryRequest buildRequest(DevicesResponse.Device device, int snesAddress, int length, AddressMode mode) throws IOException {
         ReadMemoryRequest.Builder builder = ReadMemoryRequest.newBuilder().setSize(length);
 
         switch (mode) {
@@ -81,6 +80,25 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
         return builder.build();
     }
 
+
+    private byte[] singleRead(String uri, ReadMemoryRequest request, int length) throws IOException {
+        SingleReadMemoryResponse response = memoryStub.singleRead(SingleReadMemoryRequest.newBuilder()
+                .setUri(uri)
+                .setRequest(request)
+                .build());
+        byte[] data = response.getResponse().getData().toByteArray();
+        if (data.length != length) {
+            throw new IOException("Expected " + length + " bytes but received " + data.length);
+        }
+        return data;
+    }
+
+    private boolean isAllZero(byte[] data) {
+        for (byte b : data) {
+            if (b != 0) return false;
+        }
+        return true;
+    }
     private AddressMode resolveMode(DevicesResponse.Device device) {
         if (addressMode != AddressMode.AUTO) return addressMode;
         if ("retroarch".equals(device.getKind())) return AddressMode.RAW;
