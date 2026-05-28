@@ -11,7 +11,7 @@ public class SniTrackerDecoderTest {
         byte[] found = new byte[] {0b00000011, 0, 0};
         byte[] used = new byte[] {0b00000010, 0, 0};
         byte[] checked = new byte[16];
-        checked[0] = (byte) 0b00000011;
+        checked[4] = (byte) 0b00000011;
         checked[15] = (byte) 0b10000000; // unmapped ignored
 
         SniTrackerSnapshot snap = decoder.decode(found, used, checked);
