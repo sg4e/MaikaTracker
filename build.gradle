@@ -16,7 +16,7 @@ repositories {
 configurations.all {
     if (file("../FF4StatsLib").exists()) {
         resolutionStrategy.dependencySubstitution {
-            substitute module("com.github.sg4e:FF4StatsLib:master-SNAPSHOT") with project(":FF4StatsLib")
+            substitute(module("com.github.sg4e:FF4StatsLib:master-SNAPSHOT")).using(project(":FF4StatsLib"))
         }
     }
 }
