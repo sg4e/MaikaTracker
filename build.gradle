@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-log4j12:1.7.36'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.1'
     implementation 'com.google.guava:guava:33.6.0-jre'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.7'
     implementation 'com.github.sg4e:FF4StatsLib:master-SNAPSHOT'
 
     testImplementation 'junit:junit:4.13.2'
