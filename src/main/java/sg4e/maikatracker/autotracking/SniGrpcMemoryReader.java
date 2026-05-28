@@ -84,6 +84,7 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
     private AddressMode resolveMode(DevicesResponse.Device device) {
         if (addressMode != AddressMode.AUTO) return addressMode;
         if ("retroarch".equals(device.getKind())) return AddressMode.RAW;
+        if ("fxpakpro".equals(device.getKind())) return AddressMode.FXPAKPRO;
         return AddressMode.SNES_ABUS;
     }
 
