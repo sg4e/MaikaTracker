@@ -16,7 +16,7 @@
  */
 package sg4e.maikatracker;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -247,7 +247,7 @@ public class KeyItemPanel extends JPanel {
     }
     
     public void setLocationInShop(ShopPanel panel) {
-        if(metadata != KeyItemMetadata.PASS || Objects.equal(shopPanel, panel))
+        if(metadata != KeyItemMetadata.PASS || Objects.equals(shopPanel, panel))
             return;
         
         if(isKnown())
