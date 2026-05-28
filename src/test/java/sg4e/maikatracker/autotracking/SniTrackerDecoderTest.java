@@ -15,9 +15,9 @@ public class SniTrackerDecoderTest {
         checked[15] = (byte) 0b10000000; // unmapped ignored
 
         SniTrackerSnapshot snap = decoder.decode(found, used, checked);
-        Assert.assertTrue(snap.getFound().contains(KeyItemMetadata.CRYSTAL));
-        Assert.assertTrue(snap.getFound().contains(KeyItemMetadata.PASS));
-        Assert.assertTrue(snap.getUsed().contains(KeyItemMetadata.PASS));
+        Assert.assertTrue(snap.getFound().contains(KeyItemMetadata.PACKAGE));
+        Assert.assertTrue(snap.getFound().contains(KeyItemMetadata.SAND_RUBY));
+        Assert.assertTrue(snap.getUsed().contains(KeyItemMetadata.SAND_RUBY));
         Assert.assertEquals(2, snap.getCheckedLocations().size());
     }
 

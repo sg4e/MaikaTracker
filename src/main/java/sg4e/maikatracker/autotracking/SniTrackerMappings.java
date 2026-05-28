@@ -12,8 +12,25 @@ public final class SniTrackerMappings {
     public static final Map<Integer, KeyItemLocation> LOCATION_BY_BIT;
     static {
         Map<Integer, KeyItemMetadata> keyItems = new HashMap<>();
-        KeyItemMetadata[] values = KeyItemMetadata.values();
-        for (int i = 0; i < values.length; i++) keyItems.put(i, values[i]);
+        // FE SNI bitfield order for found/used key items (bit 0 is Package, not Crystal).
+        keyItems.put(0, KeyItemMetadata.PACKAGE);
+        keyItems.put(1, KeyItemMetadata.SAND_RUBY);
+        keyItems.put(2, KeyItemMetadata.BARON_KEY);
+        keyItems.put(3, KeyItemMetadata.TWIN_HARP);
+        keyItems.put(4, KeyItemMetadata.EARTH);
+        keyItems.put(5, KeyItemMetadata.MAGMA_KEY);
+        keyItems.put(6, KeyItemMetadata.TOWER_KEY);
+        keyItems.put(7, KeyItemMetadata.HOOK);
+        keyItems.put(8, KeyItemMetadata.LUCA_KEY);
+        keyItems.put(9, KeyItemMetadata.DARKNESS);
+        keyItems.put(10, KeyItemMetadata.RAT_TAIL);
+        keyItems.put(11, KeyItemMetadata.PAN);
+        keyItems.put(12, KeyItemMetadata.ADAMANT);
+        keyItems.put(13, KeyItemMetadata.LEGEND);
+        keyItems.put(14, KeyItemMetadata.SPOON);
+        keyItems.put(15, KeyItemMetadata.PINK_TAIL);
+        keyItems.put(16, KeyItemMetadata.PASS);
+        keyItems.put(17, KeyItemMetadata.CRYSTAL);
         KEY_ITEM_BY_BIT = Collections.unmodifiableMap(keyItems);
 
         Map<Integer, KeyItemLocation> locations = new HashMap<>();
