@@ -15,17 +15,21 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class SniGrpcMemoryReader implements SniMemoryReader {
     private static final long SHUTDOWN_TIMEOUT_MS = 1000L;
 
+    private enum AddressMode { AUTO, SNES_ABUS, RAW, FXPAKPRO }
+
     private final ManagedChannel channel;
     private final DevicesGrpc.DevicesBlockingStub devicesStub;
     private final DeviceMemoryGrpc.DeviceMemoryBlockingStub memoryStub;
     private final String preferredDeviceUri;
+    private final AddressMode addressMode;
 
-    private volatile String cachedDeviceUri;
+    private volatile DevicesResponse.Device cachedDevice;
     private volatile MemoryMapping cachedMemoryMapping;
 
     public SniGrpcMemoryReader(String grpcTarget) {
@@ -37,21 +41,16 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
         this.devicesStub = DevicesGrpc.newBlockingStub(channel);
         this.memoryStub = DeviceMemoryGrpc.newBlockingStub(channel);
         this.preferredDeviceUri = preferredDeviceUri;
+        this.addressMode = parseMode(System.getenv("MAIKA_SNI_ADDRESS_MODE"));
     }
 
     @Override
     public synchronized byte[] read(int snesAddress, int length) throws IOException {
-        String uri = resolveDeviceUri();
-        MemoryMapping mapping = resolveMemoryMapping(uri);
-
+        DevicesResponse.Device device = resolveDevice();
+        ReadMemoryRequest request = buildRequest(device, snesAddress, length);
         SingleReadMemoryResponse response = memoryStub.singleRead(SingleReadMemoryRequest.newBuilder()
-                .setUri(uri)
-                .setRequest(ReadMemoryRequest.newBuilder()
-                        .setRequestAddress(snesAddress)
-                        .setRequestAddressSpace(AddressSpace.SnesABus)
-                        .setRequestMemoryMapping(mapping)
-                        .setSize(length)
-                        .build())
+                .setUri(device.getUri())
+                .setRequest(request)
                 .build());
         byte[] data = response.getResponse().getData().toByteArray();
         if (data.length != length) {
@@ -60,36 +59,63 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
         return data;
     }
 
-    private MemoryMapping resolveMemoryMapping(String uri) throws IOException {
-        if (uri.equals(cachedDeviceUri) && cachedMemoryMapping != null && cachedMemoryMapping != MemoryMapping.Unknown) {
-            return cachedMemoryMapping;
+    private ReadMemoryRequest buildRequest(DevicesResponse.Device device, int snesAddress, int length) throws IOException {
+        AddressMode mode = resolveMode(device);
+        ReadMemoryRequest.Builder builder = ReadMemoryRequest.newBuilder().setSize(length);
+
+        switch (mode) {
+            case RAW:
+                builder.setRequestAddressSpace(AddressSpace.Raw).setRequestAddress(snesAddress);
+                break;
+            case FXPAKPRO:
+                builder.setRequestAddressSpace(AddressSpace.FxPakPro).setRequestAddress(toFxPakProAddress(snesAddress));
+                break;
+            case SNES_ABUS:
+            default:
+                builder.setRequestAddressSpace(AddressSpace.SnesABus)
+                       .setRequestAddress(snesAddress)
+                       .setRequestMemoryMapping(resolveMemoryMapping(device.getUri()));
+                break;
         }
 
+        return builder.build();
+    }
+
+    private AddressMode resolveMode(DevicesResponse.Device device) {
+        if (addressMode != AddressMode.AUTO) return addressMode;
+        if ("retroarch".equals(device.getKind())) return AddressMode.RAW;
+        return AddressMode.SNES_ABUS;
+    }
+
+    private int toFxPakProAddress(int snesAddress) throws IOException {
+        if (snesAddress < 0x7E0000 || snesAddress > 0x7FFFFF) {
+            throw new IOException("FXPakPro mode currently supports WRAM addresses only: " + Integer.toHexString(snesAddress));
+        }
+        return 0xF50000 + (snesAddress - 0x7E0000);
+    }
+
+    private MemoryMapping resolveMemoryMapping(String uri) throws IOException {
+        if (cachedDevice != null && uri.equals(cachedDevice.getUri()) && cachedMemoryMapping != null && cachedMemoryMapping != MemoryMapping.Unknown) {
+            return cachedMemoryMapping;
+        }
         MemoryMapping mapping = memoryStub.mappingDetect(DetectMemoryMappingRequest.newBuilder().setUri(uri).build()).getMemoryMapping();
         if (mapping == null || mapping == MemoryMapping.Unknown) {
             throw new IOException("SNI MappingDetect returned Unknown mapping for device: " + uri);
         }
-
-        cachedDeviceUri = uri;
         cachedMemoryMapping = mapping;
         return mapping;
     }
 
-    private String resolveDeviceUri() throws IOException {
-        if (cachedDeviceUri != null && !cachedDeviceUri.isEmpty()) {
-            return cachedDeviceUri;
-        }
-
+    private DevicesResponse.Device resolveDevice() throws IOException {
+        if (cachedDevice != null) return cachedDevice;
         List<DevicesResponse.Device> devices = devicesStub.listDevices(DevicesRequest.newBuilder().build()).getDevicesList();
-        if (devices.isEmpty()) {
-            throw new IOException("No SNI devices available");
-        }
+        if (devices.isEmpty()) throw new IOException("No SNI devices available");
 
         if (preferredDeviceUri != null && !preferredDeviceUri.trim().isEmpty()) {
             for (DevicesResponse.Device device : devices) {
                 if (preferredDeviceUri.equals(device.getUri())) {
-                    cachedDeviceUri = device.getUri();
-                    return cachedDeviceUri;
+                    cachedDevice = device;
+                    return cachedDevice;
                 }
             }
             throw new IOException("Configured SNI device URI not found: " + preferredDeviceUri);
@@ -97,13 +123,22 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
 
         for (DevicesResponse.Device device : devices) {
             if (device.getCapabilitiesList().contains(DeviceCapability.ReadMemory)) {
-                cachedDeviceUri = device.getUri();
-                return cachedDeviceUri;
+                cachedDevice = device;
+                return cachedDevice;
             }
         }
 
-        cachedDeviceUri = devices.get(0).getUri();
-        return cachedDeviceUri;
+        cachedDevice = devices.get(0);
+        return cachedDevice;
+    }
+
+    private AddressMode parseMode(String value) {
+        if (value == null || value.trim().isEmpty()) return AddressMode.AUTO;
+        try {
+            return AddressMode.valueOf(value.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            return AddressMode.AUTO;
+        }
     }
 
     public void close() {
