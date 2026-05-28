@@ -43,7 +43,11 @@ jar {
         )
     }
 
+    dependsOn ':FF4StatsLib:jar'
+
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath
+            .findAll { it.exists() }
+            .collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
