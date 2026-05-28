@@ -73,7 +73,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableModel;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sg4e.ff4stats.fe.FlagSet;
@@ -2687,7 +2686,6 @@ public final class MaikaTracker extends javax.swing.JFrame {
         }
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            BasicConfigurator.configure();
             new MaikaTracker().setVisible(true);
             tracker.flagsTextField.setText(String.join(" ", args));
             tracker.resetButton.doClick();            
