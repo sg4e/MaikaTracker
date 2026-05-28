@@ -1,86 +1,77 @@
 syntax = "proto3";
 
+option go_package = "github.com/alttpo/sni/protos/sni";
+option csharp_namespace = "SNI";
 option java_package = "com.github.alttpo.sni";
 option java_multiple_files = true;
 
-service Devices {
-  rpc ListDevices(DevicesRequest) returns (DevicesResponse) {}
+service Devices { rpc ListDevices(DevicesRequest) returns (DevicesResponse) {} }
+service DeviceControl {
+  rpc ResetSystem(ResetSystemRequest) returns (ResetSystemResponse) {}
+  rpc ResetToMenu(ResetToMenuRequest) returns (ResetToMenuResponse) {}
+  rpc PauseUnpauseEmulation(PauseEmulationRequest) returns (PauseEmulationResponse) {}
+  rpc PauseToggleEmulation(PauseToggleEmulationRequest) returns (PauseToggleEmulationResponse) {}
 }
-
 service DeviceMemory {
   rpc MappingDetect(DetectMemoryMappingRequest) returns (DetectMemoryMappingResponse) {}
   rpc SingleRead(SingleReadMemoryRequest) returns (SingleReadMemoryResponse) {}
+  rpc SingleWrite(SingleWriteMemoryRequest) returns (SingleWriteMemoryResponse) {}
+  rpc MultiRead(MultiReadMemoryRequest) returns (MultiReadMemoryResponse) {}
+  rpc MultiWrite(MultiWriteMemoryRequest) returns (MultiWriteMemoryResponse) {}
+  rpc StreamRead(stream MultiReadMemoryRequest) returns (stream MultiReadMemoryResponse) {}
+  rpc StreamWrite(stream MultiWriteMemoryRequest) returns (stream MultiWriteMemoryResponse) {}
 }
-
-enum AddressSpace {
-  FxPakPro = 0;
-  SnesABus = 1;
-  Raw = 2;
+service DeviceFilesystem {
+  rpc ReadDirectory(ReadDirectoryRequest) returns (ReadDirectoryResponse) {}
+  rpc MakeDirectory(MakeDirectoryRequest) returns (MakeDirectoryResponse) {}
+  rpc RemoveFile(RemoveFileRequest) returns (RemoveFileResponse) {}
+  rpc RenameFile(RenameFileRequest) returns (RenameFileResponse) {}
+  rpc PutFile(PutFileRequest) returns (PutFileResponse) {}
+  rpc GetFile(GetFileRequest) returns (GetFileResponse) {}
+  rpc BootFile(BootFileRequest) returns (BootFileResponse) {}
 }
+service DeviceInfo { rpc FetchFields(FieldsRequest) returns (FieldsResponse) {} }
+service DeviceNWA { rpc NWACommand(NWACommandRequest) returns (NWACommandResponse) {} }
 
-enum MemoryMapping {
-  Unknown = 0;
-  HiROM = 1;
-  LoROM = 2;
-  ExHiROM = 3;
-  SA1 = 4;
-}
-
+enum AddressSpace { FxPakPro = 0; SnesABus = 1; Raw = 2; }
+enum MemoryMapping { Unknown = 0; HiROM = 1; LoROM = 2; ExHiROM = 3; SA1 = 4; }
 enum DeviceCapability {
-  None = 0;
-  ReadMemory = 1;
+  None = 0; ReadMemory = 1; WriteMemory = 2; ExecuteASM = 3; ResetSystem = 4; PauseUnpauseEmulation = 5; PauseToggleEmulation = 6; ResetToMenu = 7; FetchFields = 8;
+  ReadDirectory = 10; MakeDirectory = 11; RemoveFile = 12; RenameFile = 13; PutFile = 14; GetFile = 15; BootFile = 16; NWACommand = 20;
 }
+enum Field { DeviceName = 0; DeviceVersion = 1; DeviceStatus = 2; CoreName = 20; CoreVersion = 21; CorePlatform = 22; RomFileName = 40; RomHashType = 41; RomHashValue = 42; }
 
-message DevicesRequest {
-  repeated string kinds = 1;
-}
-
-message DevicesResponse {
-  message Device {
-    string uri = 1;
-    string displayName = 2;
-    string kind = 3;
-    repeated DeviceCapability capabilities = 4;
-    AddressSpace defaultAddressSpace = 5;
-    string system = 6;
-  }
-
-  repeated Device devices = 1;
-}
-
-message DetectMemoryMappingRequest {
-  string uri = 1;
-}
-
-message DetectMemoryMappingResponse {
-  string uri = 1;
-  MemoryMapping memoryMapping = 2;
-  bool confidence = 3;
-  bytes romHeader00FFB0 = 4;
-}
-
-message ReadMemoryRequest {
-  uint32 requestAddress = 1;
-  AddressSpace requestAddressSpace = 2;
-  uint32 size = 3;
-  MemoryMapping requestMemoryMapping = 4;
-}
-
-message ReadMemoryResponse {
-  uint32 requestAddress = 1;
-  AddressSpace requestAddressSpace = 2;
-  uint32 deviceAddress = 3;
-  AddressSpace deviceAddressSpace = 4;
-  bytes data = 5;
-  MemoryMapping requestMemoryMapping = 6;
-}
-
-message SingleReadMemoryRequest {
-  string uri = 1;
-  ReadMemoryRequest request = 2;
-}
-
-message SingleReadMemoryResponse {
-  string uri = 1;
-  ReadMemoryResponse response = 2;
-}
+message DevicesRequest { repeated string kinds = 1; }
+message DevicesResponse { message Device { string uri = 1; string displayName = 2; string kind = 3; repeated DeviceCapability capabilities = 4; AddressSpace defaultAddressSpace = 5; string system = 6 [deprecated = true]; } repeated Device devices = 1; }
+message ResetSystemRequest { string uri = 1; } message ResetSystemResponse { string uri = 1; }
+message ResetToMenuRequest { string uri = 1; } message ResetToMenuResponse { string uri = 1; }
+message PauseEmulationRequest { string uri = 1; bool paused = 2; } message PauseEmulationResponse { string uri = 1; bool paused = 2; }
+message PauseToggleEmulationRequest { string uri = 1; } message PauseToggleEmulationResponse { string uri = 1; }
+message DetectMemoryMappingRequest { string uri = 1; optional MemoryMapping fallbackMemoryMapping = 2; optional bytes romHeader00FFB0 = 3; }
+message DetectMemoryMappingResponse { string uri = 1; MemoryMapping memoryMapping = 2; bool confidence = 3; bytes romHeader00FFB0 = 4; }
+message ReadMemoryRequest { uint32 requestAddress = 1; AddressSpace requestAddressSpace = 2; MemoryMapping requestMemoryMapping = 4; uint32 size = 3; }
+message ReadMemoryResponse { uint32 requestAddress = 1; AddressSpace requestAddressSpace = 2; MemoryMapping requestMemoryMapping = 6; uint32 deviceAddress = 3; AddressSpace deviceAddressSpace = 4; bytes data = 5; }
+message WriteMemoryRequest { uint32 requestAddress = 1; AddressSpace requestAddressSpace = 2; MemoryMapping requestMemoryMapping = 4; bytes data = 3; }
+message WriteMemoryResponse { uint32 requestAddress = 1; AddressSpace requestAddressSpace = 2; MemoryMapping requestMemoryMapping = 6; uint32 deviceAddress = 3; AddressSpace deviceAddressSpace = 4; uint32 size = 5; }
+message SingleReadMemoryRequest { string uri = 1; ReadMemoryRequest request = 2; }
+message SingleReadMemoryResponse { string uri = 1; ReadMemoryResponse response = 2; }
+message SingleWriteMemoryRequest { string uri = 1; WriteMemoryRequest request = 2; }
+message SingleWriteMemoryResponse { string uri = 1; WriteMemoryResponse response = 2; }
+message MultiReadMemoryRequest { string uri = 1; repeated ReadMemoryRequest requests = 2; }
+message MultiReadMemoryResponse { string uri = 1; repeated ReadMemoryResponse responses = 2; }
+message MultiWriteMemoryRequest { string uri = 1; repeated WriteMemoryRequest requests = 2; }
+message MultiWriteMemoryResponse { string uri = 1; repeated WriteMemoryResponse responses = 2; }
+message ReadDirectoryRequest { string uri = 1; string path = 2; }
+enum DirEntryType { Directory = 0; File = 1; }
+message DirEntry { string name = 1; DirEntryType type = 2; }
+message ReadDirectoryResponse { string uri = 1; string path = 2; repeated DirEntry entries = 3; }
+message MakeDirectoryRequest { string uri = 1; string path = 2; } message MakeDirectoryResponse { string uri = 1; string path = 2; }
+message RemoveFileRequest { string uri = 1; string path = 2; } message RemoveFileResponse { string uri = 1; string path = 2; }
+message RenameFileRequest { string uri = 1; string path = 2; string newFilename = 3; } message RenameFileResponse { string uri = 1; string path = 2; string newFilename = 3; }
+message PutFileRequest { string uri = 1; string path = 2; bytes data = 3; } message PutFileResponse { string uri = 1; string path = 2; uint32 size = 3; }
+message GetFileRequest { string uri = 1; string path = 2; } message GetFileResponse { string uri = 1; string path = 2; uint32 size = 3; bytes data = 4; }
+message BootFileRequest { string uri = 1; string path = 2; } message BootFileResponse { string uri = 1; string path = 2; }
+message FieldsRequest { string uri = 1; repeated Field fields = 2; }
+message FieldsResponse { string uri = 1; repeated Field fields = 2; repeated string values = 3; }
+message NWACommandRequest { string uri = 1; string command = 2; string args = 3; optional bytes binaryArg = 4; }
+message NWACommandResponse { message NWAASCIIItem { map<string, string> item = 1; } string uri = 1; repeated NWAASCIIItem asciiReply = 2; optional bytes binaryReplay = 3; }
