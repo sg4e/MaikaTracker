@@ -3,9 +3,11 @@ package sg4e.maikatracker.autotracking;
 import com.github.alttpo.sni.AddressSpace;
 import com.github.alttpo.sni.DeviceCapability;
 import com.github.alttpo.sni.DeviceMemoryGrpc;
+import com.github.alttpo.sni.DetectMemoryMappingRequest;
 import com.github.alttpo.sni.DevicesGrpc;
 import com.github.alttpo.sni.DevicesRequest;
 import com.github.alttpo.sni.DevicesResponse;
+import com.github.alttpo.sni.MemoryMapping;
 import com.github.alttpo.sni.ReadMemoryRequest;
 import com.github.alttpo.sni.SingleReadMemoryRequest;
 import com.github.alttpo.sni.SingleReadMemoryResponse;
@@ -23,6 +25,9 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
     private final DeviceMemoryGrpc.DeviceMemoryBlockingStub memoryStub;
     private final String preferredDeviceUri;
 
+    private volatile String cachedDeviceUri;
+    private volatile MemoryMapping cachedMemoryMapping;
+
     public SniGrpcMemoryReader(String grpcTarget) {
         this(grpcTarget, System.getenv("MAIKA_SNI_DEVICE_URI"));
     }
@@ -35,13 +40,16 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
     }
 
     @Override
-    public byte[] read(int snesAddress, int length) throws IOException {
+    public synchronized byte[] read(int snesAddress, int length) throws IOException {
         String uri = resolveDeviceUri();
+        MemoryMapping mapping = resolveMemoryMapping(uri);
+
         SingleReadMemoryResponse response = memoryStub.singleRead(SingleReadMemoryRequest.newBuilder()
                 .setUri(uri)
                 .setRequest(ReadMemoryRequest.newBuilder()
                         .setRequestAddress(snesAddress)
                         .setRequestAddressSpace(AddressSpace.SnesABus)
+                        .setRequestMemoryMapping(mapping)
                         .setSize(length)
                         .build())
                 .build());
@@ -52,7 +60,26 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
         return data;
     }
 
+    private MemoryMapping resolveMemoryMapping(String uri) throws IOException {
+        if (uri.equals(cachedDeviceUri) && cachedMemoryMapping != null && cachedMemoryMapping != MemoryMapping.Unknown) {
+            return cachedMemoryMapping;
+        }
+
+        MemoryMapping mapping = memoryStub.mappingDetect(DetectMemoryMappingRequest.newBuilder().setUri(uri).build()).getMemoryMapping();
+        if (mapping == null || mapping == MemoryMapping.Unknown) {
+            throw new IOException("SNI MappingDetect returned Unknown mapping for device: " + uri);
+        }
+
+        cachedDeviceUri = uri;
+        cachedMemoryMapping = mapping;
+        return mapping;
+    }
+
     private String resolveDeviceUri() throws IOException {
+        if (cachedDeviceUri != null && !cachedDeviceUri.isEmpty()) {
+            return cachedDeviceUri;
+        }
+
         List<DevicesResponse.Device> devices = devicesStub.listDevices(DevicesRequest.newBuilder().build()).getDevicesList();
         if (devices.isEmpty()) {
             throw new IOException("No SNI devices available");
@@ -61,7 +88,8 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
         if (preferredDeviceUri != null && !preferredDeviceUri.trim().isEmpty()) {
             for (DevicesResponse.Device device : devices) {
                 if (preferredDeviceUri.equals(device.getUri())) {
-                    return device.getUri();
+                    cachedDeviceUri = device.getUri();
+                    return cachedDeviceUri;
                 }
             }
             throw new IOException("Configured SNI device URI not found: " + preferredDeviceUri);
@@ -69,11 +97,13 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
 
         for (DevicesResponse.Device device : devices) {
             if (device.getCapabilitiesList().contains(DeviceCapability.ReadMemory)) {
-                return device.getUri();
+                cachedDeviceUri = device.getUri();
+                return cachedDeviceUri;
             }
         }
 
-        return devices.get(0).getUri();
+        cachedDeviceUri = devices.get(0).getUri();
+        return cachedDeviceUri;
     }
 
     public void close() {
