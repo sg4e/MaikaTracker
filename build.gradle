@@ -43,7 +43,11 @@ jar {
         )
     }
 
+    from(project(':FF4StatsLib').sourceSets.main.output)
+
     from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath
+            .findAll { it.exists() && !it.path.contains('/FF4StatsLib/build/libs/') }
+            .collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
