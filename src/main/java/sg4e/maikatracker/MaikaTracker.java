@@ -57,6 +57,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.swing.JCheckBox;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
@@ -81,6 +82,9 @@ import sg4e.ff4stats.fe.KeyItem;
 import sg4e.ff4stats.fe.KeyItemLocation;
 import sg4e.ff4stats.party.LevelData;
 import sg4e.ff4stats.party.PartyMember;
+import sg4e.maikatracker.integration.AutoTrackerService;
+import sg4e.maikatracker.integration.FeTrackerSnapshot;
+import sg4e.maikatracker.integration.MemoryReader;
 
 /**
  *
@@ -150,8 +154,11 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     private final DemoLabel checkedKeyItemLabel;
     private static final String CHECKED_KEYITEM_ID = "AllowCheckedKeyItems";
-    
-    
+    private static final String AUTOTRACKING_ENABLED_ID = "AutoTrackingEnabled";
+
+    private AutoTrackerService autoTrackerService;
+    private JCheckBox autoTrackingEnabledCheckBox;
+
     private static final List<BossLabel> bossLabels = new ArrayList<>();
     
     private final Preferences prefs;
@@ -195,6 +202,18 @@ public final class MaikaTracker extends javax.swing.JFrame {
         logicPanel = new JPanel();
         logicPanel.setLayout(new GridLayout(0, 2));
         logicTabPanel.add(logicPanel);
+
+        autoTrackingEnabledCheckBox = new JCheckBox("Enable Auto-Tracking (QUSB2Snes)");
+        autoTrackingEnabledCheckBox.setSelected(prefs.getBoolean(AUTOTRACKING_ENABLED_ID, false));
+        autoTrackingEnabledCheckBox.addActionListener((ae) -> {
+            if (autoTrackerService != null) {
+                autoTrackerService.setEnabled(autoTrackingEnabledCheckBox.isSelected());
+            }
+            prefs.putBoolean(AUTOTRACKING_ENABLED_ID, autoTrackingEnabledCheckBox.isSelected());
+        });
+        logicPanel.add(autoTrackingEnabledCheckBox);
+
+        initializeAutoTrackerService();
         
         //add party characters
         PartyLabel.tracker = this;
@@ -857,6 +876,32 @@ public final class MaikaTracker extends javax.swing.JFrame {
         return kiMenu;
     }
     
+
+    private void initializeAutoTrackerService() {
+        MemoryReader unsupportedReader = (address, length) -> {
+            throw new UnsupportedOperationException("QUSB2Snes reader is not configured.");
+        };
+        autoTrackerService = new AutoTrackerService(unsupportedReader, this::applyAutoTrackerSnapshot);
+        autoTrackerService.setEnabled(autoTrackingEnabledCheckBox.isSelected());
+    }
+
+    public void applyAutoTrackerSnapshot(FeTrackerSnapshot snapshot) {
+        getKeyItemPanels().forEach(panel -> {
+            int state = 0;
+            if (snapshot.getFound().contains(panel.getKeyItem())) {
+                state = 1;
+            }
+            if (snapshot.getUsed().contains(panel.getKeyItem())) {
+                state = 2;
+            }
+            panel.setState(state);
+        });
+
+        locationsVisited.clear();
+        locationsVisited.addAll(snapshot.getCheckedLocations());
+        updateKeyItemCountLabel();
+        updateLogic();
+    }
     public void updateKeyItemCountLabel() {
         keyItemCountLabel.setText("Key Items: " + getKeyItemCount());
         Boolean keyItemBonusXP = flagsetContains("Xk") || (flagsetContainsAny("Kmain", "Kvanilla") && !flagsetContains("-vanilla:exp"));
