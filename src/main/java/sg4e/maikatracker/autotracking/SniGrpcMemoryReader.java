@@ -67,7 +67,14 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
                 builder.setRequestAddressSpace(AddressSpace.Raw).setRequestAddress(snesAddress);
                 break;
             case FXPAKPRO:
-                builder.setRequestAddressSpace(AddressSpace.FxPakPro).setRequestAddress(toFxPakProAddress(snesAddress));
+                Integer fxAddress = toFxPakProAddressOrNull(snesAddress);
+                if (fxAddress != null) {
+                    builder.setRequestAddressSpace(AddressSpace.FxPakPro).setRequestAddress(fxAddress);
+                } else {
+                    builder.setRequestAddressSpace(AddressSpace.SnesABus)
+                           .setRequestAddress(snesAddress)
+                           .setRequestMemoryMapping(resolveMemoryMapping(device.getUri()));
+                }
                 break;
             case SNES_ABUS:
             default:
@@ -106,11 +113,11 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
         return AddressMode.SNES_ABUS;
     }
 
-    private int toFxPakProAddress(int snesAddress) throws IOException {
-        if (snesAddress < 0x7E0000 || snesAddress > 0x7FFFFF) {
-            throw new IOException("FXPakPro mode currently supports WRAM addresses only: " + Integer.toHexString(snesAddress));
+    private Integer toFxPakProAddressOrNull(int snesAddress) {
+        if (snesAddress >= 0x7E0000 && snesAddress <= 0x7FFFFF) {
+            return 0xF50000 + (snesAddress - 0x7E0000);
         }
-        return 0xF50000 + (snesAddress - 0x7E0000);
+        return null;
     }
 
     private MemoryMapping resolveMemoryMapping(String uri) throws IOException {
