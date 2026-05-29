@@ -14,6 +14,8 @@ import com.github.alttpo.sni.SingleReadMemoryResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -37,11 +39,46 @@ public class SniGrpcMemoryReader implements SniMemoryReader {
     }
 
     public SniGrpcMemoryReader(String grpcTarget, String preferredDeviceUri) {
-        this.channel = ManagedChannelBuilder.forTarget(grpcTarget).usePlaintext().build();
+        this.channel = channelBuilder(grpcTarget).usePlaintext().build();
         this.devicesStub = DevicesGrpc.newBlockingStub(channel);
         this.memoryStub = DeviceMemoryGrpc.newBlockingStub(channel);
         this.preferredDeviceUri = preferredDeviceUri;
         this.addressMode = parseMode(System.getenv("MAIKA_SNI_ADDRESS_MODE"));
+    }
+
+    private ManagedChannelBuilder<?> channelBuilder(String grpcTarget) {
+        HostAndPort hostAndPort = parseHostAndPort(grpcTarget);
+        if (hostAndPort != null) {
+            return ManagedChannelBuilder.forAddress(hostAndPort.host, hostAndPort.port);
+        }
+        return ManagedChannelBuilder.forTarget(grpcTarget);
+    }
+
+    private HostAndPort parseHostAndPort(String grpcTarget) {
+        if (grpcTarget == null || grpcTarget.trim().isEmpty()) return null;
+        String target = grpcTarget.trim();
+        if (target.contains(":///")) return null;
+
+        try {
+            URI uri = new URI("sni://" + target);
+            if (uri.getHost() != null && uri.getPort() > 0 && (uri.getPath() == null || uri.getPath().isEmpty())) {
+                return new HostAndPort(uri.getHost(), uri.getPort());
+            }
+        } catch (URISyntaxException ex) {
+            return null;
+        }
+
+        return null;
+    }
+
+    private static final class HostAndPort {
+        private final String host;
+        private final int port;
+
+        private HostAndPort(String host, int port) {
+            this.host = host;
+            this.port = port;
+        }
     }
 
     @Override
