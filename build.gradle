@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.google.protobuf' version '0.9.4'
+    id 'com.gradleup.shadow' version '8.3.9'
 }
 
 java {
@@ -41,21 +42,20 @@ application {
     mainClass = 'sg4e.maikatracker.MaikaTracker'
 }
 
-jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+tasks.named('jar', Jar) {
+    archiveClassifier = 'plain'
+    dependsOn tasks.named('shadowJar')
+}
+
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveClassifier = ''
+    mergeServiceFiles()
+
     manifest {
         attributes(
             'Main-Class': application.mainClass.get(),
             'Multi-Release': 'true'
         )
-    }
-
-    dependsOn ':FF4StatsLib:jar'
-
-    from {
-        configurations.runtimeClasspath
-            .findAll { it.exists() }
-            .collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
