@@ -661,10 +661,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
                     createLocationPanel(l, flagsetContainsAny("Km", "Kmoon"));
                     break;
                 case TOROIA:
-                    createLocationPanel(l, flagset == null || !flagsetContainsAny("Nk", "Nkey"));
+                    createLocationPanel(l, flagset == null || !flagsetContainsAny("Nk", "Nkey", "Knofree"));
                     break;
                 case MIST:
-                    createLocationPanel(l, flagsetContainsAny("Nk", "Nkey"));
+                    createLocationPanel(l, flagsetContainsAny("Nk", "Nkey", "Knofree"));
                     break;
                 case KOKKOL:
                     createLocationPanel(l, flagsetContains("V1"));
@@ -744,10 +744,10 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         
-        if(!flagsetContainsAny("Nk", "Nkey"))
+        if(!flagsetContainsAny("Nk", "Nkey", "Knofree"))
             knownLocations.add(KeyItemLocation.MIST);
         
-        if (flagsetContainsAny(false, "Nk", "Nkey"))
+        if (flagsetContainsAny(false, "Nk", "Nkey", "Knofree"))
             knownLocations.add(KeyItemLocation.TOROIA);
         
         if(!flagsetContainsAny("Kq", "Ksummon")) {

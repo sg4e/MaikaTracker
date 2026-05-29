@@ -404,7 +404,7 @@ public class KeyItemPanel extends JPanel {
                 case TWIN_HARP:
                     if(tracker.flagset == null)
                         break;
-                    setLocation(tracker.flagsetContainsAny("Nk", "Nkey") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
+                    setLocation(tracker.flagsetContainsAny("Nk", "Nkey", "Knofree") ? KeyItemLocation.MIST : KeyItemLocation.TOROIA);
                     break;
             }
         }
