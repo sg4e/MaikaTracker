@@ -47,6 +47,10 @@ The `.jar` binary will be output to `MaikaTracker/build/libs`.
 
 For now, MaikaTracker logs all error output to `stdout`. MaikaTracker can be run from command line as `java -jar MaikaTracker.jar`.
 
+## Developer documentation
+
+Detailed architecture, flag-versioning, persistence, build, and SNI autotracking documentation is available in [`docs/README.md`](docs/README.md).
+
 ## Code contributions
 
 MaikaTracker is a project I enjoy working on and experimenting with new features as I come up with ideas playing FF4FE. Pull requests for bug fixes are appreciated, but pull requests with new features or redesign may be declined if they may be hard to maintain with features in new releases or simply because I have an idea for a different approach I'd like to take on in the future. Developers are more than welcome to fork and share their own variations of MaikaTracker as indicated in the [license](https://github.com/sg4e/MaikaTracker/blob/master/LICENSE.txt).
