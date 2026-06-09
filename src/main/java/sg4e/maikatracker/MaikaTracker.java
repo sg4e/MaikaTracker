@@ -80,6 +80,11 @@ import sg4e.ff4stats.fe.KeyItem;
 import sg4e.ff4stats.fe.KeyItemLocation;
 import sg4e.ff4stats.party.LevelData;
 import sg4e.ff4stats.party.PartyMember;
+import sg4e.maikatracker.autotracking.SniAutoTrackerService;
+import sg4e.maikatracker.autotracking.SniMemoryReader;
+import sg4e.maikatracker.autotracking.SniTrackerDecoder;
+import sg4e.maikatracker.autotracking.SniTrackerSnapshot;
+import sg4e.maikatracker.autotracking.SniGrpcMemoryReader;
 
 /**
  *
@@ -149,6 +154,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     
     private final DemoLabel checkedKeyItemLabel;
     private static final String CHECKED_KEYITEM_ID = "AllowCheckedKeyItems";
+    private static final String AUTO_TRACKING_ENABLED_ID = "AutoTrackingEnabled";
     
     
     private static final List<BossLabel> bossLabels = new ArrayList<>();
@@ -167,6 +173,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     public FlagSet flagset = null;
     
     private static JsonFiles jsonFiles = new JsonFiles();
+    private final SniAutoTrackerService autoTrackerService;
     private static TextFiles textFiles = new TextFiles();
     
     private final JFileChooser fileChooser = new JFileChooser();
@@ -181,6 +188,9 @@ public final class MaikaTracker extends javax.swing.JFrame {
         initComponents();        
         showBinaryFlagsButton.setText("Show Binary Flags");
         prefs = Preferences.userRoot().node(this.getClass().getName());
+        String sniGrpcTarget = System.getenv().getOrDefault("MAIKA_SNI_GRPC_TARGET", "127.0.0.1:8191");
+        SniMemoryReader sniReader = new SniGrpcMemoryReader(sniGrpcTarget);
+        autoTrackerService = new SniAutoTrackerService(sniReader, new SniTrackerDecoder(), this::applyAutoTrackerSnapshot, 1000);
         Map<Battle, Formation> bosses = Battle.getAllBosses();
         List<String> bossNames = bosses.keySet().stream().map(Battle::getBoss).distinct().collect(Collectors.toList());
         List<String> positions = bosses.keySet().stream().map(Battle::getPosition).distinct().collect(Collectors.toList());
@@ -230,6 +240,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         checkedKeyItemLabel = loadCheckedDemoLabel(1);
         allowCheckedKeyItems.setSelected(!prefs.getBoolean(CHECKED_KEYITEM_ID, allowCheckedKeyItems.isSelected()));
         allowCheckedKeyItems.doClick();
+        enableAutoTrackingCheckBox.setSelected(prefs.getBoolean(AUTO_TRACKING_ENABLED_ID, false));
+        autoTrackerService.setEnabled(enableAutoTrackingCheckBox.isSelected());
         
         //add maps
         final String zot = "zot";
@@ -1191,6 +1203,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
         checkedBossIconPanel = new javax.swing.JPanel();
         allowCheckedBosses = new javax.swing.JCheckBox();
         allowCheckedKeyItems = new javax.swing.JCheckBox();
+        enableAutoTrackingCheckBox = new javax.swing.JCheckBox();
         checkedDarknessSlider = new javax.swing.JSlider();
         saveLoadPanel = new javax.swing.JPanel();
         saveDataButton = new javax.swing.JButton();
@@ -1731,6 +1744,13 @@ public final class MaikaTracker extends javax.swing.JFrame {
             }
         });
 
+        enableAutoTrackingCheckBox.setText("Enable Auto-Tracking (SNI)");
+        enableAutoTrackingCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableAutoTrackingCheckBoxActionPerformed(evt);
+            }
+        });
+
         allowCheckedKeyItems.setSelected(true);
         allowCheckedKeyItems.setText("Allow Checked Key Items");
         allowCheckedKeyItems.addActionListener(new java.awt.event.ActionListener() {
@@ -1764,6 +1784,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
                     .addComponent(checkedDarknessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(checkedIconSettingPanelLayout.createSequentialGroup()
                         .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(enableAutoTrackingCheckBox)
                             .addComponent(allowCheckedKeyItems)
                             .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
@@ -1779,6 +1800,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
                 .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(allowCheckedKeyItems)
                     .addComponent(allowCheckedBosses))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(enableAutoTrackingCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(checkedIconSettingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(checkedKeyItemsIconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2023,6 +2046,32 @@ public final class MaikaTracker extends javax.swing.JFrame {
             allowCheckedBosses.setVisible(false);
         checkedDarknessSlider.setVisible(allowCheckedBosses.isSelected() || allowCheckedKeyItems.isSelected());
     }//GEN-LAST:event_allowCheckedBossesActionPerformed
+
+    private void enableAutoTrackingCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
+        prefs.putBoolean(AUTO_TRACKING_ENABLED_ID, enableAutoTrackingCheckBox.isSelected());
+        autoTrackerService.setEnabled(enableAutoTrackingCheckBox.isSelected());
+    }
+
+    public void applyAutoTrackerSnapshot(SniTrackerSnapshot snapshot) {
+        SwingUtilities.invokeLater(() -> {
+            if (!enableAutoTrackingCheckBox.isSelected()) return;
+            getKeyItemPanels().forEach(panel -> {
+                boolean found = snapshot.getFound().contains(panel.getKeyItem());
+                boolean used = snapshot.getUsed().contains(panel.getKeyItem());
+                panel.setState(found ? (used && allowCheckedKeyItems.isSelected() ? 2 : 1) : 0);
+                if (found) {
+                    KeyItemLocation foundLocation = snapshot.getFoundLocations().get(panel.getKeyItem());
+                    if (foundLocation != null) {
+                        panel.setLocation(foundLocation);
+                    }
+                }
+            });
+            locationsVisited.clear();
+            locationsVisited.addAll(snapshot.getCheckedLocations());
+            updateKeyItemCountLabel();
+            updateLogic();
+        });
+    }
 
     private void allowCheckedKeyItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allowCheckedKeyItemsActionPerformed
         getKeyItemPanels().forEach(panel -> panel.setCheckedKeyItem(allowCheckedKeyItems.isSelected()));
@@ -2700,6 +2749,7 @@ public final class MaikaTracker extends javax.swing.JFrame {
     private javax.swing.JLabel agartShopLabel;
     private javax.swing.JCheckBox allowCheckedBosses;
     private javax.swing.JCheckBox allowCheckedKeyItems;
+    private javax.swing.JCheckBox enableAutoTrackingCheckBox;
     private javax.swing.JButton applyFlagsButton;
     private javax.swing.JButton backgroundColorButton;
     private javax.swing.JPanel backgroundColorPanel;
