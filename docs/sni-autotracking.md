@@ -172,8 +172,8 @@ Unknown/unmapped set bits are ignored.
 
 | A-bus start | Length | Shape | Meaning |
 | --- | ---: | --- | --- |
-| `$7E1500` | 3 bytes | 24-bit little bitfield | Found key items. Only indices 0–17 are mapped. |
-| `$7E1503` | 3 bytes | 24-bit little bitfield | Used key items, in the same key-item order. Only indices 0–17 are mapped. |
+| `$7E1500` | 3 bytes | 24-bit little bitfield | Found key items. Only indices 0–16 are mapped. |
+| `$7E1503` | 3 bytes | 24-bit little bitfield | Used key items, in the same key-item order. Only indices 0–16 are mapped. |
 | `$7E1510` | 16 bytes | 128-bit little bitfield | Checked location/event indices. Only explicitly mapped indices are consumed. |
 | `$707080` | 34 bytes | 17 little-endian unsigned 16-bit records | For item slot `i`, the location/event index where that key item was found. |
 
@@ -187,23 +187,22 @@ The same mapping applies to `$7E1500` and `$7E1503`. A set bit means the corresp
 | ---: | --- | --- |
 | `0` | `0.0` | Package |
 | `1` | `0.1` | Sand Ruby |
-| `2` | `0.2` | Baron Key |
-| `3` | `0.3` | Twin Harp |
-| `4` | `0.4` | Earth Crystal |
-| `5` | `0.5` | Magma Key |
-| `6` | `0.6` | Tower Key |
-| `7` | `0.7` | Hook |
-| `8` | `1.0` | Luca Key |
-| `9` | `1.1` | Darkness Crystal |
-| `10` | `1.2` | Rat Tail |
-| `11` | `1.3` | Pan |
+| `2` | `0.2` | Legend |
+| `3` | `0.3` | Baron Key |
+| `4` | `0.4` | Twin Harp |
+| `5` | `0.5` | Earth |
+| `6` | `0.6` | Magma Key |
+| `7` | `0.7` | Tower Key |
+| `8` | `1.0` | Hook |
+| `9` | `1.1` | Luca Key |
+| `10` | `1.2` | Darkness |
+| `11` | `1.3` | Rat Tail |
 | `12` | `1.4` | Adamant |
-| `13` | `1.5` | Legend Sword |
+| `13` | `1.5` | Pan |
 | `14` | `1.6` | Spoon |
 | `15` | `1.7` | Pink Tail |
-| `16` | `2.0` | Pass |
-| `17` | `2.1` | Crystal |
-| `18–23` | `2.2–2.7` | Unmapped/ignored |
+| `16` | `2.0` | Crystal |
+| `17–23` | `2.1–2.7` | Unmapped/ignored |
 
 The decoder does not enforce `used ⊆ found`; it faithfully emits both sets. The UI only displays a used/check state for an item if `found` is also set, because snapshot application chooses state zero when not found.
 
@@ -222,18 +221,18 @@ The 16-byte field at `$7E1510` can represent global indices `0x00..0x7F`, but Ma
 | `0x26` | `4.6` | TOROIA |
 | `0x27` | `4.7` | DARK_ELF |
 | `0x28` | `5.0` | ZOT |
-| `0x29` | `5.1` | LOW_BABIL |
-| `0x2A` | `5.2` | TOP_BABIL |
+| `0x29` | `5.1` | TOP_BABIL |
+| `0x2A` | `5.2` | LOW_BABIL |
 | `0x2B` | `5.3` | DWARF_CASTLE |
 | `0x2C` | `5.4` | SEALED_CAVE |
-| `0x2D` | `5.5` | SYLPH |
+| `0x2D` | `5.5` | SUMMONED_MONSTERS_CHEST |
 | `0x2E` | `5.6` | RAT_TAIL |
 | `0x2F` | `5.7` | SHEILA_PANLESS |
 | `0x30` | `6.0` | SHEILA_PAN |
 | `0x31` | `6.1` | ASURA |
 | `0x32` | `6.2` | LEVIATAN *(enum spelling)* |
 | `0x33` | `6.3` | ODIN |
-| `0x34` | `6.4` | SUMMONED_MONSTERS_CHEST |
+| `0x34` | `6.4` | SYLPH |
 | `0x35` | `6.5` | BAHAMUT |
 | `0x36` | `6.6` | PALE_DIM |
 | `0x37` | `6.7` | WYVERN |
@@ -263,12 +262,12 @@ location = LOCATION_BY_BIT[location_index]
 Thus record order follows key-item indices `0..16`:
 
 ```text
-Package, Sand Ruby, Baron Key, Twin Harp, Earth, Magma Key,
-Tower Key, Hook, Luca Key, Darkness, Rat Tail, Pan, Adamant,
-Legend, Spoon, Pink Tail, Pass
+Package, Sand Ruby, Legend, Baron Key, Twin Harp, Earth,
+Magma Key, Tower Key, Hook, Luca Key, Darkness, Rat Tail,
+Adamant, Pan, Spoon, Pink Tail, Crystal
 ```
 
-There is **no record for key-item index 17 (Crystal)** because 34 bytes hold only 17 two-byte records. Unknown location indices and absent item mappings are ignored. A record is included in `foundLocations` even if the corresponding found bit is not set, but the UI only applies a found location inside its `if (found)` branch.
+There is **no record for key-item index 17** because 34 bytes hold only 17 two-byte records. Unknown location indices and absent item mappings are ignored. A record is included in `foundLocations` even if the corresponding found bit is not set, but the UI only applies a found location inside its `if (found)` branch.
 
 A location index uses the same numeric mapping table as checked-location bits; it is not a byte offset into the checked field. For example, bytes `20 00` decode to location index `0x0020`, which maps to `START`.
 
