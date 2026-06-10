@@ -13,6 +13,7 @@ By sg4e.
 * D Machin XP calculator (sorry, this one is a little rough around the edges; experiment with it to figure out how it works)
 * Logic tracking based on acquired key items (now with support of all flagsets!)
 * Maps of every trapped-chest location and codes for each chest for efficient 2v2 communication
+* Autotracking via SNI (trapped chests and Pass not yet supported by autotracking)
 
 ## How to use
 
