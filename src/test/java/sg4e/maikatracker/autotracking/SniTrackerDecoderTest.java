@@ -26,4 +26,35 @@ public class SniTrackerDecoderTest {
         Assert.assertEquals(SniTrackerMappings.KEY_ITEM_BY_BIT.size(), SniTrackerMappings.KEY_ITEM_BY_BIT.keySet().stream().distinct().count());
         Assert.assertNotNull(SniTrackerMappings.KEY_ITEM_BY_BIT.get(0));
     }
+
+    @Test
+    public void passIsNotAutotrackable() {
+        Assert.assertFalse(SniTrackerMappings.AUTOTRACKABLE_KEY_ITEMS.contains(KeyItemMetadata.PASS));
+    }
+
+    @Test
+    public void allMappedItemsAreAutotrackable() {
+        SniTrackerMappings.KEY_ITEM_BY_BIT.values().forEach(item ->
+            Assert.assertTrue(item + " should be autotrackable", SniTrackerMappings.AUTOTRACKABLE_KEY_ITEMS.contains(item))
+        );
+    }
+
+    @Test
+    public void autotrackableItemCountMatchesMappedItems() {
+        Assert.assertEquals(SniTrackerMappings.KEY_ITEM_BY_BIT.values().stream().distinct().count(),
+                SniTrackerMappings.AUTOTRACKABLE_KEY_ITEMS.size());
+    }
+
+    @Test
+    public void decodedSnapshotNeverContainsPass() {
+        SniTrackerDecoder decoder = new SniTrackerDecoder();
+        // All 24 bits set in each field
+        byte[] allBitsSet = new byte[] {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+        byte[] checked = new byte[16];
+        java.util.Arrays.fill(checked, (byte) 0xFF);
+
+        SniTrackerSnapshot snap = decoder.decode(allBitsSet, allBitsSet, checked);
+        Assert.assertFalse("Pass must never appear in decoded found set", snap.getFound().contains(KeyItemMetadata.PASS));
+        Assert.assertFalse("Pass must never appear in decoded used set", snap.getUsed().contains(KeyItemMetadata.PASS));
+    }
 }

@@ -83,6 +83,7 @@ import sg4e.ff4stats.party.PartyMember;
 import sg4e.maikatracker.autotracking.SniAutoTrackerService;
 import sg4e.maikatracker.autotracking.SniMemoryReader;
 import sg4e.maikatracker.autotracking.SniTrackerDecoder;
+import sg4e.maikatracker.autotracking.SniTrackerMappings;
 import sg4e.maikatracker.autotracking.SniTrackerSnapshot;
 import sg4e.maikatracker.autotracking.SniGrpcMemoryReader;
 
@@ -2056,6 +2057,8 @@ public final class MaikaTracker extends javax.swing.JFrame {
         SwingUtilities.invokeLater(() -> {
             if (!enableAutoTrackingCheckBox.isSelected()) return;
             getKeyItemPanels().forEach(panel -> {
+                if (!SniTrackerMappings.AUTOTRACKABLE_KEY_ITEMS.contains(panel.getKeyItem()))
+                    return;
                 boolean found = snapshot.getFound().contains(panel.getKeyItem());
                 boolean used = snapshot.getUsed().contains(panel.getKeyItem());
                 panel.setState(found ? (used && allowCheckedKeyItems.isSelected() ? 2 : 1) : 0);

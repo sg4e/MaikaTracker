@@ -290,7 +290,9 @@ Any exception from reading, decoding, or consuming aborts the poll. The service 
 
 `MaikaTracker.applyAutoTrackerSnapshot` immediately queues work on the Swing EDT. The queued action rechecks the UI checkbox, so a snapshot polled just before the user disables tracking is discarded.
 
-For every key-item panel:
+Key items without an SNI memory mapping (currently only **Pass**) are skipped entirely during snapshot application. Their icon state, location label, and shop/chest associations are never touched by autotracking. This means users can manually track Pass via the right-click context menu — setting it found, assigning a location, or placing it in a shop — and that state will persist across poll cycles. `SniTrackerMappings.AUTOTRACKABLE_KEY_ITEMS` defines which items are eligible for autotracking; any item absent from this set is treated as manual-only.
+
+For every **autotrackable** key-item panel:
 
 ```text
 not found                         -> state 0
@@ -312,6 +314,7 @@ After key items, the application replaces `locationsVisited`, updates the key-it
 - All-zero FXPAKPRO reads trigger an A-bus fallback even when zero is valid.
 - There is no ROM hash, seed, or FF4FE version check before interpreting addresses.
 - Autotracking is authoritative for item icon states and mapped visited locations on every successful poll, but only opportunistically updates item-location labels.
+- Autotracking **skips key items that have no SNI memory mapping** (currently only Pass). These items are excluded from the snapshot decode entirely, so autotracking never touches their icon state or location. Users must track Pass manually using the right-click context menu, even when autotracking is enabled. This allows manual Pass tracking to coexist with autotracked items without being overwritten on every poll cycle.
 - The snapshot wraps the supplied mutable collections with unmodifiable views rather than defensive copies. The current decoder does not mutate them after construction, but future producers must not do so.
 
 ## 14. Testing and extension checklist

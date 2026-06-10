@@ -2,13 +2,16 @@ package sg4e.maikatracker.autotracking;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import sg4e.ff4stats.fe.KeyItemLocation;
 import sg4e.maikatracker.KeyItemMetadata;
 
 public final class SniTrackerMappings {
     private SniTrackerMappings() {}
     public static final Map<Integer, KeyItemMetadata> KEY_ITEM_BY_BIT;
+    public static final Set<KeyItemMetadata> AUTOTRACKABLE_KEY_ITEMS;
     public static final Map<Integer, KeyItemLocation> LOCATION_BY_BIT;
     static {
         Map<Integer, KeyItemMetadata> keyItems = new HashMap<>();
@@ -31,6 +34,9 @@ public final class SniTrackerMappings {
         keyItems.put(15, KeyItemMetadata.PINK_TAIL);
         keyItems.put(16, KeyItemMetadata.CRYSTAL);
         KEY_ITEM_BY_BIT = Collections.unmodifiableMap(keyItems);
+
+        Set<KeyItemMetadata> autotrackable = new HashSet<>(keyItems.values());
+        AUTOTRACKABLE_KEY_ITEMS = Collections.unmodifiableSet(autotrackable);
 
         Map<Integer, KeyItemLocation> locations = new HashMap<>();
         // FE location bits are indexed from 0x20, not 0x00.
